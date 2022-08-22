@@ -1,0 +1,2 @@
+inteiros: [0-9];
+texto: [a-zA-Z];
