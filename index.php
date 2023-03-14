@@ -12,6 +12,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
         <script src="js/app.js" type="text/javascript"></script> 
+
     </head>
     <body>
         <nav class="navbar p-0" style="background:#e3f2fd; display:flex;">
@@ -30,10 +31,10 @@
             </h4>
         </nav>
         <nav class="navbar p-1" style="background:#e3f2fd;">
-            <div style="width: calc(27vw); height: calc(68vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
+            <div style="width: calc(27vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
                 <nav class="navbar p-1">
                     <form class="container-fluid justify-content-start p-0">
-                        <button class="btn btn-sm btn-outline-secondary me-1 " onclick="loadDoc()"
+                        <button class="btn btn-sm btn-outline-secondary me-1 " onclick="loadTabLexica()"
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">TABELA DE ANÁLISE
                             LÉXICA</button>
                         <div class="div text-center"
@@ -43,16 +44,15 @@
                                     style="border:1px solid black; font-size:calc(1vw);">DEFINIÇÕES REGULARES/TOKENS</h6>
                             </div>
                             <div class="div text-justify">
-                                <textarea id="defReg" name="defReg" onkeypress="loadDoc()" style="width: calc(26vw); height: calc(55vh);" placeholder='Escreva as definições'></textarea>
+                                <textarea id="defReg" name="defReg" style="width: calc(26vw); height: calc(55vh);" placeholder='Escreva as definições regulares, tokens'></textarea>
                             </div>
                         </div>
                     </form>
                 </nav>
             </div>
             <div style="width: calc(27vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
-
                 <nav class="navbar p-1">
-                    <form class="container-fluid justify-content-start">
+                    <form class="container-fluid justify-content-start p-0">
                         <button class="btn btn-sm btn-outline-secondary me-1 "
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">FIRST E
                             FOLLOWS</button>
@@ -62,26 +62,23 @@
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">TABELA
                             SINTÁTICA</button>
                     </form>
+                
+                    <div style="width: calc(27vw); height: calc(62vh); background-color: rgba(0,0,255,0.1);">
+                        <div class="div p-1 text-center">
+                            <h6 class="justify" style="border:1px solid black; font-size:calc(1vw); ">
+                                GRAMÁTICA
+                            </h6>
+                        </div>
+                        <div class="div text-justify">
+                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(55vh);" placeholder='Escreva as definições da gramática' onkeypress="analisaExpRegulares()"></textarea> 
+                        </div>
+                    </div>
                 </nav>
-                <div
-                    style="width: calc(27vw); height: calc(68vh); background-color: rgba(0,0,255,0.1); border-top:1px solid black;">
-                    <div class="div p-1 text-center">
-                        <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw); ">
-                            GRAMÁTICA
-                        </h6>
-                    </div>
-                    <div class="div p-1 text-justify">
-                        <textarea style="resize:none; overflow:auto; width: calc(26vw); height: calc(56vh); background-color: #fcfaff;">
-
-                        </textarea>
-                    </div>
-                </div>
-
             </div>
             <div style="width: calc(42vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
 
                 <nav class="navbar p-1">
-                    <form class="container-fluid justify-content-start">
+                    <form class="container-fluid justify-content-start p-0">
                         <button class="btn btn-sm btn-outline-secondary me-1 "
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">LÉXICO</button>
                         <button class="btn btn-sm btn-outline-secondary me-1 "
@@ -92,30 +89,24 @@
                                 type="button">?</button>
                     </form>
                 </nav>
-                <div
-                    style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1); border-top:1px solid black;">
+                <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
                     <div class="div p-1 text-center">
                         <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
                             ÁREA PARA INSERIR CÓDIGO DE TESTE PARA AS DEFINIÇÕES CRIADAS
                         </h6>
                     </div>
                     <div class="div p-1 text-justify">
-                        <textarea style="resize:none; overflow:auto; width: calc(41vw); height: calc(24vh); background-color: #fcfaff;">
-
-                        </textarea>
+                         <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder='Escreva o código a ser analisado' onkeypress="analisaExpRegulares()"></textarea> 
                     </div>
                 </div>
-                <div
-                    style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1); border-top:1px solid black">
+                <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
                     <div class="div p-1 text-center">
                         <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
                             SAÍDA DO TESTE
                         </h6>
                     </div>
                     <div class="div p-1 text-justify">
-                        <textarea style="resize:none; overflow:auto; width: calc(41vw); height: calc(24vh); background-color: #fcfaff;">
-
-                        </textarea>
+                        <textarea id="saidaAnalise" name="saidaAnalise" style="width: calc(41vw); height: calc(24vh);" placeholder='Saída da análise'></textarea> 
                     </div>
                 </div>
 

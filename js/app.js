@@ -1,18 +1,34 @@
-//require('./bootstrap');
+/**
+ * Verifica se símbolos são aceitos nas expressões regulares
+ * @returns retorna erros de especificação das expressões regulares
+ */
 
-//$(document).ready(function () {
-//    $("defReg").on("keyup change click focus", function () {
-//        $(".classenome").val($("#defReg").val());
-//       // var func = loadDoc();
-//    });
-//});
-//https://sistema.metalbo.com.br/index.php?classe=MET_RH_Curriculo&metodo=getDadosCurriculo" + "&dados=" + dataToSend
-function loadDoc() {
+window.onload = (function(){
+    document.getElementById('defReg').addEventListener('keyup',analisaExpRegulares);
+});
+
+function analisaExpRegulares() {
+    console.log('texto');
     var defreg = $("#defReg").val();
     var dataToSend = JSON.stringify({
-        "texto": defreg,
+        "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/php/index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes"+"&dados="+dataToSend, function (result) {
-        $("#saidaDefErros").text(JSON.parse(result).texto);
+    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=analisaExpressoes"+"&dados="+dataToSend, function (result) {
+        $("#saidaDefErros").val(JSON.parse(result).texto);
+    });
+}
+
+/**
+ * Método que constroi o automato finito das expressões regulares
+ * @returns tela do automato finito
+ */
+function loadTabLexica(){
+   // alert('teste');
+    var defreg = $("#defReg").val();
+    var dataToSend = JSON.stringify({
+        "texto": defreg
+    });
+    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito"+"&dados="+dataToSend, function (result) {
+        $("#saidaAnalise").val(JSON.parse(result).texto);
     });
 }
