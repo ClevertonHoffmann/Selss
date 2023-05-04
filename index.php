@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">    
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -120,9 +119,7 @@
                     </h6>
                 </div>
                 <div class="div p-1 text-justify">
-                    <textarea id='saidaDefErros' name='saidaDefErros' class="classenome"
-                              style="resize:none; overflow:auto; width: calc(98vw); height: calc(12vh); background-color: #fcfaff;">
-                    </textarea>
+                    <textarea id='saidaDefErros' name='saidaDefErros' style="resize:none; overflow:auto; width: calc(98vw); height: calc(12vh); background-color: #fcfaff;"></textarea>
                 </div>
             </div>
         </nav>	

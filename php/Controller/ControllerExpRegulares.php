@@ -26,11 +26,10 @@ class ControllerExpRegulares {
 
         //Fecha o arquivo.
         fclose($fp);
-        
+
         $sJson = '{"texto":"' . $sText2 . '"}';
 
         return json_encode($sJson);
-        
     }
 
     public function analisador($sTexto) {
@@ -129,44 +128,64 @@ class ControllerExpRegulares {
         $sAfd["?"] = -1;
         $sAfd["/"] = -1;
         $sAfd["\\"] = -1;
-        $sAfd["\t"] = -1;
-        $sAfd["\n"] = -1;
-        $sAfd["\r"] = -1;
+        $sAfd["\t"] = 0;
+        $sAfd["\n"] = 0;
+        $sAfd["\r"] = 0;
         $sAfd["]"] = 0;
         $sAfd["["] = 0;
 
-        $ik = 0;
-        $iQ = strlen($sTexto);
+        $aChar = str_split($sTexto);
         $sRetorno = ' ';
-        while ($ik < $iQ) {
-            if ($sAfd[substr($sTexto, $ik, 1)] != 0) {
-                $sRetorno = 'Erro Léxico Caractere ( ' . substr($sTexto, $ik, 1) . ' ) inesperado!';
+        foreach ($aChar as $sPos) {
+            if ($sAfd[$sPos] != 0) {
+                $sRetorno = 'Erro Léxico Caractere ( ' . $sPos . ' ) inesperado!';
             }
-            $ik++;
         }
         return $sRetorno;
     }
-    
-    public function geradorTabelaAutomatoFinito($sDados){
-              
+
+    public function geradorTabelaAutomatoFinito($sDados) {
+
+
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
-        
+
         $aArray = explode(';', $sTexto);
-        
+
+        $sCaracteres = "\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ;";
+        $aArrayCaracteres = explode(';', $sCaracteres);
         //Cria cabeçalho da tabela
-        $sTabelaAutomato = "Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";     
-        
+        $sTabelaAutomato = "Estado;Token Retornado;" . $sCaracteres . " \n";
         $iPos = 0;
-        //Monta o índice de tokens retornados
-        foreach ($aArray as $sVal){
-            $aArray2 = explode(':', $sVal);
-            $sTabelaAutomato.= $aArray2[0];            
+        //Estado 0
+        $sTabelaAutomato .= $iPos . "; ?;";
+        ///////////////////CONSTRUIR ÁRVORE DE CAMINHO INVERSO
+        /*
+         * Percorer caracteres possíveis e analisar se eles estão especificados
+         * criando um estado de transisão para os mesmos 
+         * ** ver como resolver quando se tem mais caminhos com o ? ex: && ++ --
+         */
+        foreach ($aArrayCaracteres as $sChar) {
+            foreach ($aArray as $sVal) {
+                $aArray1 = explode(':', $sVal);
+                
+            }
         }
-        
+        $sTabelaAutomato .= " \n ";
+
+        $iPos++;
+        //Monta o índice de tokens retornados
+        foreach ($aArray as $sVal) {
+            $aArray2 = explode(':', $sVal);
+            if (trim($aArray2[0]) != "") {
+                $sTabelaAutomato .= $iPos . "; " . trim($aArray2[0]) . "; \n ";
+                $iPos++;
+            }
+        }
+
         //Fazer comparação e gerar tabela depois montar o automato de análise
-        
-        
+
+
         $arquivo = "data\\defReg.csv";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
@@ -177,11 +196,10 @@ class ControllerExpRegulares {
 
         //Fecha o arquivo.
         fclose($fp);
-        
+
         $sJson = '{"texto":"' . $sTabelaAutomato . '"}';
 
         return json_encode($sJson);
-        
     }
 
     /*
