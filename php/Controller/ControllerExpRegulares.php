@@ -150,37 +150,96 @@ class ControllerExpRegulares {
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
 
-        $aArray = explode(';', $sTexto);
+        $aArray = explode(';', trim($sTexto));
+        //Remove a possição em branco depois do ; mais analisar se precisa 
+        $key = array_search('', $aArray);
+        if ($key !== false) {
+            unset($aArray[$key]);
+        }
 
-        $sCaracteres = "\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ;";
-        $aArrayCaracteres = explode(';', $sCaracteres);
         //Cria cabeçalho da tabela
-        $sTabelaAutomato = "Estado;Token Retornado;" . $sCaracteres . " \n";
+        $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
         $iPos = 0;
         //Estado 0
         $sTabelaAutomato .= $iPos . "; ?;";
-        ///////////////////CONSTRUIR ÁRVORE DE CAMINHO INVERSO
         /*
          * Percorer caracteres possíveis e analisar se eles estão especificados
          * criando um estado de transisão para os mesmos 
          * ** ver como resolver quando se tem mais caminhos com o ? ex: && ++ --
          */
+        $sArrayEstTokenExpr = array();
+        $iEst = 0; //Inicia contador de estado em 0
+        $sExp = '';
+        $sCaracteres = "\\t;\\n;\\r;' ';!;\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ";
+        $aArrayCaracteres = explode(';', $sCaracteres);
         foreach ($aArrayCaracteres as $sChar) {
+            $bCont = true;
             foreach ($aArray as $sVal) {
                 $aArray1 = explode(':', $sVal);
-                
+                /*
+                 * Retira espaços em branco
+                 * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
+                 * E verifica se for igual a 1 inicia a criação da árvore
+                 */
+                if (trim($aArray1[1]) != "") {
+                    //Tratamento de expressões em branco
+                    if ($sChar == "\\t" && $sChar == $aArray1[1]) {
+                        if ($sExp != $aArray1[1]) {
+                            $iEst++;
+                            $sArrayEstTokenExpr[$iEst] = $aArray1;
+                        }
+                        $sTabelaAutomato .= '' . $iEst . ';';
+                        $bCont = false;
+                        $sExp = $aArray1[1];
+                        //echo 'aqui entra se precisa fazer alguma projeção para frente';
+                    }
+                    if ($sChar == "\\n" && $sChar == $aArray1[1]) {
+                        if ($sExp != $aArray1[1]) {
+                            $iEst++;
+                            $sArrayEstTokenExpr[$iEst] = $aArray1;
+                        }
+                        $sTabelaAutomato .= '' . $iEst . ';';
+                        $bCont = false;
+                        $sExp = $aArray1[1];
+                        //echo 'aqui entra se precisa fazer alguma projeção para frente';
+                    }
+                    if ($sChar == "\\r" && $sChar == $aArray1[1]) {
+                        if ($sExp != $aArray1[1]) {
+                            $iEst++;
+                            $sArrayEstTokenExpr[$iEst] = $aArray1;
+                        }
+                        $sTabelaAutomato .= '' . $iEst . ';';
+                        $bCont = false;
+                        $sExp = $aArray1[1];
+                        //echo 'aqui entra se precisa fazer alguma projeção para frente';
+                    }
+                    if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                        if (preg_match("/" . $aArray1[1] . "/", $sChar) == 1) {
+                            if ($sExp != $aArray1[1]) {
+                                $iEst++;
+                                $sArrayEstTokenExpr[$iEst] = $aArray1;
+                            }
+                            $sTabelaAutomato .= '' . $iEst . ';';
+                            $bCont = false;
+                            $sExp = $aArray1[1];
+                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
+                        }
+                    }
+                }
+            }
+            //Coloca -1 em todas as posições que não possuem transição na tabela
+            if ($bCont) {
+                $sTabelaAutomato .= '-1;';
             }
         }
         $sTabelaAutomato .= " \n ";
 
         $iPos++;
+        ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados
-        foreach ($aArray as $sVal) {
-            $aArray2 = explode(':', $sVal);
-            if (trim($aArray2[0]) != "") {
-                $sTabelaAutomato .= $iPos . "; " . trim($aArray2[0]) . "; \n ";
-                $iPos++;
-            }
+        foreach ($sArrayEstTokenExpr as $sVal) {
+            $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; " . trim($sVal[1]) ."; \n ";
+            $iPos++;
         }
 
         //Fazer comparação e gerar tabela depois montar o automato de análise
