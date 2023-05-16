@@ -158,7 +158,7 @@ class ControllerExpRegulares {
         }
 
         //Cria cabeçalho da tabela
-        $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
+        $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
         $iPos = 0;
         //Estado 0
         $sTabelaAutomato .= $iPos . "; ?;";
@@ -170,8 +170,9 @@ class ControllerExpRegulares {
         $sArrayEstTokenExpr = array();
         $iEst = 0; //Inicia contador de estado em 0
         $sExp = '';
-        $sCaracteres = "\\t;\\n;\\r;' ';!;\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;\;;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ";
+        $sCaracteres = "\\t;\\n;\\r;' ';!;\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ";
         $aArrayCaracteres = explode(';', $sCaracteres);
+
         foreach ($aArrayCaracteres as $sChar) {
             $bCont = true;
             foreach ($aArray as $sVal) {
@@ -214,6 +215,7 @@ class ControllerExpRegulares {
                         //echo 'aqui entra se precisa fazer alguma projeção para frente';
                     }
                     if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                        //Opção que analisa se a expressão regular é reconhecida pelo preg_match
                         if (preg_match("/" . $aArray1[1] . "/", $sChar) == 1) {
                             if ($sExp != $aArray1[1]) {
                                 $iEst++;
@@ -222,8 +224,34 @@ class ControllerExpRegulares {
                             $sTabelaAutomato .= '' . $iEst . ';';
                             $bCont = false;
                             $sExp = $aArray1[1];
-                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
                         }
+                        //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
+                        if (substr_count($aArray1[1], $sChar) == strlen($aArray1[1]) && strlen($aArray1[1]) > 1) {
+                            if ($sExp != $aArray1[1]) {
+                                $iEst++;
+                                $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
+                            }
+                            $sTabelaAutomato .= '' . $iEst . ';';
+                            $bCont = false;
+                            $sExp = $aArray1[1];
+                        }
+                        //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
+                        if ($bCont && (preg_match("/[" . $aArray1[1] . "]/", $sChar) == 1) && strlen($aArray1[1]) > 1) {
+                            $aCarac = str_split($aArray1[1]);
+                            if ($aCarac[0] == $sChar) {
+                                if ($sExp != $aArray1[1]) {
+                                    $iEst++;
+                                    $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
+                                }
+                                $sTabelaAutomato .= '' . $iEst . ';';
+                                $bCont = false;
+                                $sExp = $aArray1[1];
+                            }
+                        }
+                        //Criar um armazenamento para as palavras reservadas que serão usadas na análise léxica
+                        
+                        //Criar uma regra para tokens compostos por outros
+                        
                     }
                 }
             }
@@ -236,14 +264,48 @@ class ControllerExpRegulares {
 
         $iPos++;
         ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
-        //Monta o índice de tokens retornados
-        foreach ($sArrayEstTokenExpr as $sVal) {
-            $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; " . trim($sVal[1]) ."; \n ";
+        //Monta o índice de tokens retornados e estados de transição de tokens compostos
+        $bCont = true;
+
+        while (count($sArrayEstTokenExpr) >= $iPos) {
+            $sVal = $sArrayEstTokenExpr[$iPos];
+            $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; "; // . trim($sVal[1]) ."; \n ";
+            foreach ($aArrayCaracteres as $sChar) {
+                $bCont = true;
+                if ($sVal[0] == "?") { //Se for ? é por que é um token composto, estado de transição e não de aceitação
+                    //if ($sChar == $aArray1) {
+                    $aArray1 = str_split($sVal[1]);
+                    //Possibilidade dupla igual
+                    if (strlen($sVal[1]) == 2) {
+                        if ($aArray1[1] == $sChar) {
+                            $iEst++;
+                            $sArrayEstTokenExpr[$iEst] = [$sVal[2], $aArray1[1]];
+                            $sTabelaAutomato .= '' . $iEst . ';';
+                            $bCont = false;
+                        }
+                    }
+                    //Possibilidade n igual 
+                    if (count($aArray1) > 2) {
+                        if ($aArray1[1] == $sChar) {
+                            $iEst++;
+                            $sArrayEstTokenExpr[$iEst] = ["?", substr($sVal[1], 1), $sVal[2]];
+                            $sTabelaAutomato .= '' . $iEst . ';';
+                            $bCont = false;
+                        }
+                    }
+                    //}
+                }
+                //Coloca -1 em todas as posições que não possuem transição na tabela
+                if ($bCont) {
+                    $sTabelaAutomato .= '-1;';
+                }
+            }
+            $sTabelaAutomato .= " \n ";
             $iPos++;
         }
 
         //Fazer comparação e gerar tabela depois montar o automato de análise
-
+        
 
         $arquivo = "data\\defReg.csv";
 
