@@ -234,7 +234,7 @@ class ControllerExpRegulares {
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
                         }
-                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{") {
                             //Opção que analisa se a expressão regular é reconhecida pelo preg_match
                             if ($bCont && (preg_match("/" . $aArray1[1] . "/", $sChar) == 1)) {
                                 if ($sExp != $aArray1[1]) {
@@ -413,11 +413,23 @@ class ControllerExpRegulares {
                             }
                         }
                     }
-                    /////FALTA ARRUMAR TEM QUE EMPILHAR O 7 EM TODOS CASOS
                 }
                 //Tokens compostos por outros tokens
-                if (isset($sArrayTokenExpr1[0])) {
-                    
+                if (count($sArrayTokenExpr1) > 0) {
+                    foreach ($sArrayTokenExpr1 as $key => $sExprr) {
+                        $sValorExp1 = str_replace("}{", ",", trim($sExprr));
+                        $sValorExp2 = str_replace("{", "", $sValorExp1);
+                        $sValorExp = str_replace("}", "", $sValorExp2);
+                        $aArrayComp = explode(',', $sValorExp);
+                        
+                        if($aArrayComp[0]==$sVal[0]){
+                            if((preg_match("/" . $sVal[1] . "/", $sChar) == 1)){
+                                $sTabelaAutomato .= '' . $sVal[3] . ';';
+                                $bCont = false;
+                            }
+                        }
+                        
+                    }
                 }
                 //Coloca -1 em todas as posições que não possuem transição na tabela
                 if ($bCont) {
