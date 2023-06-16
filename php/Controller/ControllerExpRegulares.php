@@ -342,10 +342,19 @@ class ControllerExpRegulares {
         ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados e estados de transição de tokens compostos
         $bCont = true;
+        //Array que armazena todos as expressões simples pelo token que são diferentes dos estados de transição e seu
+        //respectivo estado
+        $aArrayExprEst = array();
+        foreach ($sArrayEstTokenExpr as $iEstado => $aVal) {
+            if ($aVal[0] != "?") {
+                $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
+            }
+        }
         $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
         while (count($sArrayEstTokenExpr) >= $iPos) {
             $sVal = $sArrayEstTokenExpr[$iPos];
             $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; "; //Seta o estado de cada expressão
+            $iki = 0; //Contador importante para as expressões compostas
             //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
             foreach ($aArrayCaracteres as $sChar) {
                 $bCont = true;
@@ -370,7 +379,7 @@ class ControllerExpRegulares {
                         }
                     }
                 }
-                //Palavras reservadas
+                //Palavras reservadas ////////////////////////////////////////////////ARRUMAR ESTÁ FALTANDO UM ESTADO
                 if (count($sArrayTokenExpr2) > 0) {
                     foreach ($sArrayTokenExpr2 as $key => $sExprr) {
                         $aArray1 = str_split($sExprr);
@@ -380,7 +389,7 @@ class ControllerExpRegulares {
                             if (strlen(substr($sExprr, 1)) > 2) {
                                 $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sExprr, 1), $key, $iPos, $sVal[1]];
                             } else {
-                                $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
+                                $sArrayEstTokenExpr[$iEst] = [$key, $sExprr, $key, $iPos, $sVal[1]];
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
                             unset($sArrayTokenExpr2[$key]);
@@ -421,14 +430,21 @@ class ControllerExpRegulares {
                         $sValorExp2 = str_replace("{", "", $sValorExp1);
                         $sValorExp = str_replace("}", "", $sValorExp2);
                         $aArrayComp = explode(',', $sValorExp);
-                        
-                        if($aArrayComp[0]==$sVal[0]){
-                            if((preg_match("/" . $sVal[1] . "/", $sChar) == 1)){
-                                $sTabelaAutomato .= '' . $sVal[3] . ';';
-                                $bCont = false;
+                        foreach ($aArrayComp as $sKey1 => $sLexic) {
+                            if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
+                                $sChave = trim($aArrayComp[$sKey1 + 1]);
+                                $sExp2 = $aArrayExprEst[$sChave][1];
+                                if ((preg_match("/" .$sExp2. "/", $sChar) == 1)) {
+                                    if ($iki == 0) {
+                                        $iEst++;
+                                        $iki++;
+                                    }
+                                    $sTabelaAutomato .= '' . $iEst . ';';
+                                    $sArrayEstTokenExpr[$iEst] = [$key, $aArrayComp];
+                                    $bCont = false;
+                                }
                             }
                         }
-                        
                     }
                 }
                 //Coloca -1 em todas as posições que não possuem transição na tabela
