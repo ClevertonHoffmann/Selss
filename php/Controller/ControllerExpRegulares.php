@@ -379,7 +379,7 @@ class ControllerExpRegulares {
                         }
                     }
                 }
-                //Palavras reservadas ////////////////////////////////////////////////ARRUMAR ESTÁ FALTANDO UM ESTADO
+                //Palavras reservadas
                 if (count($sArrayTokenExpr2) > 0) {
                     foreach ($sArrayTokenExpr2 as $key => $sExprr) {
                         $aArray1 = str_split($sExprr);
@@ -389,7 +389,7 @@ class ControllerExpRegulares {
                             if (strlen(substr($sExprr, 1)) > 2) {
                                 $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sExprr, 1), $key, $iPos, $sVal[1]];
                             } else {
-                                $sArrayEstTokenExpr[$iEst] = [$key, $sExprr, $key, $iPos, $sVal[1]];
+                                $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
                             unset($sArrayTokenExpr2[$key]);
@@ -409,10 +409,10 @@ class ControllerExpRegulares {
                             if ((preg_match("/" . $sVal[4] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
                                 $iEst++;
                                 //Mais que dois caracteres
-                                if (strlen(substr($sVal[1], 1)) > 2) {
+                                if (strlen(substr($sVal[1], 1)) > 1) {
                                     $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]];
                                 } else {
-                                    $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sExprr, 1), $sVal[2], $sVal[3], $sVal[4]];
+                                    $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
                                 }
                                 $sTabelaAutomato .= '' . $iEst . ';';
                                 $bCont = false;
