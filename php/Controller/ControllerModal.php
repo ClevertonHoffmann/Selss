@@ -14,10 +14,8 @@ class ControllerModal {
         $aTabela = $oPersistenciaCSV->retornaArrayCSV("defReg.csv"); 
         $oViewModal = new ViewModal();
         $sModal = $oViewModal->geraModalTabelaLexica($aTabela);
-        
-        $sJson = '{"texto":"' . $sModal . '"}';
 
-        return json_encode($sJson);
+        return json_encode($sModal);
     }
     
 }

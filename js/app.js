@@ -5,6 +5,15 @@
 
 window.onload = (function () {
     document.getElementById('defReg').addEventListener('keyup', analisaExpRegulares);
+
+    var modal = document.getElementById('myModal');
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
 });
 
 function analisaExpRegulares() {
@@ -30,21 +39,28 @@ function loadTabLexica() {
     $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaAnalise").val(JSON.parse(result).texto);
     });
-    
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerModal&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        var div = document.getElementById('myModal');
+    //Abre a modal
+    openModal();
+    setTimeout(function () {
+        $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerModal&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+            var div = document.getElementById('csvData');
+            // Altera o conteúdo da div
+            div.innerHTML = result;
+        });
+    }, 5000);
 
-        // Altera o conteúdo da div
-        div.innerHTML = JSON.parse(result).texto;
-        openModal();
-    });
 }
 
 function openModal() {
+    var div = document.getElementById('csvData');
+    div.innerHTML = '';
     document.getElementById("myModal").style.display = "block";
 }
 
 function closeModal() {
+    var div = document.getElementById('csvData');
+    div.innerHTML = '';
     var modal = document.getElementById('myModal');
     modal.style.display = 'none';
 }
+

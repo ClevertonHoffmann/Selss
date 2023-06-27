@@ -124,6 +124,13 @@
             </div>
         </nav>	
         <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="mx-auto">Tabela de Analise Léxica</h2>
+                    <span class="close-button" onclick="closeModal()">&times;</span>
+                </div>
+                <div id="csvData"></div>
+            </div>
         </div>
     </body>
 
