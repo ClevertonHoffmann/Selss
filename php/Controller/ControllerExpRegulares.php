@@ -484,7 +484,8 @@ class ControllerExpRegulares {
 
         $sJson = '{"texto":"' . $sTabelaAutomato . '"}';
 
-        return json_encode($sJson);
+        return json_encode($sJson);        
+        
     }
 
 }

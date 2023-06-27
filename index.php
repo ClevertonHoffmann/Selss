@@ -3,7 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+              integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="css/app.css">
@@ -61,7 +61,7 @@
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">TABELA
                             SINTÁTICA</button>
                     </form>
-                
+
                     <div style="width: calc(27vw); height: calc(62vh); background-color: rgba(0,0,255,0.1);">
                         <div class="div p-1 text-center">
                             <h6 class="justify" style="border:1px solid black; font-size:calc(1vw); ">
@@ -95,7 +95,7 @@
                         </h6>
                     </div>
                     <div class="div p-1 text-justify">
-                         <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder='Escreva o código a ser analisado' onkeypress="analisaExpRegulares()"></textarea> 
+                        <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder='Escreva o código a ser analisado' onkeypress="analisaExpRegulares()"></textarea> 
                     </div>
                 </div>
                 <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
@@ -123,5 +123,8 @@
                 </div>
             </div>
         </nav>	
+        <div id="myModal" class="modal">
+        </div>
     </body>
+
 </html>

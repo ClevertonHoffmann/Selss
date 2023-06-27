@@ -23,13 +23,28 @@ function analisaExpRegulares() {
  * @returns tela do automato finito
  */
 function loadTabLexica() {
-    // alert('teste');
     var defreg = $("#defReg").val();
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-   // alert (dataToSend);
     $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaAnalise").val(JSON.parse(result).texto);
     });
+    
+    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerModal&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        var div = document.getElementById('myModal');
+
+        // Altera o conteúdo da div
+        div.innerHTML = JSON.parse(result).texto;
+        openModal();
+    });
+}
+
+function openModal() {
+    document.getElementById("myModal").style.display = "block";
+}
+
+function closeModal() {
+    var modal = document.getElementById('myModal');
+    modal.style.display = 'none';
 }
