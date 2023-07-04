@@ -79,7 +79,7 @@
                 <nav class="navbar p-1">
                     <form class="container-fluid justify-content-start p-0">
                         <button class="btn btn-sm btn-outline-secondary me-1 "
-                                style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">LÉXICO</button>
+                                style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button" onclick="analiseLexica()">LÉXICO</button>
                         <button class="btn btn-sm btn-outline-secondary me-1 "
                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">SINTÁTICO</button>
                         <button class="btn btn-sm btn-outline-secondary me-1 "

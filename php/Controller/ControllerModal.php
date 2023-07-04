@@ -11,7 +11,7 @@ class ControllerModal {
     public function mostraModalTabelaLexica($sDados){
         
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aTabela = $oPersistenciaCSV->retornaArrayCSV("defReg.csv"); 
+        $aTabela = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv"); 
         $oViewModal = new ViewModal();
         $sModal = $oViewModal->geraModalTabelaLexica($aTabela);
 

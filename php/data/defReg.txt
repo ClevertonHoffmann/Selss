@@ -6,3 +6,5 @@ espaco:\n;
 e:&&;
 dif:<>;
 if:if;
+else:else;
+while:while;

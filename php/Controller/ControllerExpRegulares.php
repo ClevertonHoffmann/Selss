@@ -145,6 +145,14 @@ class ControllerExpRegulares {
 
     public function geradorTabelaAutomatoFinito($sDados) {
 
+        /*
+         * Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
+         */
+        $aPalavrasReservadas = array();
+
+        /*
+         * São caracteres especiais : e ; pois são usados no controle inicial de separação dos tokens
+         */
 
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
@@ -176,13 +184,26 @@ class ControllerExpRegulares {
         $aArrayCaracteres = explode(';', $sCaracteres);
         //Cria um array do tipo Token=>Expressão Regular
         foreach ($aArray as $sVal1) {
-            $aArray2 = explode(':', $sVal1);
-            $sArrayTokenExpr1[$aArray2[0]] = $aArray2[1];
+            //Função que aceita o :
+            if (strpos($sVal1, '\:') !== false) {
+                $aArray2 = explode(':', $sVal1);
+                $sArrayTokenExpr1[$aArray2[0]] = ":";
+            } else {
+                $aArray2 = explode(':', $sVal1);
+                $sArrayTokenExpr1[$aArray2[0]] = $aArray2[1];
+            }
         }
         foreach ($aArrayCaracteres as $sChar) {
             $bCont = true;
             foreach ($aArray as $sVal) {
-                $aArray1 = explode(':', $sVal);
+                //Função que aceita o :
+                if (strpos($sVal, '\:') !== false) {
+                    $aArray2 = explode(':', $sVal);
+                    $aArray1[0] = $aArray2[0];
+                    $aArray1[1] = ":";
+                } else {
+                    $aArray1 = explode(':', $sVal);
+                }
                 /*
                  * Retira espaços em branco
                  * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
@@ -234,7 +255,18 @@ class ControllerExpRegulares {
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
                         }
-                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{") {
+                        //Escapa simbolo quando contém aspas duplas
+                        $sEscapaCol = false;
+                        if (strpos($aArray1[1], '"') !== false) {
+                            $sEscapaCol = true;
+                        }
+                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $sEscapaCol) {
+
+                            //Substitui textos encontrados com " por exemplo "{" por {
+                            if (strpos($aArray1[1], '"') !== false) {
+                                $aArray1[1] = str_replace('"', '', $aArray1[1]); /////////VERIFICAR
+                            }
+
                             //Opção que analisa se a expressão regular é reconhecida pelo preg_match
                             if ($bCont && (preg_match("/" . $aArray1[1] . "/", $sChar) == 1)) {
                                 if ($sExp != $aArray1[1]) {
@@ -350,6 +382,8 @@ class ControllerExpRegulares {
                 $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
             }
         }
+        //Armazena as palavras reservadas para persistir para análise léxica.
+        $aPalavrasReservadas = $sArrayTokenExpr2;
         $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
         while (count($sArrayEstTokenExpr) >= $iPos) {
             $sVal = $sArrayEstTokenExpr[$iPos];
@@ -434,7 +468,7 @@ class ControllerExpRegulares {
                             if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
                                 $sChave = trim($aArrayComp[$sKey1 + 1]);
                                 $sExp2 = $aArrayExprEst[$sChave][1];
-                                if ((preg_match("/" .$sExp2. "/", $sChar) == 1)) {
+                                if ((preg_match("/" . $sExp2 . "/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                                     if ($iki == 0) {
                                         $iEst++;
                                         $iki++;
@@ -455,23 +489,8 @@ class ControllerExpRegulares {
             $sTabelaAutomato .= " \n ";
             $iPos++;
         }
-
-
-        //Criar um armazenamento para as palavras reservadas que serão usadas na análise léxica
-//                        if ((trim($aArray1[0]) == trim($aArray1[1]))) {
-//                            if ($sExp != $aArray1[1]) {
-//                                $iEst++;
-//                                $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
-//                            }
-//                            $sTabelaAutomato .= '' . $iEst . ';';
-//                            $bCont = false;
-//                            $sExp = $aArray1[1];
-//                        }
-        //Criar uma regra para tokens compostos por outros
-        //Fazer comparação e gerar tabela depois montar o automato de análise
-
-
-        $arquivo = "data\\defReg.csv";
+        //Parte que salva a tabela de análise léxica
+        $arquivo = "data\\tabelaAnaliseLexica.csv";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");
@@ -481,11 +500,28 @@ class ControllerExpRegulares {
 
         //Fecha o arquivo.
         fclose($fp);
-
-        $sJson = '{"texto":"' . $sTabelaAutomato . '"}';
-
-        return json_encode($sJson);        
         
+        $sCsvPalavrasRes = "";
+        //Parte que salva as palavras reservadas
+        foreach ($aPalavrasReservadas as $linha) {
+            $sCsvPalavrasRes .= $linha.";".$linha."; \n";
+        }
+
+        //Parte que salva a tabela de análise léxica
+        $arquivo2 = "data\\palavrasReservadas.csv";
+
+        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
+        $fp2 = fopen($arquivo2, "w");
+
+        //Escreve no arquivo aberto.
+        fwrite($fp2, $sCsvPalavrasRes);
+
+        //Fecha o arquivo.
+        fclose($fp2);
+
+        $sJson = '{"texto":"Sucesso!"}';
+
+        return json_encode($sJson);
     }
 
 }
