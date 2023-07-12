@@ -504,7 +504,7 @@ class ControllerExpRegulares {
         $sCsvPalavrasRes = "";
         //Parte que salva as palavras reservadas
         foreach ($aPalavrasReservadas as $linha) {
-            $sCsvPalavrasRes .= $linha.";".$linha."; \n";
+            $sCsvPalavrasRes .= $linha.";".$linha." \n";
         }
 
         //Parte que salva a tabela de análise léxica

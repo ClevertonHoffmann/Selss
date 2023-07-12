@@ -9,9 +9,6 @@ window.onload = (function () {
      */
     document.getElementById('defReg').addEventListener('keyup', analisaExpRegulares);
 
-    //VER A POSSIBILIDADE DE REALIZAR A ANÁLISE LÉXICA EM TEMPO REAL
-
-
     //****Inicio fechar modal*****//
     var modal = document.getElementById('myModal');
 
