@@ -50,6 +50,7 @@ class ControllerAnalisadorLexico {
         while ($this->iCount>0){
             try{
                 
+                
             } catch (Exception $ex) {
                 $sJson = '{"texto":"Estado não encontrado!"}';
                 return json_encode($sJson);

@@ -6,7 +6,7 @@
  */
 
 class ControllerExpRegulares {
-
+    
     public function analisaExpressoes($sDados) {
 
         $sCampos = json_decode($sDados);
@@ -34,7 +34,6 @@ class ControllerExpRegulares {
     public function analisador($sTexto) {
 
         $sAfd = array();
-        //0 - id:
         $sAfd["a"] = 0;
         $sAfd["b"] = 0;
         $sAfd["c"] = 0;

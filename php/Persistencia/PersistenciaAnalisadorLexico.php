@@ -18,11 +18,22 @@ class PersistenciaAnalisadorLexico {
 
         $oPersistenciaCSV = new PersistenciaCSV();
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
+        $aCab = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv");
+        
         //Apenas remove a ultima posição do array que no explode traz vazio ""
+        //Cria um array no formato array[estado]=>array[caracter] = estado de transição  
         $aTabTrans = array();
+        $aAux = array();
+        $iK=0;
         foreach ($aCSV as $aVal) {
             array_pop($aVal);
-            $aTabTrans[] = $aVal;
+            if($iK!=0){
+                for ($c=0; $c<count($aCab[0]); $c++){
+                    $aAux[$aCab[0][$c]] = $aVal[$c+2];
+                }
+                $aTabTrans[] = $aAux;/////////////////////////////ver a ultima posição
+            }
+            $iK++;
         }
         return $aTabTrans;
     }
@@ -37,7 +48,7 @@ class PersistenciaAnalisadorLexico {
         $aTokens = array();
         foreach ($aCSV as $aVal) {
             if ($aCSV[0] != $aVal) {
-                $aTokens[$aVal[0]] = $aVal[1];
+                $aTokens[trim($aVal[0])] = $aVal[1];
             }
         }
         return $aTokens;
