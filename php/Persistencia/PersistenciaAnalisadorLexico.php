@@ -25,13 +25,14 @@ class PersistenciaAnalisadorLexico {
         $aTabTrans = array();
         $aAux = array();
         $iK=0;
+        array_pop($aCSV);
         foreach ($aCSV as $aVal) {
             array_pop($aVal);
             if($iK!=0){
                 for ($c=0; $c<count($aCab[0]); $c++){
                     $aAux[$aCab[0][$c]] = $aVal[$c+2];
                 }
-                $aTabTrans[] = $aAux;/////////////////////////////ver a ultima posição
+                $aTabTrans[] = $aAux;
             }
             $iK++;
         }

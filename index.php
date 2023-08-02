@@ -87,28 +87,27 @@
                         <button class="btn btn-sm btn-secondary" style="width: calc(vw); height: calc(vh); font-size:calc(1vw)"
                                 type="button">?</button>
                     </form>
+                    <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
+                        <div class="div p-1 text-center">
+                            <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
+                                ÁREA PARA INSERIR CÓDIGO DE TESTE PARA AS DEFINIÇÕES CRIADAS
+                            </h6>
+                        </div>
+                        <div class="div p-1 text-justify">
+                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder='Escreva o código a ser analisado' onkeypress="analisaExpRegulares()"></textarea> 
+                        </div>
+                    </div>
+                    <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
+                        <div class="div p-1 text-center">
+                            <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
+                                SAÍDA DO TESTE
+                            </h6>
+                        </div>
+                        <div class="div p-1 text-justify">
+                            <textarea id="saidaAnalise" name="saidaAnalise" style="resize:none; overflow:auto; width: calc(41vw); height: calc(24vh);"></textarea> 
+                        </div>
+                    </div>
                 </nav>
-                <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
-                    <div class="div p-1 text-center">
-                        <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
-                            ÁREA PARA INSERIR CÓDIGO DE TESTE PARA AS DEFINIÇÕES CRIADAS
-                        </h6>
-                    </div>
-                    <div class="div p-1 text-justify">
-                        <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder='Escreva o código a ser analisado' onkeypress="analisaExpRegulares()"></textarea> 
-                    </div>
-                </div>
-                <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
-                    <div class="div p-1 text-center">
-                        <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
-                            SAÍDA DO TESTE
-                        </h6>
-                    </div>
-                    <div class="div p-1 text-justify">
-                        <textarea id="saidaAnalise" name="saidaAnalise" style="width: calc(41vw); height: calc(24vh);" placeholder='Saída da análise'></textarea> 
-                    </div>
-                </div>
-
             </div>
         </nav>
         <nav class="navbar p-1" style="background:#e3f2fd">
