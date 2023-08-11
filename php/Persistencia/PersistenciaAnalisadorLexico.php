@@ -47,9 +47,10 @@ class PersistenciaAnalisadorLexico {
         $oPersistenciaCSV = new PersistenciaCSV();
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
         $aTokens = array();
+        array_pop($aCSV);
         foreach ($aCSV as $aVal) {
             if ($aCSV[0] != $aVal) {
-                $aTokens[trim($aVal[0])] = $aVal[1];
+                $aTokens[trim($aVal[0])] = trim($aVal[1]);
             }
         }
         return $aTokens;
