@@ -70,7 +70,6 @@ class ControllerAnalisadorLexico {
                         $this->sBuild = "";
                         $this->q = 0;
                     } else {
-                        $this->iCount--;
                         $iK++;
                     }
                 }
@@ -80,10 +79,11 @@ class ControllerAnalisadorLexico {
                 return json_encode($sJson);
             }
         }
-        $sTeste = "Token    Lex    Pos ";
+        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+        $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex){
-           $sTeste .= "".$aLex[0]."".$aLex[1]."".$aLex[2]." ";
+           $sTeste .= "".$aLex[0]."    ".$aLex[1]."         ".$aLex[2]." \\n ";
         }
         $sTextoRetorno .= '"'.$sTeste.'"}';
         return json_encode($sTextoRetorno);

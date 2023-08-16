@@ -1,0 +1,8 @@
+if:if;
+inc:++;
+maiorig:>=;
+num:[0-9];
+letras:[a-zA-Z]*;
+espaco:\n;
+e:&&;
+dif:<>;
