@@ -1,9 +1,7 @@
 <?php
-
 /*
  * Classe que realiza a manipulação de CSVs
  */
-
 class PersistenciaCSV {
 
     /**

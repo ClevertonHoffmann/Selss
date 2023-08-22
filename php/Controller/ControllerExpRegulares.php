@@ -4,9 +4,15 @@
  * Classe que analisa as expressões regulares definidas pelo usuário
  * e realiza a criação da tabela de transição (automato) para a análise léxica
  */
+require_once '../php/Persistencia/PersistenciaExpRegulares.php';
 
 class ControllerExpRegulares {
     
+    /**
+     * Método responsável por chamar o analisador de expressões regulares
+     * @param type $sDados
+     * @return type
+     */
     public function analisaExpressoes($sDados) {
 
         $sCampos = json_decode($sDados);
@@ -31,6 +37,11 @@ class ControllerExpRegulares {
         return json_encode($sJson);
     }
 
+    /**
+     * Método responsável por realizar a indentificação dos caracteres válidos nas expressões regulares
+     * @param type $sTexto
+     * @return string
+     */
     public function analisador($sTexto) {
 
         $sAfd = array();
@@ -142,8 +153,13 @@ class ControllerExpRegulares {
         return $sRetorno;
     }
 
+    /**
+     * Método responsável por gerar a tabela do automato finito para análise léxica
+     * @param type $sDados
+     * @return type
+     */
     public function geradorTabelaAutomatoFinito($sDados) {
-
+        
         /*
          * Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
          */
@@ -163,8 +179,11 @@ class ControllerExpRegulares {
             unset($aArray[$key]);
         }
 
+        $aTabelaAutomato = array();//paralelo
+        $oPersistencia = new PersistenciaExpRegulares();//paralelo
+        $aTabelaAutomato = $oPersistencia->retornaCabecalhoTabelaLexica();//paralelo
+        
         //Cria cabeçalho da tabela
-//        $aTabelaAutomato = array();
         $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
         $iPos = 0;
         //Estado 0
