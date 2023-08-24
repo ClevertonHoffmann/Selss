@@ -7,6 +7,15 @@ require_once 'PersistenciaCSV.php';
 
 class PersistenciaExpRegulares{
 
+    public function gravaTabelaLexica(){
+        
+        
+    }
+    
+    /**
+     * Método responsável por retornar o cabeçalho da tabela do automato
+     * @return type
+     */
     public function retornaCabecalhoTabelaLexica() {
 
         $oPersistenciaCSV = new PersistenciaCSV();
@@ -19,18 +28,18 @@ class PersistenciaExpRegulares{
      * Função que retorna um array de tokens com a seguinte estrutura [estado]=token
      * @return type
      */
-    public function retornaTabelaDeTokens() {
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
-        $aTokens = array();
-        array_pop($aCSV);
-        foreach ($aCSV as $aVal) {
-            if ($aCSV[0] != $aVal) {
-                $aTokens[trim($aVal[0])] = trim($aVal[1]);
-            }
-        }
-        return $aTokens;
-    }
+//    public function retornaTabelaDeTokens() {
+//        $oPersistenciaCSV = new PersistenciaCSV();
+//        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
+//        $aTokens = array();
+//        array_pop($aCSV);
+//        foreach ($aCSV as $aVal) {
+//            if ($aCSV[0] != $aVal) {
+//                $aTokens[trim($aVal[0])] = trim($aVal[1]);
+//            }
+//        }
+//        return $aTokens;
+//    }
 
 }
 
