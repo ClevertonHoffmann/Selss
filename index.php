@@ -124,13 +124,18 @@
         </nav>	
         <div id="myModal" class="modal">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="mx-auto">Tabela de Analise Léxica</h2>
-                    <span class="close-button" onclick="closeModal()">&times;</span>
+                <div class="modal-header-wrapper">
+                    <div class="modal-header">
+                        <h2 class="mx-auto">Tabela de Analise Léxica</h2>
+                        <span class="close-button" onclick="closeModal()">&times;</span>
+                    </div>
                 </div>
-                <div id="csvData"></div>
+                <div id="csvData" class="modal-table">
+                    <!-- Conteúdo da tabela aqui -->
+                </div>
             </div>
         </div>
+
     </body>
 
 </html>

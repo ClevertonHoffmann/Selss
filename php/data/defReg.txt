@@ -1,2 +1,7 @@
 else:else;
-letras:[a-zA-Z]+;
+letras:[a-zA-Z];
+palavras:palavras;
+casa:casa;
+if:if;
+teste:teste;
+espaço:[ ];

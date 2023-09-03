@@ -179,18 +179,27 @@ class ControllerExpRegulares {
             unset($aArray[$key]);
         }
 
-        $aTabelaAutomato = array(); //paralelo
-        $oPersistencia = new PersistenciaExpRegulares(); //paralelo
+        $aTabelaAutomato = array();//paralelo
+        $oPersistencia = new PersistenciaExpRegulares();
         $aTabelaAutomato[-1][0] = 'Estado';//paralelo
-        $aTabelaAutomato[-1][0] = 'Token Retornado';//paralelo
-        $aTabelaAutomato[-1] = $oPersistencia->retornaCabecalhoTabelaLexica()[0]; //paralelo
+        $aTabelaAutomato[-1][1] = 'Token Retornado';//paralelo
+
+        // Obtem o cabeçalho do array
+        $cabecalhoTabelaLexica = $oPersistencia->retornaCabecalhoTabelaLexica()[0];
+
+        // Crie um novo array associativo com as chaves do cabeçalho
+        $novoArray = array_combine(array_values($cabecalhoTabelaLexica), array_values($cabecalhoTabelaLexica));
+
+        // Mescla o novo array com $aTabelaAutomato[-1] mantendo os valores originais
+        $aTabelaAutomato[-1] = array_merge($aTabelaAutomato[-1], $novoArray);//paralelo
+
         //Cria cabeçalho da tabela
         $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
         $iPos = 0;
         //Estado 0
         $sTabelaAutomato .= $iPos . "; ?;";
-        $aTabelaAutomato[$iPos][] = $iPos;//paralelo
-        $aTabelaAutomato[$iPos][] = '?';//paralelo
+        $aTabelaAutomato[$iPos][] = $iPos; //paralelo
+        $aTabelaAutomato[$iPos][] = '?'; //paralelo
         /*
          * Percorer caracteres possíveis e analisar se eles estão especificados
          * criando um estado de transisão para os mesmos 
@@ -245,7 +254,7 @@ class ControllerExpRegulares {
                                 }
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             $bCont = false;
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
@@ -260,7 +269,7 @@ class ControllerExpRegulares {
                                 }
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             $bCont = false;
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
@@ -275,7 +284,7 @@ class ControllerExpRegulares {
                                 }
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             $bCont = false;
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
@@ -303,7 +312,7 @@ class ControllerExpRegulares {
                                     }
                                 }
                                 $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                 $bCont = false;
                                 $sExp = $aArray1[1];
                             }
@@ -318,7 +327,7 @@ class ControllerExpRegulares {
                                     }
                                 }
                                 $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                 $bCont = false;
                                 $sExp = $aArray1[1];
                             }
@@ -335,7 +344,7 @@ class ControllerExpRegulares {
                                         }
                                     }
                                     $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                     if ($aArray1[1] == $aArray1[0]) {
                                         $iEst--;
                                         $iEst2++;
@@ -379,7 +388,7 @@ class ControllerExpRegulares {
                                         }
                                     }
                                     $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                     $sExp = $aArray1[1];
                                     $bCont = false;
                                 }
@@ -395,13 +404,13 @@ class ControllerExpRegulares {
             //Coloca -1 em todas as posições que não possuem transição na tabela
             if ($bCont) {
                 $sTabelaAutomato .= '-1;';
-                $aTabelaAutomato[$iPos][] = '-1';//paralelo
+                $aTabelaAutomato[$iPos][] = -1; //paralelo
             }
         }
-        
-        $sTabelaAutomato .= " \n ";
 
+        $sTabelaAutomato .= " \n ";
         $iPos++;
+        $aTabelaAutomato[$iPos][] = $iPos; //paralelo
         ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados e estados de transição de tokens compostos
         $bCont = true;
@@ -419,7 +428,7 @@ class ControllerExpRegulares {
         while (count($sArrayEstTokenExpr) >= $iPos) {
             $sVal = $sArrayEstTokenExpr[$iPos];
             $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; "; //Seta o estado de cada expressão
-            $aTabelaAutomato[$iPos][] = trim($sVal[0]);//paralelo
+            $aTabelaAutomato[$iPos][] = trim($sVal[0]); //paralelo
             $iki = 0; //Contador importante para as expressões compostas
             //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
             foreach ($aArrayCaracteres as $sChar) {
@@ -432,7 +441,7 @@ class ControllerExpRegulares {
                             $iEst++;
                             $sArrayEstTokenExpr[$iEst] = [$sVal[2], $aArray1[1]];
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             $bCont = false;
                         }
                     }
@@ -442,7 +451,7 @@ class ControllerExpRegulares {
                             $iEst++;
                             $sArrayEstTokenExpr[$iEst] = ["?", substr($sVal[1], 1), $sVal[2]];
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             $bCont = false;
                         }
                     }
@@ -460,7 +469,7 @@ class ControllerExpRegulares {
                                 $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
                             }
                             $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                             unset($sArrayTokenExpr2[$key]);
                             $bCont = false;
                         }
@@ -472,7 +481,7 @@ class ControllerExpRegulares {
                     if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                         if ($sVal[0] == $sVal[2]) {
                             $sTabelaAutomato .= '' . $sVal[3] . ';';
-                            $aTabelaAutomato[$iPos][] = $sVal[3];//paralelo
+                            $aTabelaAutomato[$iPos][] = $sVal[3]; //paralelo
                             $bCont = false;
                         } else {
                             $aArray1 = str_split($sVal[1]);
@@ -485,11 +494,11 @@ class ControllerExpRegulares {
                                     $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
                                 }
                                 $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                 $bCont = false;
                             } else {
                                 $sTabelaAutomato .= '' . $sVal[3] . ';';
-                                $aTabelaAutomato[$iPos][] = $sVal[3];//paralelo
+                                $aTabelaAutomato[$iPos][] = $sVal[3]; //paralelo
                                 $bCont = false;
                             }
                         }
@@ -512,7 +521,7 @@ class ControllerExpRegulares {
                                         $iki++;
                                     }
                                     $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst;//paralelo
+                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                     $sArrayEstTokenExpr[$iEst] = [$key, $aArrayComp];
                                     $bCont = false;
                                 }
@@ -523,11 +532,14 @@ class ControllerExpRegulares {
                 //Coloca -1 em todas as posições que não possuem transição na tabela
                 if ($bCont) {
                     $sTabelaAutomato .= '-1;';
-                    $aTabelaAutomato[$iPos][] = '-1';//paralelo
+                    $aTabelaAutomato[$iPos][] = -1; //paralelo
                 }
             }
             $sTabelaAutomato .= " \n ";
             $iPos++;
+            if (count($sArrayEstTokenExpr) >= $iPos) {
+                $aTabelaAutomato[$iPos][] = $iPos; //paralelo
+            }
         }
         //Parte que salva a tabela de análise léxica
         $arquivo = "data\\tabelaAnaliseLexica.csv";
@@ -558,6 +570,8 @@ class ControllerExpRegulares {
 
         //Fecha o arquivo.
         fclose($fp2);
+
+    //    $oPersistencia->gravaTabelaLexica($aTabelaAutomato);//paralelo
 
         $sJson = '{"texto":"Sucesso!"}';
 

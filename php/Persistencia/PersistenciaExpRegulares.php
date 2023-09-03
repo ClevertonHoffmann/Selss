@@ -7,8 +7,15 @@ require_once 'PersistenciaCSV.php';
 
 class PersistenciaExpRegulares{
 
-    public function gravaTabelaLexica(){
+    /**
+     * Grava o array da tabela do automato para análise léxica
+     * @return type
+     */
+    public function gravaTabelaLexica($aArray){
         
+        $oPersistenciaCSV = new PersistenciaCSV();
+        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("tabelaAnaliseLexica.csv", $aArray);
+        return $aCSV;
         
     }
     
