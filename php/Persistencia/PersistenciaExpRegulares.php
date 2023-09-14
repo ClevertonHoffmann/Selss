@@ -24,13 +24,20 @@ class PersistenciaExpRegulares{
      * @return type
      */
     public function retornaCabecalhoTabelaLexica() {
+        $oPersistenciaCSV = new PersistenciaCSV();
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("cabecalho.csv");
+        return $aCSV;
+    }
 
+    /**
+     * Método responsável por retornar o cabeçalho da tabela do automato
+     * @return type
+     */
+    public function retornaCaracteresValidos() {
         $oPersistenciaCSV = new PersistenciaCSV();
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv");
         return $aCSV;
     }
-
-  
     /**
      * Função que retorna um array de tokens com a seguinte estrutura [estado]=token
      * @return type
