@@ -1,0 +1,28 @@
+/* Estilo base do toast */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Estilo para o toast com classe 'show-toast' */
+.toast.show-toast {
+    opacity: 1;
+}
+
+/* Estilo para o toast com classe 'erro' */
+.toast.erro {
+    background-color: #ff6347;
+}
+
+/* Estilo para o toast com classe 'sucesso' */
+.toast.sucesso {
+    background-color: #32cd32; /* Cor de fundo verde */
+}

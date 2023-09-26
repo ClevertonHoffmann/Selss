@@ -1,5 +1,1 @@
-letras:[a-zA-Z];
-else:else;
-teste:\n;
-dp:\:;
-id:{letras}{else}
+tes

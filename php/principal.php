@@ -8,6 +8,8 @@
 $sClasse = "";
 $sMetodo = "";
 
+session_start();
+
 if (isset($_REQUEST['classe'])) {
     $sClasse = $_REQUEST['classe'];
     require_once '../php/Controller/'.$sClasse.'.php';
