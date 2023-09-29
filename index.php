@@ -21,13 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
         // Diretório para criar pasta de arquivos
-        $diretorio = "data/";
+        $diretorio = "datausers//";
 
         // Crie a pasta com o nome do email
         $pasta = $diretorio . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $email);
 
-        //Salva valores iniciais na variável de sessão
-        $_SESSION['diretorio'] = $pasta;
+        //Salva valores iniciais na variável de sessão do usuário
+        $_SESSION['diretorio'] = "..//".$pasta;
         $_SESSION['email'] = $email;
 
         // Verifique se a pasta já existe

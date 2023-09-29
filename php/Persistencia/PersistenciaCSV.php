@@ -8,12 +8,20 @@ class PersistenciaCSV {
 
     /**
      * Grava um array em um arquivo CSV
-     * @param string $nomeArquivo O nome do arquivo CSV a ser criado/gravado
+     * @param string $sArquivo O nome do arquivo CSV a ser criado/gravado
+     * @param type $iTipo 0 sistema 1 usuario
      * @param array $dadosArray O array de dados a serem gravados no arquivo CSV
      * @return bool Retorna true se a gravação for bem-sucedida, false em caso de erro
      */
-    public function gravaArrayEmCSV($nomeArquivo, $dadosArray) {
-        $caminhoArquivo = "data\\" . $nomeArquivo;
+    public function gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray) {
+        
+        $nomeArquivo = '';
+        if($iTipo==0) {
+            $nomeArquivo = 'data/' . $sArquivo;
+        } else {
+            $sDiretorio = $_SESSION['diretorio'];
+            $nomeArquivo = $sDiretorio.'data//' . $sArquivo;
+        }
 
         $handle = fopen($caminhoArquivo, 'w');
 
@@ -49,14 +57,22 @@ class PersistenciaCSV {
 
         return $aCSV;
     }
-    
+
     /**
      * Retorna o array do arquivo CSV
      * @param type $sArquivo
+     * @param type $iTipo 0 sistema 1 usuario
      * @return type
      */
-    public function retornaArrayCSV($sArquivo) {
-        $nomeArquivo = 'data/' . $sArquivo;
+    public function retornaArrayCSV($sArquivo, $iTipo) {
+        $nomeArquivo = '';
+        if($iTipo==0) {
+            $nomeArquivo = 'data/' . $sArquivo;
+        } else {
+            $sDiretorio = $_SESSION['diretorio'];
+            $nomeArquivo = $sDiretorio.'data//' . $sArquivo;
+        }
+
         $aCSV = array();
 
         if (($handle = fopen($nomeArquivo, 'r')) !== false) {

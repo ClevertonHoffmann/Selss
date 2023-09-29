@@ -14,7 +14,7 @@ class PersistenciaExpRegulares{
     public function gravaTabelaLexica($aArray){
         
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("tabelaAnaliseLexica.csv", $aArray);
+        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("tabelaAnaliseLexica.csv", 1, $aArray);
         return $aCSV;
         
     }
@@ -25,17 +25,17 @@ class PersistenciaExpRegulares{
      */
     public function retornaCabecalhoTabelaLexica() {
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("cabecalho.csv");
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("cabecalho.csv", 0);
         return $aCSV;
     }
 
     /**
-     * Método responsável por retornar o cabeçalho da tabela do automato
+     * Método responsável por retornar os caractéres válidos para a análise léxica
      * @return type
      */
     public function retornaCaracteresValidos() {
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv");
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv", 0);
         return $aCSV;
     }
     /**

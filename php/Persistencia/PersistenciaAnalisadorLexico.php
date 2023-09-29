@@ -10,15 +10,15 @@ class PersistenciaAnalisadorLexico {
     public function retornaPalavrasReservadas() {
 
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("palavrasReservadas.csv");
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("palavrasReservadas.csv", 1);
         return $aCSV;
     }
 
     public function retornaTabelaDeTransicao() {
 
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
-        $aCab = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv");
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+        $aCab = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv", 0);
         
         //Apenas remove a ultima posição do array que no explode traz vazio ""
         //Cria um array no formato array[estado]=>array[caracter] = estado de transição  
@@ -45,7 +45,7 @@ class PersistenciaAnalisadorLexico {
      */
     public function retornaTabelaDeTokens() {
         $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
+        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
         $aTokens = array();
         array_pop($aCSV);
         foreach ($aCSV as $aVal) {

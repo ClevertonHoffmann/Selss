@@ -21,7 +21,9 @@ class ControllerExpRegulares {
 
         $sText2 = $this->analisador($sText);
 
-        $arquivo = "data\\defReg.txt";
+        $sDiretorio = $_SESSION['diretorio'];
+        
+        $arquivo = $sDiretorio."//defReg.txt";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");
@@ -177,31 +179,38 @@ class ControllerExpRegulares {
             unset($aArray[$key]);
         }
 
-
         /*
          * Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
          */
         $aPalavrasReservadas = array();
 
-        $aTabelaAutomato = array(); //paralelo
+        /*
+         * Armazena a tabela de transição do automato usada depois na análise léxica
+         */
+        $aTabelaAutomato = array();
+        
+        //Instancia a classe de persistência
         $oPersistencia = new PersistenciaExpRegulares();
 
         // Obtem o cabeçalho do array
-        $aCabecalhoTabelaLexica = $oPersistencia->retornaCabecalhoTabelaLexica()[0]; //Paralelo
-        // Mescla o novo array com $aTabelaAutomato[-1] mantendo os valores originais
-        $aTabelaAutomato[-1] = $aCabecalhoTabelaLexica; //paralelo
+        $aCabecalhoTabelaLexica = $oPersistencia->retornaCabecalhoTabelaLexica()[0];
+        
         //Cria cabeçalho da tabela
-        $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
+        $aTabelaAutomato[-1] = $aCabecalhoTabelaLexica;
+        
+        //Inicializa a variável de controle de estado
         $iPos = 0;
+        
         //Estado 0
-        $sTabelaAutomato .= $iPos . "; ?;";
-        $aTabelaAutomato[$iPos][] = $iPos; //paralelo
-        $aTabelaAutomato[$iPos][] = '?'; //paralelo
+        $aTabelaAutomato[$iPos][] = $iPos;
+        $aTabelaAutomato[$iPos][] = '?';
+        
+        /////////////////////////////////////////////////////////////////////////PAREI AQUI
         /*
-         * Percorer caracteres possíveis e analisar se eles estão especificados
+         * Percore caracteres possíveis e analisar se eles estão especificados
          * criando um estado de transisão para os mesmos 
-         * ** ver como resolver quando se tem mais caminhos com o ? ex: && ++ --
          */
+        
         $sArrayEstTokenExpr = array();
         $sArrayTokenExpr1 = array(); //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
         $sArrayTokenExpr2 = array(); //Palavras reservadas quando não sozinhas

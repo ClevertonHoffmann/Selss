@@ -41,7 +41,9 @@ class ViewModal {
         }
         $sHtmlModal .= '</table>';
 
-        $arquivo = "data\\teste.txt";
+        $sDiretorio = $_SESSION['diretorio'];
+
+        $arquivo = $sDiretorio."data//modal.html";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");
