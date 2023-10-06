@@ -205,21 +205,10 @@ class ControllerExpRegulares {
         $aTabelaAutomato[$iPos][] = $iPos;
         $aTabelaAutomato[$iPos][] = '?';
         
-        /////////////////////////////////////////////////////////////////////////PAREI AQUI
-        /*
-         * Percore caracteres possíveis e analisar se eles estão especificados
-         * criando um estado de transisão para os mesmos 
-         */
+        //Busca caracteres válidos usados para analisar e criar estados de transição conforme correspondência.
+        $aArrayCaracteres = $oPersistencia->retornaCaracteresValidos()[0];
         
-        $sArrayEstTokenExpr = array();
-        $sArrayTokenExpr1 = array(); //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
-        $sArrayTokenExpr2 = array(); //Palavras reservadas quando não sozinhas
-        $iEst = 0; //Inicia contador de estado em 0
-        $iEst2 = 0; //Contador composto caso de palavras reservadas
-        $sExp = '';
-        //$sCaracteres = "\\t;\\n;\\r;' ';!;\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ";
-        $aArrayCaracteres = $oPersistencia->retornaCaracteresValidos();//explode(';', $sCaracteres);
-        //Cria um array do tipo Token=>Expressão Regular
+        //Cria um array do tipo Token=>Expressão Regular removendo espaços em branco
         foreach ($aArray as $sVal1) {
             //Função que aceita o :
             if (strpos($sVal1, '\:') !== false) {
@@ -227,9 +216,62 @@ class ControllerExpRegulares {
                 $sArrayTokenExpr1[$aArray2[0]] = ":";
             } else {
                 $aArray2 = explode(':', $sVal1);
-                $sArrayTokenExpr1[$aArray2[0]] = $aArray2[1];
+                $sArrayTokenExpr1[trim($aArray2[0])] = trim($aArray2[1]);
             }
         }
+        
+        /*
+         * Inicio da análise: Percore caracteres possíveis e analisar se eles estão especificados
+         * criando um estado de transisão para os mesmos 
+         */
+        
+        ////////////////////////////////////////VERIFICAR
+        //Variáveis utilizadas para análise
+        $sArrayEstTokenExpr = array();
+        $sArrayTokenExpr1 = array(); //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
+        $sArrayTokenExpr2 = array(); //Palavras reservadas quando não sozinhas
+        $iEst = 0; //Inicia contador de estado em 0
+        $iEst2 = 0; //Contador composto caso de palavras reservadas
+        $sExp = '';        
+        ///////////////////////////////////////FIM VERIFICAR
+        
+        /*
+         * Expressões regulares
+         * a      reconhece a
+         * ab     reconhece a seguido de b
+         * a|b    reconhece a ou b
+         * [abc]  reconhece qualquer caractere, exceto a, b, c
+         * [a-z]  reconhece a, b, c, ... ou z
+         * a*     reconhece zero ou mais a's
+         * a+     reconhece um ou mais a's
+         * a?     reconhece um ou nenhum a
+         * (a|b)* reconhece qualquer número de a's ou b's
+         * .      reconhece qualquer caractere, exceto quebra de linha
+         * \123   reconhece o caractere ASCCII 123 (decimal)
+         * 
+         * Os operadores posfixos (*, + e ?) tem a maior prioridade. Em seguida está a concatenação e por fim a união ( | ). Parênteses podem ser utilizador para agrupar símbolos.
+         * Os caracteres " \ | * + ? ( ) [ ] { } . ^ - possuem significado especial. Para utilizá-los como caracteres normais deve-se precedê-los por \, ou colocá-los entre aspas. Qualquer seqüência de caracteres entre aspas é tratada como caracteres ordinários.
+         * 
+         * 
+         * \+ reconhece + 
+         * "+*" reconhece + seguido de * 
+         * "a""b" reconhece a, seguido de ", seguido de b
+         * \" reconhece "
+         * 
+         * 
+         * Existem ainda os caracteres não imprimíveis, representados por seqüências de escape
+         * \n Line Feed
+         * \r Carriage Return
+         * \s Espaço
+         * \t Tabulação
+         * \b Backspace
+         * \e Esc
+         * \XXX O caractere ASCII XXX (XXX é um número decimal)
+         */
+        
+        
+        /////////////////////////////////////////////////////////////////////////PAREI AQUI
+        //Percorre caracter por caracter para formar o estado 0 inicial de transição
         foreach ($aArrayCaracteres as $sChar) {
             $bCont = true;
             foreach ($aArray as $sVal) {
@@ -548,34 +590,34 @@ class ControllerExpRegulares {
             }
         }
         //Parte que salva a tabela de análise léxica
-        $arquivo = "data\\tabelaAnaliseLexica.csv";
+    //    $arquivo = "data\\tabelaAnaliseLexica.csv";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp = fopen($arquivo, "w");
+    //    $fp = fopen($arquivo, "w");
 
         //Escreve no arquivo aberto.
-        fwrite($fp, $sTabelaAutomato);
+    //    fwrite($fp, $sTabelaAutomato);
 
         //Fecha o arquivo.
-        fclose($fp);
+    //    fclose($fp);
 
-        $sCsvPalavrasRes = "";
+    //    $sCsvPalavrasRes = "";
         //Parte que salva as palavras reservadas
-        foreach ($aPalavrasReservadas as $linha) {
-            $sCsvPalavrasRes .= $linha . ";" . $linha . " \n";
-        }
+    //    foreach ($aPalavrasReservadas as $linha) {
+    //        $sCsvPalavrasRes .= $linha . ";" . $linha . " \n";
+    //    }
 
         //Parte que salva a tabela de análise léxica
-        $arquivo2 = "data\\palavrasReservadas.csv";
+    //    $arquivo2 = "data\\palavrasReservadas.csv";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp2 = fopen($arquivo2, "w");
+    //    $fp2 = fopen($arquivo2, "w");
 
         //Escreve no arquivo aberto.
-        fwrite($fp2, $sCsvPalavrasRes);
+    //    fwrite($fp2, $sCsvPalavrasRes);
 
         //Fecha o arquivo.
-        fclose($fp2);
+    //    fclose($fp2);
 
         $oPersistencia->gravaTabelaLexica($aTabelaAutomato); //paralelo
 

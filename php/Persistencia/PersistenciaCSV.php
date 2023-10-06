@@ -20,10 +20,10 @@ class PersistenciaCSV {
             $nomeArquivo = 'data/' . $sArquivo;
         } else {
             $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio.'data//' . $sArquivo;
+            $nomeArquivo = $sDiretorio.'//' . $sArquivo;
         }
 
-        $handle = fopen($caminhoArquivo, 'w');
+        $handle = fopen($nomeArquivo, 'w');
 
         if ($handle !== false) {
             foreach ($dadosArray as $linha) {
@@ -32,7 +32,7 @@ class PersistenciaCSV {
             fclose($handle);
             return true; // Retorna true se a gravação for bem-sucedida
         } else {
-            echo "Não foi possível criar o arquivo $caminhoArquivo.";
+            echo "Não foi possível criar o arquivo $nomeArquivo.";
             return false; // Retorna false em caso de erro ao criar o arquivo
         }
     }
@@ -70,7 +70,7 @@ class PersistenciaCSV {
             $nomeArquivo = 'data/' . $sArquivo;
         } else {
             $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio.'data//' . $sArquivo;
+            $nomeArquivo = $sDiretorio.'//' . $sArquivo;
         }
 
         $aCSV = array();

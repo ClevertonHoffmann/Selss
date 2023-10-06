@@ -1,0 +1,16 @@
+Importantes:
+https://github.com/ClevertonHoffmann/Selss
+
+
+
+Todos:
+Imagem de <a href="https://br.freepik.com/vetores-gratis/ilustracao-desenhada-a-mao-para-desenvolvedores-da-web_12302679.htm#query=algoritmos&position=2&from_view=search&track=sph">Freepik</a>
+https://www.devmedia.com.br/php-declaracao-e-atribuicao-de-arrays-em-php/38621
+https://sol.sbc.org.br/index.php/wei/article/view/6628/6524
+https://www.devmedia.com.br/php-declaracao-e-atribuicao-de-arrays-em-php/38621
+https://www.delftstack.com/pt/howto/php/onclick-php/#:~:text=No%20HTML%2C%20escreva%20uma%20tag,como%20a%20fun%C3%A7%C3%A3o%20test()%20.
+https://pt.semrush.com/blog/parametros-url/
+https://www.freecodecamp.org/portuguese/news/aqui-estao-as-formas-mais-populares-de-fazer-uma-solicitacao-http-em-javascript/
+https://www.youtube.com/watch?v=gFFrwxF0pgE
+https://www.youtube.com/watch?v=HVJJGgN7V0I
+

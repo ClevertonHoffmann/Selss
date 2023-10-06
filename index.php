@@ -7,7 +7,7 @@
  */
 //Pega valor do request POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+    
     //Inicializa a variável de sessão
     session_start();
 
@@ -16,6 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Variável para mostrar a tela principal caso seja válido o email
     $bEmailValido = false;
+    
+    //Pasta que inicializa em branco caso exista traz o conteúdo dos arquivos
+    $pasta = '';
 
     // Verifica se o email é válido
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -45,6 +48,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Apresenta a tela inicial do sistema
     if ($bEmailValido) {
+        
+        $texto = '';
+        
+        $arquivo = $pasta.'//defReg.txt';
+
+        // Verifica se o arquivo existe
+        if (file_exists($arquivo)) {
+            // Lê o conteúdo do arquivo e armazena em uma variável
+            $texto = file_get_contents($arquivo);
+        }
+        
+        
         echo '<!DOCTYPE html>
                 <html lang="pt">    
                     <head>
@@ -90,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     style="border:1px solid black; font-size:calc(1vw);">DEFINIÇÕES REGULARES/TOKENS</h6>
                                             </div>
                                             <div class="div text-justify">
-                                                <textarea id="defReg" name="defReg" style="width: calc(26vw); height: calc(55vh);" placeholder=\'Escreva as definições regulares, tokens\'></textarea>
+                                                <textarea id="defReg" name="defReg" style="width: calc(26vw); height: calc(55vh);" placeholder=\'Escreva as definições regulares, tokens\'>'.$texto.'</textarea>
                                             </div>
                                         </div>
                                     </form>
