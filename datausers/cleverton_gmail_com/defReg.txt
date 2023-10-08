@@ -1,2 +1,2 @@
-else:else;
-letras:[a-z];
+else: else;
+letras: [a-z];
