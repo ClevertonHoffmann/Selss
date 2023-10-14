@@ -25,9 +25,9 @@ class PersistenciaAnalisadorLexico {
         $aTabTrans = array();
         $aAux = array();
         $iK=0;
-        array_pop($aCSV);
+       // array_pop($aCSV);
         foreach ($aCSV as $aVal) {
-            array_pop($aVal);
+       //     array_pop($aVal);
             if($iK!=0){
                 for ($c=0; $c<count($aCab[0]); $c++){
                     $aAux[$aCab[0][$c]] = $aVal[$c+2];
@@ -47,7 +47,7 @@ class PersistenciaAnalisadorLexico {
         $oPersistenciaCSV = new PersistenciaCSV();
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
         $aTokens = array();
-        array_pop($aCSV);
+        //array_pop($aCSV);
         foreach ($aCSV as $aVal) {
             if ($aCSV[0] != $aVal) {
                 $aTokens[trim($aVal[0])] = trim($aVal[1]);

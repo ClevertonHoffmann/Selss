@@ -38,6 +38,22 @@ class PersistenciaExpRegulares{
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv", 0);
         return $aCSV;
     }
+    
+    /**
+     * Grava o array das palavras reservadas
+     * @return type
+     */
+    public function gravaPalavrasReservadas($aArray){
+        
+        $oPersistenciaCSV = new PersistenciaCSV();
+        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("palavrasReservadas.csv", 1, $aArray);
+        return $aCSV;
+        
+    }
+    
+    
+    
+    
     /**
      * Função que retorna um array de tokens com a seguinte estrutura [estado]=token
      * @return type

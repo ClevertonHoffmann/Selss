@@ -265,6 +265,14 @@ class ControllerExpRegulares {
          * \b Backspace
          * \e Esc
          * \XXX O caractere ASCII XXX (XXX é um número decimal)
+         * 
+         * 
+         * falta:a|b;
+falta:*;
+falta:operadores"+";
+         * 
+         * 
+         * 
          */
         
         //Percorre caracter por caracter para formar o estado 0 inicial de transição
@@ -477,7 +485,7 @@ class ControllerExpRegulares {
         $aPalavrasReservadas = $sArrayTokenExpr2;
         $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
         while (count($sArrayEstTokenExpr) >= $iPos) {
-            $sVal = $sArrayEstTokenExpr[$iPos];
+            $sVal = $sArrayEstTokenExpr[$iPos];//Token, expressão
             $aTabelaAutomato[$iPos][] = trim($sVal[0]); //Seta o estado de cada expressão
             $iki = 0; //Contador importante para as expressões compostas
             //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
@@ -512,7 +520,7 @@ class ControllerExpRegulares {
                             $iEst++;
                             //Mais que dois caracteres
                             if (strlen(substr($sExprr, 1)) > 2) {
-                                $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sExprr, 1), $key, $iPos, $sVal[1]];
+                                $sArrayEstTokenExpr[$iEst] = ['?', substr($sExprr, 1), $key, $iPos, $sVal[1]];//$sVal[0]
                             } else {
                                 $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
                             }
@@ -523,8 +531,9 @@ class ControllerExpRegulares {
                     }
                 }
                 //Tendo 3 é palavra reservada e precisa colocar o estado de transição composta por ex:id
+                //E tem que ser diferente do estado de transição
                 //Ou indicar mais um estado dependendo dos caracteres
-                if (isset($sVal[3])) {
+                if (isset($sVal[3]) && $sVal[0] != "?") {
                     if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                         if ($sVal[0] == $sVal[2]) {
                         //    $aTabelaAutomato[$iPos][] = $sVal[3]; 
@@ -535,7 +544,7 @@ class ControllerExpRegulares {
                                 $iEst++;
                                 //Mais que dois caracteres
                                 if (strlen(substr($sVal[1], 1)) > 1) {
-                                    $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]];
+                                    $sArrayEstTokenExpr[$iEst] = ['?', substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]];//$sVal[0]
                                 } else {
                                     $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
                                 }
@@ -582,37 +591,19 @@ class ControllerExpRegulares {
                 $aTabelaAutomato[$iPos][] = $iPos;
             }
         }
-        //Parte que salva a tabela de análise léxica
-    //    $arquivo = "data\\tabelaAnaliseLexica.csv";
-
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-    //    $fp = fopen($arquivo, "w");
-
-        //Escreve no arquivo aberto.
-    //    fwrite($fp, $sTabelaAutomato);
-
-        //Fecha o arquivo.
-    //    fclose($fp);
-
-    //    $sCsvPalavrasRes = "";
+        
         //Parte que salva as palavras reservadas
-    //    foreach ($aPalavrasReservadas as $linha) {
-    //        $sCsvPalavrasRes .= $linha . ";" . $linha . " \n";
-    //    }
+        
+        $aCsvPalavrasRes = array();
+        //Parte que salva as palavras reservadas
+        foreach ($aPalavrasReservadas as $linha) {
+            $aCsvPalavrasRes[] = [$linha, $linha];
+        }
 
-        //Parte que salva a tabela de análise léxica
-    //    $arquivo2 = "data\\palavrasReservadas.csv";
+        $oPersistencia->gravaPalavrasReservadas($aCsvPalavrasRes);
 
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-    //    $fp2 = fopen($arquivo2, "w");
-
-        //Escreve no arquivo aberto.
-    //    fwrite($fp2, $sCsvPalavrasRes);
-
-        //Fecha o arquivo.
-    //    fclose($fp2);
-
-        $oPersistencia->gravaTabelaLexica($aTabelaAutomato); //paralelo
+        //Parte que grava a tabela do automato para análise léxica
+        $oPersistencia->gravaTabelaLexica($aTabelaAutomato); 
 
         $sJson = '{"texto":"Sucesso!"}';
 
