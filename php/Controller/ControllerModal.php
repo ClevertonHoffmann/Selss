@@ -8,10 +8,19 @@ require_once '../php/View/ViewModal.php';
         
 class ControllerModal {
     
-    public function mostraModalTabelaLexica($sDados){
+    public function mostraModalTabelaLexica(){
         
         $oPersistenciaCSV = new PersistenciaCSV();
         $aTabela = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1); 
+        $oViewModal = new ViewModal();
+        $sModal = $oViewModal->geraModalTabelaLexica($aTabela);
+
+        return json_encode($sModal);
+    }
+    
+    public function mostraModalResultadoAnaliseLexica(){
+        $oPersistenciaCSV = new PersistenciaCSV();
+        $aTabela = $oPersistenciaCSV->retornaArrayCSV("resultadoAnaliseLexica.csv", 1); 
         $oViewModal = new ViewModal();
         $sModal = $oViewModal->geraModalTabelaLexica($aTabela);
 

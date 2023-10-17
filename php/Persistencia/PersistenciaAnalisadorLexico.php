@@ -5,14 +5,15 @@
  */
 require_once 'PersistenciaCSV.php';
 
-class PersistenciaAnalisadorLexico {
+class PersistenciaAnalisadorLexico{//extends PersistenciaCSV
 
     public function retornaPalavrasReservadas() {
 
         $oPersistenciaCSV = new PersistenciaCSV();
         $aCSV = $oPersistenciaCSV->retornaArrayCSV("palavrasReservadas.csv", 1);
         return $aCSV;
-    }
+    }//Duvida quando extendo de uma classe pai não preciso fazer o new só chamar o this?
+    //Por que automáticamente já vai estar instanciada?
 
     public function retornaTabelaDeTransicao() {
 
@@ -54,6 +55,18 @@ class PersistenciaAnalisadorLexico {
             }
         }
         return $aTokens;
+    }
+    
+    /**
+     * Grava o array de saída do resultado da análise léxica
+     * @return type
+     */
+    public function gravaResultadoAnaliseLexica($aArray){
+        
+        $oPersistenciaCSV = new PersistenciaCSV();
+        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("resultadoAnaliseLexica.csv", 1, $aArray);
+        return $aCSV;
+        
     }
 
 }

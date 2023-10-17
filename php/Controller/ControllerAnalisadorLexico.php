@@ -19,6 +19,11 @@ class ControllerAnalisadorLexico {
     public string $sBuild;
     public array $aListadeTokensLex;
 
+    /**
+     * Funcão que inicializa as variáveis utilizadas na análise léxica
+     * @param type $sTexto
+     * @return string
+     */
     private function InicializaAnalisadorLexico($sTexto) {
 
         $this->oPersistencia = new PersistenciaAnalisadorLexico();
@@ -78,12 +83,16 @@ class ControllerAnalisadorLexico {
                 return json_encode($sJson);
             }
         }
+        $aListaTokenLexPer = array();
+        $aListaTokenLexPer[0] = ['Token', 'Lex', 'Pos'];
         $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex) {
             $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
+            $aListaTokenLexPer[] = [$aLex[0],$aLex[1],$aLex[2]];
         }
+        $this->oPersistencia->gravaResultadoAnaliseLexica($aListaTokenLexPer);
         $sTextoRetorno .= '"' . $sTeste . '"}';
         return json_encode($sTextoRetorno);
     }
