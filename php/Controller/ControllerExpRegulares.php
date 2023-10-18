@@ -4,7 +4,7 @@
  * Classe que analisa as expressões regulares definidas pelo usuário
  * e realiza a criação da tabela de transição (automato) para a análise léxica
  */
-require_once '../php/Persistencia/PersistenciaExpRegulares.php';
+//require_once '../php/Persistencia/PersistenciaExpRegulares.php';
 
 class ControllerExpRegulares {
 

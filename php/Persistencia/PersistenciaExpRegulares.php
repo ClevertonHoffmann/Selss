@@ -3,7 +3,7 @@
 /**
  * Classe responsável por realizar a persistencia dos dados da análise léxica
  */
-require_once 'PersistenciaCSV.php';
+//require_once 'PersistenciaCSV.php';
 
 class PersistenciaExpRegulares{
 

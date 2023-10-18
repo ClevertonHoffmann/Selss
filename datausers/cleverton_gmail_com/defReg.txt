@@ -1,7 +1,5 @@
 if:if;
 else:else;
-ap:\(;
-fp:\);
 letras:[a-zA-Z];
-num:[0-9];
+num:[0-9]; 
 id:{letras}{num};

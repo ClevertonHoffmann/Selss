@@ -7,8 +7,9 @@
             <file>file:/C:/xampp/htdocs/Selss/php/principal.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerAnalisadorLexico.php</file>
             <file>file:/C:/xampp/htdocs/Selss/index.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/login.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/View/ViewModal.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/Persistencia/PersistenciaAnalisadorLexico.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Persistencia/PersistenciaCSV.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerModal.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerExpRegulares.php</file>
         </group>

@@ -3,7 +3,7 @@
 /*
  * Classe responsável pela analise léxica e retorno dos dados de análise léxica do código digitado pelo usuário
  */
-require_once '../php/Persistencia/PersistenciaAnalisadorLexico.php';
+//require_once '../php/Persistencia/PersistenciaAnalisadorLexico.php';
 
 class ControllerAnalisadorLexico {
 
@@ -24,7 +24,7 @@ class ControllerAnalisadorLexico {
      * @param type $sTexto
      * @return string
      */
-    private function InicializaAnalisadorLexico($sTexto) {
+    public function InicializaAnalisadorLexico($sTexto) {
 
         $this->oPersistencia = new PersistenciaAnalisadorLexico();
         $this->aPalavrasReservadas = $this->oPersistencia->retornaPalavrasReservadas();
@@ -93,6 +93,7 @@ class ControllerAnalisadorLexico {
             $aListaTokenLexPer[] = [$aLex[0],$aLex[1],$aLex[2]];
         }
         $this->oPersistencia->gravaResultadoAnaliseLexica($aListaTokenLexPer);
+        
         $sTextoRetorno .= '"' . $sTeste . '"}';
         return json_encode($sTextoRetorno);
     }

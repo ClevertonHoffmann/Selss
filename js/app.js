@@ -86,21 +86,4 @@ function analiseLexica(){
     $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerAnalisadorLexico&metodo=analiseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaAnalise").val(JSON.parse(result).texto);
     });
-    openModalResLex(dataToSend);
-}
-
-/*
- * Responsável por chamar a classe para abrir a tela modal e apresentar os resultados da tabela de análise léxica
- */
-function openModalResLex(dataToSend) {
-    var div = document.getElementById('csvData');
-    div.innerHTML = '';
-    document.getElementById("myModal").style.display = "block";
-    setTimeout(function () {
-        $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerModal&metodo=mostraModalResultadoAnaliseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-            var div = document.getElementById('csvData');
-            // Altera o conteúdo da div
-            div.innerHTML = result;
-        });
-    }, 5000);
 }

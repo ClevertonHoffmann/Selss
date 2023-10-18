@@ -1,2 +1,6 @@
 Token;Lex;Pos
-else;else;0
+letras;t;0
+letras;e;1
+letras;s;2
+letras;t;3
+letras;e;4
