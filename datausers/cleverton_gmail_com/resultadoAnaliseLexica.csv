@@ -1,6 +1,7 @@
 Token;Lex;Pos
-letras;t;0
-letras;e;1
-letras;s;2
-letras;t;3
-letras;e;4
+if;if;0
+ap;(;1
+letras;a;2
+maior;>;3
+0;0;4
+fp;);5

@@ -3,8 +3,6 @@
 /*
  * Classe responsável pela manipulação das modais e sua reenderização
  */
-//require_once '../php/Persistencia/PersistenciaCSV.php';
-//require_once '../php/View/ViewModal.php';
         
 class ControllerModal {
     

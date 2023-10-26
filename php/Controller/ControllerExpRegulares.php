@@ -4,9 +4,14 @@
  * Classe que analisa as expressões regulares definidas pelo usuário
  * e realiza a criação da tabela de transição (automato) para a análise léxica
  */
+
 //require_once '../php/Persistencia/PersistenciaExpRegulares.php';
 
-class ControllerExpRegulares {
+class ControllerExpRegulares extends Controller {
+
+    public function __construct() {
+        $this->carregaClasses('ExpRegulares');
+    }
 
     /**
      * Método responsável por chamar o analisador de expressões regulares
@@ -22,8 +27,8 @@ class ControllerExpRegulares {
         $sText2 = $this->analisador($sText);
 
         $sDiretorio = $_SESSION['diretorio'];
-        
-        $arquivo = $sDiretorio."//defReg.txt";
+
+        $arquivo = $sDiretorio . "//defReg.txt";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");
@@ -171,68 +176,43 @@ class ControllerExpRegulares {
         $sTexto = $sCampos->{'texto'};
 
         //Separa a string pelo ponto e vírgula
-        $aArray = explode(';', trim($sTexto));
+        $this->oModel->aArray = explode(';', trim($sTexto));
 
         //Remove a possições em branco depois do ; mais analisar se precisa 
-        $key = array_search('', $aArray);
+        $key = array_search('', $this->oModel->aArray);
         if ($key !== false) {
-            unset($aArray[$key]);
+            unset($this->oModel->aArray[$key]);
         }
-
-        /*
-         * Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
-         */
-        $aPalavrasReservadas = array();
-
-        /*
-         * Armazena a tabela de transição do automato usada depois na análise léxica
-         */
-        $aTabelaAutomato = array();
         
-        //Instancia a classe de persistência
-        $oPersistencia = new PersistenciaExpRegulares();
-
         // Obtem o cabeçalho do array
-        $aCabecalhoTabelaLexica = $oPersistencia->retornaCabecalhoTabelaLexica()[0];
+        $aCabecalhoTabelaLexica = $this->oPersistencia->retornaCabecalhoTabelaLexica()[0];
         
         //Cria cabeçalho da tabela
-        $aTabelaAutomato[-1] = $aCabecalhoTabelaLexica;
-        
+        $this->Model->aTabelaAutomato[-1] = $aCabecalhoTabelaLexica;
+
         //Inicializa a variável de controle de estado
         $iPos = 0;
-        
+
         //Estado 0
-        $aTabelaAutomato[$iPos][] = $iPos;
-        $aTabelaAutomato[$iPos][] = '?';
-        
+        $this->Model->aTabelaAutomato[$iPos][] = $iPos;
+        $this->Model->aTabelaAutomato[$iPos][] = '?';
+
         //Busca caracteres válidos usados para analisar e criar estados de transição conforme correspondência.
-        $aArrayCaracteres = $oPersistencia->retornaCaracteresValidos()[0];
-               
+        $this->Model->aArrayCaracteres = $this->oPersistencia->retornaCaracteresValidos()[0];
+        
         /*
          * Inicio da análise: Percore caracteres possíveis e analisar se eles estão especificados
          * criando um estado de transisão para os mesmos 
          */
-        
+
         //Variáveis utilizadas para análise
-        $sArrayEstTokenExpr = array(); //Usado para armazenar informações dos estados de transição posteriores ao 0
-        $sArrayTokenExpr1 = array(); //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
         $sArrayTokenExpr2 = array(); //Palavras reservadas quando não sozinhas
         $iEst = 0; //Inicia contador de estado em 0
         $iEst2 = 0; //Contador composto caso de palavras reservadas
-        $sExp = ''; //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
-
-        //Cria um array do tipo Token=>Expressão Regular removendo espaços em branco
-        foreach ($aArray as $sVal1) {
-            //Função que aceita o :
-            if (strpos($sVal1, '\:') !== false) {
-                $aArray2 = explode(':', $sVal1);
-                $sArrayTokenExpr1[$aArray2[0]] = ":";
-            } else {
-                $aArray2 = explode(':', $sVal1);
-                $sArrayTokenExpr1[trim($aArray2[0])] = trim($aArray2[1]);
-            }
-        }
-        
+        //Cria um array do tipo Token=>(Expressão Regular)
+        //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
+        $aArrayTokenExpr = $this->retornaArrayTokenExp();
+      
         /*
          * Expressões regulares
          * a      reconhece a
@@ -268,31 +248,239 @@ class ControllerExpRegulares {
          * 
          * 
          * falta:a|b;
-           falta:*;
-           falta:operadores"+";
+          falta:*;
+          falta:operadores"+";
          * 
          * \caracter reconhece o caracter por exemplo (
          * 
          */
-        
+
+        //Array responsável por receber os retornos das funções e repassar para as respectivas variáveis
+        $aArrayAuxRet = array();
+
+        //Monta o estado inicial 0
+        $aArrayAuxRet = $this->montaEstadoInicial($iPos, $iEst, $iEst2, $aArrayTokenExpr);
+
+        $iEst = $aArrayAuxRet[1];
+        $iEst2 = $aArrayAuxRet[2];
+        $aArrayTokenExpr = $aArrayAuxRet[3];
+
+        $iPos++;
+        $this->Model->aTabelaAutomato[$iPos][] = $iPos;
+        ksort($this->Model->aArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
+        //Monta o índice de tokens retornados e estados de transição de tokens compostos
+        $bCont = true;
+        //Array que armazena todos as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
+        $aArrayExprEst = array();
+        foreach ($this->Model->aArrayEstTokenExpr as $iEstado => $aVal) {
+            if ($aVal[0] != "?") {
+                $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
+            }
+        }
+        //Armazena as palavras reservadas para persistir para análise léxica.
+        $this->oModel->aPalavrasReservadas = $sArrayTokenExpr2;
+        $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
+        while (count($this->Model->aArrayEstTokenExpr) >= $iPos) {
+            $sVal = $this->Model->aArrayEstTokenExpr[$iPos]; //Token, expressão
+            $this->Model->aTabelaAutomato[$iPos][] = trim($sVal[0]); //Seta o estado de cada expressão
+            $iki = 0; //Contador importante para as expressões compostas
+            //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
+            foreach ($this->Model->aArrayCaracteres as $sChar) {
+                $bCont = true;
+                if ($sVal[0] == "?") { //Se for ? é por que é um token composto, estado de transição e não de aceitação
+                    $aArray1 = str_split($sVal[1]);
+                    //Possibilidade dupla caracteres igual
+                    if (strlen($sVal[1]) == 2) {
+                        if ($aArray1[1] == $sChar) {
+                            $iEst++;
+                            $this->Model->aArrayEstTokenExpr[$iEst] = [$sVal[2], $aArray1[1]];
+                            $this->Model->aTabelaAutomato[$iPos][] = $iEst;
+                            $bCont = false;
+                        }
+                    }
+                    //Possibilidade n caracteres iguais
+                    if (count($aArray1) > 2) {
+                        if ($aArray1[1] == $sChar) {
+                            $iEst++;
+                            $this->Model->aArrayEstTokenExpr[$iEst] = ["?", substr($sVal[1], 1), $sVal[2]];
+                            $this->Model->aTabelaAutomato[$iPos][] = $iEst;
+                            $bCont = false;
+                        }
+                    }
+                }
+                //Palavras reservadas
+                if (count($sArrayTokenExpr2) > 0) {
+                    foreach ($sArrayTokenExpr2 as $key => $sExprr) {
+                        $aArray1 = str_split($sExprr);
+                        if ((preg_match("/" . $sVal[1] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
+                            $iEst++;
+                            //Mais que dois caracteres
+                            if (strlen(substr($sExprr, 1)) > 2) {
+                                $this->Model->aArrayEstTokenExpr[$iEst] = ['?', substr($sExprr, 1), $key, $iPos, $sVal[1]]; //$sVal[0]
+                            } else {
+                                $this->Model->aArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
+                            }
+                            $this->Model->aTabelaAutomato[$iPos][] = $iEst;
+                            unset($sArrayTokenExpr2[$key]);
+                            $bCont = false;
+                        }
+                    }
+                }
+                //Tendo 3 é palavra reservada e precisa colocar o estado de transição composta por ex:id
+                //E tem que ser diferente do estado de transição
+                //Ou indicar mais um estado dependendo dos caracteres
+                if (isset($sVal[3]) && $sVal[0] != "?") {
+                    if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                        if ($sVal[0] == $sVal[2]) {
+                            //    $this->Model->aTabelaAutomato[$iPos][] = $sVal[3]; 
+                            //    $bCont = false;
+                        } else {
+                            $aArray1 = str_split($sVal[1]);
+                            if ((preg_match("/" . $sVal[4] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
+                                $iEst++;
+                                //Mais que dois caracteres
+                                if (strlen(substr($sVal[1], 1)) > 1) {
+                                    $this->Model->aArrayEstTokenExpr[$iEst] = ['?', substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]]; //$sVal[0]
+                                } else {
+                                    $this->Model->aArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
+                                }
+                                $this->Model->aTabelaAutomato[$iPos][] = $iEst;
+                                $bCont = false;
+                            } else {
+                                //$this->Model->aTabelaAutomato[$iPos][] = $sVal[3]; 
+                                //$bCont = false;
+                            }
+                        }
+                    }
+                }
+                //Tokens compostos por outros tokens
+                if (count($aArrayTokenExpr) > 0) {
+                    foreach ($aArrayTokenExpr as $key => $sExprr) {
+                        $sValorExp1 = str_replace("}{", ",", trim($sExprr));
+                        $sValorExp2 = str_replace("{", "", $sValorExp1);
+                        $sValorExp = str_replace("}", "", $sValorExp2);
+                        $aArrayComp = explode(',', $sValorExp);
+                        foreach ($aArrayComp as $sKey1 => $sLexic) {
+                            if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
+                                $sChave = trim($aArrayComp[$sKey1 + 1]);
+                                $sExp2 = $aArrayExprEst[$sChave][1];
+                                if ((preg_match("/" . $sExp2 . "/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                                    if ($iki == 0) {
+                                        $iEst++;
+                                        $iki++;
+                                    }
+                                    $this->Model->aTabelaAutomato[$iPos][] = $iEst; //paralelo
+                                    $this->Model->aArrayEstTokenExpr[$iEst] = [$key, $aArrayComp];
+                                    $bCont = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                //Coloca -1 em todas as posições que não possuem transição na tabela
+                if ($bCont) {
+                    $this->Model->aTabelaAutomato[$iPos][] = -1;
+                }
+            }
+            $iPos++;
+            if (count($this->Model->aArrayEstTokenExpr) >= $iPos) {
+                $this->Model->aTabelaAutomato[$iPos][] = $iPos;
+            }
+        }
+
+        //Parte que salva as palavras reservadas
+
+        $aCsvPalavrasRes = array();
+        //Parte que salva as palavras reservadas
+        foreach ($this->oModel->aPalavrasReservadas as $linha) {
+            $aCsvPalavrasRes[] = [$linha, $linha];
+        }
+
+        $this->oPersistencia->gravaPalavrasReservadas($aCsvPalavrasRes);
+
+        //Parte que grava a tabela do automato para análise léxica
+        $this->oPersistencia->gravaTabelaLexica($this->Model->aTabelaAutomato);
+
+        $sJson = '{"texto":"Sucesso!"}';
+
+        return json_encode($sJson);
+    }
+
+    /**
+     * Cria um array do tipo array[Token]=>(Expressão Regular) 
+     * removendo espaços em branco e escapa o caractere ":" (Dois pontos)
+     */
+    public function retornaArrayTokenExp() {
+        $aArrayTokenExpr = array();
+        foreach ($this->oModel->aArray as $sVal1) {
+            //Função que aceita o :
+            if (strpos($sVal1, '\:') !== false) {
+                $aArray2 = explode(':', $sVal1);
+                $aArrayTokenExpr[trim($aArray2[0])] = ":";
+            } else {
+                $aArray2 = explode(':', $sVal1);
+                $aArrayTokenExpr[trim($aArray2[0])] = trim($aArray2[1]);
+            }
+        }
+        return $aArrayTokenExpr;
+    }
+
+    /**
+     * Atribui os dados 
+     * @param type $sExp
+     * @param type $aArray1
+     * @param type $iEst
+     * @param type $aArrayTokenExpr
+     * @param type $iPos
+     * @param boolean $bCont
+     * @return boolean
+     */
+    public function preencheDadosInicial($sExp, $aArray1, $iEst, $aArrayTokenExpr, $iPos, $bCont) {
+        if ($sExp != $aArray1[1]) {
+            $iEst++;
+            $this->Model->aArrayEstTokenExpr[$iEst] = $aArray1;
+            //Parte que retira as expressões que possuem estado (Ficar só compostas)
+            if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                unset($aArrayTokenExpr[$aArray1[0]]);
+            }
+        }
+        $this->Model->aTabelaAutomato[$iPos][] = $iEst;
+        $bCont = false;
+        $sExp = $aArray1[1];
+
+        //Monta array de retorno
+        $aArr = array();
+        $aArr[1] = $sExp;
+        $aArr[2] = $aArray1;
+        $aArr[3] = $iEst;
+        $aArr[5] = $aArrayTokenExpr;
+        $aArr[6] = $bCont;
+        return $aArr;
+    }
+
+    /**
+     * Monta estado inicial do automato
+     * @param type $aArray
+     * @param type $iPos
+     * @param type $iEst
+     * @param type $iEst2
+     * @param type $aArrayTokenExpr
+     * @return type
+     */
+    public function montaEstadoInicial($iPos, $iEst, $iEst2, $aArrayTokenExpr) {
+
+        $sExp = ''; //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
         //Percorre caracter por caracter para formar o estado 0 inicial de transição
-        foreach ($aArrayCaracteres as $sChar) {
+        foreach ($this->Model->aArrayCaracteres as $sChar) {
+
             //Variável de controle para não entrar nos demais ifs caso caracter já analisado
             $bCont = true;
-            foreach ($aArray as $sVal) {
-                
-                $aArray1 = array();
-                
-                //Função que aceita o :
-                if (strpos($sVal, '\:') !== false) {
-                    $aArray2 = explode(':', $sVal);
-                    $aArray1[0] = $aArray2[0];
-                    $aArray1[1] = ":";
-                } else {
-                    $aArray1 = explode(':', $sVal);
-                    $aArray1[0] = trim($aArray1[0]); //Remove espaços em branco
-                    $aArray1[1] = trim($aArray1[1]); //Remove espaços em branco
-                }
+
+            foreach ($this->oModel->aArray as $sVal) {
+
+                //Cria um array do tipo array[0]=>token; array[1]=>exp; 
+                $aArray1 = $this->retornaArrayPosTokenExp($sVal);
+
                 /*
                  * Retira espaços em branco
                  * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
@@ -303,29 +491,26 @@ class ControllerExpRegulares {
                     if (!(trim($aArray1[0]) == trim($aArray1[1]))) {
                         //Tratamento de expressões em branco
                         if ($sChar == "\\t" && $sChar == $aArray1[1]) {
-                            if ($sExp != $aArray1[1]) {
-                                $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
-                                //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
-                                }
-                            }
-                            $aTabelaAutomato[$iPos][] = $iEst; 
-                            $bCont = false;
-                            $sExp = $aArray1[1];
-                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
+                            //Array responsável por receber os retornos das funções e repassar para as respectivas variáveis
+                            $aArrayAuxRet = array();
+                            //Monta o estado inicial 0
+                            $aArrayAuxRet = $this->preencheDadosInicial($sExp, $aArray1, $iEst, $aArrayTokenExpr, $iPos, $bCont);
+                            $sExp = $aArrayAuxRet[1];
+                            $aArray1 = $aArrayAuxRet[2];
+                            $iEst = $aArrayAuxRet[3];
+                            $aArrayTokenExpr = $aArrayAuxRet[5];
+                            $bCont = $aArrayAuxRet[6];
                         }
                         if ($sChar == "\\n" && $sChar == $aArray1[1]) {
                             if ($sExp != $aArray1[1]) {
                                 $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
+                                $this->Model->aArrayEstTokenExpr[$iEst] = $aArray1;
                                 //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
+                                if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                    unset($aArrayTokenExpr[$aArray1[0]]);
                                 }
                             }
-                            $aTabelaAutomato[$iPos][] = $iEst; 
+                            $this->Model->aTabelaAutomato[$iPos][] = $iEst;
                             $bCont = false;
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
@@ -333,13 +518,13 @@ class ControllerExpRegulares {
                         if ($sChar == "\\r" && $sChar == $aArray1[1]) {
                             if ($sExp != $aArray1[1]) {
                                 $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
+                                $this->Model->aArrayEstTokenExpr[$iEst] = $aArray1;
                                 //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
+                                if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                    unset($aArrayTokenExpr[$aArray1[0]]);
                                 }
                             }
-                            $aTabelaAutomato[$iPos][] = $iEst;
+                            $this->Model->aTabelaAutomato[$iPos][] = $iEst;
                             $bCont = false;
                             $sExp = $aArray1[1];
                             //echo 'aqui entra se precisa fazer alguma projeção para frente';
@@ -360,13 +545,13 @@ class ControllerExpRegulares {
                             if ($bCont && (preg_match("/" . $aArray1[1] . "/", $sChar) == 1)) {
                                 if ($sExp != $aArray1[1]) {
                                     $iEst++;
-                                    $sArrayEstTokenExpr[$iEst] = $aArray1;
+                                    $this->Model->aArrayEstTokenExpr[$iEst] = $aArray1;
                                     //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                    if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                        unset($sArrayTokenExpr1[$aArray1[0]]);
+                                    if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                        unset($aArrayTokenExpr[$aArray1[0]]);
                                     }
                                 }
-                                $aTabelaAutomato[$iPos][] = $iEst;
+                                $this->Model->aTabelaAutomato[$iPos][] = $iEst;
                                 $bCont = false;
                                 $sExp = $aArray1[1];
                             }
@@ -374,13 +559,13 @@ class ControllerExpRegulares {
                             if ($bCont && substr_count($aArray1[1], $sChar) == strlen($aArray1[1]) && strlen($aArray1[1]) > 1) {
                                 if ($sExp != $aArray1[1]) {
                                     $iEst++;
-                                    $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
+                                    $this->Model->aArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
                                     //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                    if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                        unset($sArrayTokenExpr1[$aArray1[0]]);
+                                    if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                        unset($aArrayTokenExpr[$aArray1[0]]);
                                     }
                                 }
-                                $aTabelaAutomato[$iPos][] = $iEst;
+                                $this->Model->aTabelaAutomato[$iPos][] = $iEst;
                                 $bCont = false;
                                 $sExp = $aArray1[1];
                             }
@@ -390,13 +575,13 @@ class ControllerExpRegulares {
                                 if ($aCarac[0] == $sChar) {
                                     if ($sExp != $aArray1[1]) {
                                         $iEst++;
-                                        $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
+                                        $this->Model->aArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
                                         //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                            unset($sArrayTokenExpr1[$aArray1[0]]);
+                                        if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                            unset($aArrayTokenExpr[$aArray1[0]]);
                                         }
                                     }
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
+                                    $this->Model->aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                     if ($aArray1[1] == $aArray1[0]) {
                                         $iEst--;
                                         $iEst2++;
@@ -414,11 +599,11 @@ class ControllerExpRegulares {
                      */ else {
                         $sContr = false;
                         //Percorre todas as entradas verificando se as palavras chaves 'else, if ...' não esteja em uma composição do tipo letras:[a-z]
-                        foreach ($aArray as $sVal3) {
+                        foreach ($this->oModel->aArray as $sVal3) {
                             $aArrayAux = explode(':', $sVal3);
-                            $aArrayAux[0] = trim($aArrayAux[0]);//Remove espaços em branco
-                            $aArrayAux[1] = trim($aArrayAux[1]);//Remove espaços em branco
-                            
+                            $aArrayAux[0] = trim($aArrayAux[0]); //Remove espaços em branco
+                            $aArrayAux[1] = trim($aArrayAux[1]); //Remove espaços em branco
+
                             if ((preg_match("/" . $aArrayAux[1] . "/", $aArray1[1]) == 1) && $aArrayAux[1] != $aArray1[1]) {
                                 $sContr = true;
                             }
@@ -435,592 +620,71 @@ class ControllerExpRegulares {
                                 if ($aCarac[0] == $sChar) {
                                     if ($sExp != $aArray1[1]) {
                                         $iEst++;
-                                        $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
+                                        $this->Model->aArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
                                         //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                            unset($sArrayTokenExpr1[$aArray1[0]]);
+                                        if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                                            unset($aArrayTokenExpr[$aArray1[0]]);
                                         }
                                     }
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
+                                    $this->Model->aTabelaAutomato[$iPos][] = $iEst; //paralelo
                                     $sExp = $aArray1[1];
                                     $bCont = false;
                                 }
                             }
                         }
                         //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                            unset($sArrayTokenExpr1[$aArray1[0]]);
+                        if (isset($aArrayTokenExpr[$aArray1[0]])) {
+                            unset($aArrayTokenExpr[$aArray1[0]]);
                         }
                     }
                 }
             }
             //Coloca -1 em todas as posições que não possuem transição na tabela
             if ($bCont) {
-                $aTabelaAutomato[$iPos][] = -1; //paralelo
+                $this->Model->aTabelaAutomato[$iPos][] = -1; //paralelo
             }
         }
-        $iPos++;
-        $aTabelaAutomato[$iPos][] = $iPos;
-        ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
-        //Monta o índice de tokens retornados e estados de transição de tokens compostos
-        $bCont = true;
-        //Array que armazena todos as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
-        $aArrayExprEst = array();
-        foreach ($sArrayEstTokenExpr as $iEstado => $aVal) {
-            if ($aVal[0] != "?") {
-                $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
-            }
-        }
-        //Armazena as palavras reservadas para persistir para análise léxica.
-        $aPalavrasReservadas = $sArrayTokenExpr2;
-        $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
-        while (count($sArrayEstTokenExpr) >= $iPos) {
-            $sVal = $sArrayEstTokenExpr[$iPos];//Token, expressão
-            $aTabelaAutomato[$iPos][] = trim($sVal[0]); //Seta o estado de cada expressão
-            $iki = 0; //Contador importante para as expressões compostas
-            //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
-            foreach ($aArrayCaracteres as $sChar) {
-                $bCont = true;
-                if ($sVal[0] == "?") { //Se for ? é por que é um token composto, estado de transição e não de aceitação
-                    $aArray1 = str_split($sVal[1]);
-                    //Possibilidade dupla caracteres igual
-                    if (strlen($sVal[1]) == 2) {
-                        if ($aArray1[1] == $sChar) {
-                            $iEst++;
-                            $sArrayEstTokenExpr[$iEst] = [$sVal[2], $aArray1[1]];
-                            $aTabelaAutomato[$iPos][] = $iEst;
-                            $bCont = false;
-                        }
-                    }
-                    //Possibilidade n caracteres iguais
-                    if (count($aArray1) > 2) {
-                        if ($aArray1[1] == $sChar) {
-                            $iEst++;
-                            $sArrayEstTokenExpr[$iEst] = ["?", substr($sVal[1], 1), $sVal[2]];
-                            $aTabelaAutomato[$iPos][] = $iEst; 
-                            $bCont = false;
-                        }
-                    }
-                }
-                //Palavras reservadas
-                if (count($sArrayTokenExpr2) > 0) {
-                    foreach ($sArrayTokenExpr2 as $key => $sExprr) {
-                        $aArray1 = str_split($sExprr);
-                        if ((preg_match("/" . $sVal[1] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
-                            $iEst++;
-                            //Mais que dois caracteres
-                            if (strlen(substr($sExprr, 1)) > 2) {
-                                $sArrayEstTokenExpr[$iEst] = ['?', substr($sExprr, 1), $key, $iPos, $sVal[1]];//$sVal[0]
-                            } else {
-                                $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
-                            }
-                            $aTabelaAutomato[$iPos][] = $iEst;
-                            unset($sArrayTokenExpr2[$key]);
-                            $bCont = false;
-                        }
-                    }
-                }
-                //Tendo 3 é palavra reservada e precisa colocar o estado de transição composta por ex:id
-                //E tem que ser diferente do estado de transição
-                //Ou indicar mais um estado dependendo dos caracteres
-                if (isset($sVal[3]) && $sVal[0] != "?") {
-                    if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
-                        if ($sVal[0] == $sVal[2]) {
-                        //    $aTabelaAutomato[$iPos][] = $sVal[3]; 
-                        //    $bCont = false;
-                        } else {
-                            $aArray1 = str_split($sVal[1]);
-                            if ((preg_match("/" . $sVal[4] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
-                                $iEst++;
-                                //Mais que dois caracteres
-                                if (strlen(substr($sVal[1], 1)) > 1) {
-                                    $sArrayEstTokenExpr[$iEst] = ['?', substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]];//$sVal[0]
-                                } else {
-                                    $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
-                                }
-                                $aTabelaAutomato[$iPos][] = $iEst;
-                                $bCont = false;
-                            } else {
-                                //$aTabelaAutomato[$iPos][] = $sVal[3]; 
-                                //$bCont = false;
-                            }
-                        }
-                    }
-                }
-                //Tokens compostos por outros tokens
-                if (count($sArrayTokenExpr1) > 0) {
-                    foreach ($sArrayTokenExpr1 as $key => $sExprr) {
-                        $sValorExp1 = str_replace("}{", ",", trim($sExprr));
-                        $sValorExp2 = str_replace("{", "", $sValorExp1);
-                        $sValorExp = str_replace("}", "", $sValorExp2);
-                        $aArrayComp = explode(',', $sValorExp);
-                        foreach ($aArrayComp as $sKey1 => $sLexic) {
-                            if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
-                                $sChave = trim($aArrayComp[$sKey1 + 1]);
-                                $sExp2 = $aArrayExprEst[$sChave][1];
-                                if ((preg_match("/" . $sExp2 . "/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
-                                    if ($iki == 0) {
-                                        $iEst++;
-                                        $iki++;
-                                    }
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                    $sArrayEstTokenExpr[$iEst] = [$key, $aArrayComp];
-                                    $bCont = false;
-                                }
-                            }
-                        }
-                    }
-                }
-                //Coloca -1 em todas as posições que não possuem transição na tabela
-                if ($bCont) {
-                    $aTabelaAutomato[$iPos][] = -1;
-                }
-            }
-            $iPos++;
-            if (count($sArrayEstTokenExpr) >= $iPos) {
-                $aTabelaAutomato[$iPos][] = $iPos;
-            }
-        }
-        
-        //Parte que salva as palavras reservadas
-        
-        $aCsvPalavrasRes = array();
-        //Parte que salva as palavras reservadas
-        foreach ($aPalavrasReservadas as $linha) {
-            $aCsvPalavrasRes[] = [$linha, $linha];
-        }
 
-        $oPersistencia->gravaPalavrasReservadas($aCsvPalavrasRes);
-
-        //Parte que grava a tabela do automato para análise léxica
-        $oPersistencia->gravaTabelaLexica($aTabelaAutomato); 
-
-        $sJson = '{"texto":"Sucesso!"}';
-
-        return json_encode($sJson);
+        //Monta array de retorno
+        $aArr = array();
+        $aArr[1] = $iEst;
+        $aArr[2] = $iEst2;
+        $aArr[3] = $aArrayTokenExpr;
+        return $aArr;
     }
 
     /**
-     * Método responsável por gerar a tabela do automato finito para análise léxica
+     * Cria um array do tipo array[0]=>token; array[1]=>exp; 
+     * removendo espaços em branco e escapa o caractere ":" (Dois pontos)
+     * @param type $aArray1
+     * @return type
+     */
+    public function retornaArrayPosTokenExp($sVal) {
+        $aArray1 = array();
+        //Função que aceita o :
+        if (strpos($sVal, '\:') !== false) {
+            $aArray2 = explode(':', $sVal);
+            $aArray1[0] = trim($aArray2[0]);
+            $aArray1[1] = ":";
+        } else {
+            $aArray1 = explode(':', $sVal);
+            $aArray1[0] = trim($aArray1[0]);
+            $aArray1[1] = trim($aArray1[1]);
+        }
+        return $aArray1;
+    }
+
+    /**
+     * Método que mostra modal da tabela do automato para a léxica
      * @param type $sDados
      * @return type
      */
-    public function geradorTabelaAutomatoFinitobkp($sDados) {
+    public function mostraModalTabelaLexica($sDados) {
 
-        /*
-         * Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
-         */
-        $aPalavrasReservadas = array();
+        $aTabela = $this->oPersistencia->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+        $sModal = $this->oView->geraModalTabelaLexica($aTabela);
 
-        /*
-         * São caracteres especiais : e ; pois são usados no controle inicial de separação dos tokens
-         */
-
-        $sCampos = json_decode($sDados);
-        $sTexto = $sCampos->{'texto'};
-
-        $aArray = explode(';', trim($sTexto));
-        //Remove a possição em branco depois do ; mais analisar se precisa 
-        $key = array_search('', $aArray);
-        if ($key !== false) {
-            unset($aArray[$key]);
-        }
-
-        $aTabelaAutomato = array(); //paralelo
-        $oPersistencia = new PersistenciaExpRegulares();
-        $aTabelaAutomato[-1][0] = 'Estado'; //paralelo
-        $aTabelaAutomato[-1][1] = 'Token Retornado'; //paralelo
-        // Obtem o cabeçalho do array
-        $cabecalhoTabelaLexica = $oPersistencia->retornaCabecalhoTabelaLexica()[0];
-
-        // Crie um novo array associativo com as chaves do cabeçalho
-        $novoArray = array_combine(array_values($cabecalhoTabelaLexica), array_values($cabecalhoTabelaLexica));
-
-        // Mescla o novo array com $aTabelaAutomato[-1] mantendo os valores originais
-        $aTabelaAutomato[-1] = array_merge($aTabelaAutomato[-1], $novoArray); //paralelo
-        //Cria cabeçalho da tabela
-        $sTabelaAutomato = "Estado;Token Retornado;\\t;\\n;\\r;' ';!;\\\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ; \n";
-        $iPos = 0;
-        //Estado 0
-        $sTabelaAutomato .= $iPos . "; ?;";
-        $aTabelaAutomato[$iPos][] = $iPos; //paralelo
-        $aTabelaAutomato[$iPos][] = '?'; //paralelo
-        /*
-         * Percorer caracteres possíveis e analisar se eles estão especificados
-         * criando um estado de transisão para os mesmos 
-         * ** ver como resolver quando se tem mais caminhos com o ? ex: && ++ --
-         */
-        $sArrayEstTokenExpr = array();
-        $sArrayTokenExpr1 = array(); //(Fica somente palavras compostas)Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão 
-        $sArrayTokenExpr2 = array(); //Palavras reservadas quando não sozinhas
-        $iEst = 0; //Inicia contador de estado em 0
-        $iEst2 = 0; //Contador composto caso de palavras reservadas
-        $sExp = '';
-        $sCaracteres = "\\t;\\n;\\r;' ';!;\";#;$;%;&;';(;);*;+;,;-;.;/;0;1;2;3;4;5;6;7;8;9;:;<;=;>;?;@;A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;[;\;];^;_;`;a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t;u;v;w;x;y;z;{;|;};~;¡;¢;£;¤;¥;¦;§;¨;©;ª;«;¬;®;¯;°;±;²;³;´;µ;¶;·;¸;¹;º;»;¼;½;¾;¿;À;Á;Â;Ã;Ä;Å;Æ;Ç;È;É;Ê;Ë;Ì;Í;Î;Ï;Ð;Ñ;Ò;Ó;Ô;Õ;Ö;×;Ø;Ù;Ú;Û;Ü;Ý;Þ;ß;à;á;â;ã;ä;å;æ;ç;è;é;ê;ë;ì;í;î;ï;ð;ñ;ò;ó;ô;õ;ö;÷;ø;ù;ú;û;ü;ý;þ;ÿ";
-        $aArrayCaracteres = explode(';', $sCaracteres);
-        //Cria um array do tipo Token=>Expressão Regular
-        foreach ($aArray as $sVal1) {
-            //Função que aceita o :
-            if (strpos($sVal1, '\:') !== false) {
-                $aArray2 = explode(':', $sVal1);
-                $sArrayTokenExpr1[$aArray2[0]] = ":";
-            } else {
-                $aArray2 = explode(':', $sVal1);
-                $sArrayTokenExpr1[$aArray2[0]] = $aArray2[1];
-            }
-        }
-        foreach ($aArrayCaracteres as $sChar) {
-            $bCont = true;
-            foreach ($aArray as $sVal) {
-                //Função que aceita o :
-                if (strpos($sVal, '\:') !== false) {
-                    $aArray2 = explode(':', $sVal);
-                    $aArray1[0] = $aArray2[0];
-                    $aArray1[1] = ":";
-                } else {
-                    $aArray1 = explode(':', $sVal);
-                }
-                /*
-                 * Retira espaços em branco
-                 * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
-                 * E verifica se for igual a 1 inicia a criação da árvore
-                 */
-                if (trim($aArray1[1]) != "") {
-                    //Todas as expressões exceto palavras token:token
-                    if (!(trim($aArray1[0]) == trim($aArray1[1]))) {
-                        //Tratamento de expressões em branco
-                        if ($sChar == "\\t" && $sChar == $aArray1[1]) {
-                            if ($sExp != $aArray1[1]) {
-                                $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
-                                //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
-                                }
-                            }
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            $bCont = false;
-                            $sExp = $aArray1[1];
-                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
-                        }
-                        if ($sChar == "\\n" && $sChar == $aArray1[1]) {
-                            if ($sExp != $aArray1[1]) {
-                                $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
-                                //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
-                                }
-                            }
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            $bCont = false;
-                            $sExp = $aArray1[1];
-                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
-                        }
-                        if ($sChar == "\\r" && $sChar == $aArray1[1]) {
-                            if ($sExp != $aArray1[1]) {
-                                $iEst++;
-                                $sArrayEstTokenExpr[$iEst] = $aArray1;
-                                //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                    unset($sArrayTokenExpr1[$aArray1[0]]);
-                                }
-                            }
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            $bCont = false;
-                            $sExp = $aArray1[1];
-                            //echo 'aqui entra se precisa fazer alguma projeção para frente';
-                        }
-                        //Escapa simbolo quando contém aspas duplas
-                        $sEscapaCol = false;
-                        if (strpos($aArray1[1], '"') !== false) {
-                            $sEscapaCol = true;
-                        }
-                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $sEscapaCol) {
-
-                            //Substitui textos encontrados com " por exemplo "{" por {
-                            if (strpos($aArray1[1], '"') !== false) {
-                                $aArray1[1] = str_replace('"', '', $aArray1[1]); /////////VERIFICAR
-                            }
-
-                            //Opção que analisa se a expressão regular é reconhecida pelo preg_match
-                            if ($bCont && (preg_match("/" . $aArray1[1] . "/", $sChar) == 1)) {
-                                if ($sExp != $aArray1[1]) {
-                                    $iEst++;
-                                    $sArrayEstTokenExpr[$iEst] = $aArray1;
-                                    //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                    if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                        unset($sArrayTokenExpr1[$aArray1[0]]);
-                                    }
-                                }
-                                $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                $bCont = false;
-                                $sExp = $aArray1[1];
-                            }
-                            //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
-                            if ($bCont && substr_count($aArray1[1], $sChar) == strlen($aArray1[1]) && strlen($aArray1[1]) > 1) {
-                                if ($sExp != $aArray1[1]) {
-                                    $iEst++;
-                                    $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
-                                    //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                    if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                        unset($sArrayTokenExpr1[$aArray1[0]]);
-                                    }
-                                }
-                                $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                $bCont = false;
-                                $sExp = $aArray1[1];
-                            }
-                            //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
-                            if ($bCont && (preg_match("/[" . $aArray1[1] . "]/", $sChar) == 1) && strlen($aArray1[1]) > 1) {
-                                $aCarac = str_split($aArray1[1]);
-                                if ($aCarac[0] == $sChar) {
-                                    if ($sExp != $aArray1[1]) {
-                                        $iEst++;
-                                        $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
-                                        //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                            unset($sArrayTokenExpr1[$aArray1[0]]);
-                                        }
-                                    }
-                                    $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                    if ($aArray1[1] == $aArray1[0]) {
-                                        $iEst--;
-                                        $iEst2++;
-                                    }
-                                    $sExp = $aArray1[1];
-                                    $bCont = false;
-                                }
-                            }
-                        }
-                    }
-                    /**
-                     * Opção que armazena as palavras reservadas em um array extra caso tenha composições antes ou depois [a-z]
-                     * se não for composto realiza as transições das palavras chaves
-                     * ex: else, if, while 
-                     */ else {
-                        $sContr = false;
-                        //Percorre todas as entradas verificando se as palavras chaves else não esteja em uma composição
-                        //Do tipo letras:[a-z]
-                        foreach ($aArray as $sVal3) {
-                            $aArrayAux = explode(':', $sVal3);
-                            if ((preg_match("/" . $aArrayAux[1] . "/", $aArray1[1]) == 1) && $aArrayAux[1] != $aArray1[1]) {
-                                $sContr = true;
-                            }
-                        }
-                        //Só entra caso as palavras chaves sejam compostas em uma expressão
-                        if ($sContr) {
-                            $sArrayTokenExpr2[$aArray1[0]] = $aArray1[1];
-                        }
-                        //Coloca no estado 0  as transições quando 
-                        //as palavras chaves forem apenas composições simples sem ser composta em [a-z]
-                        if (!$sContr) {
-                            if ($bCont && (preg_match("/[" . $aArray1[1] . "]/", $sChar) == 1) && strlen($aArray1[1]) > 1) {
-                                $aCarac = str_split($aArray1[1]);
-                                if ($aCarac[0] == $sChar) {
-                                    if ($sExp != $aArray1[1]) {
-                                        $iEst++;
-                                        $sArrayEstTokenExpr[$iEst] = ["?", $aArray1[1], $aArray1[0]]; //Adiciona o token
-                                        //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                                            unset($sArrayTokenExpr1[$aArray1[0]]);
-                                        }
-                                    }
-                                    $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                    $sExp = $aArray1[1];
-                                    $bCont = false;
-                                }
-                            }
-                        }
-                        //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                        if (isset($sArrayTokenExpr1[$aArray1[0]])) {
-                            unset($sArrayTokenExpr1[$aArray1[0]]);
-                        }
-                    }
-                }
-            }
-            //Coloca -1 em todas as posições que não possuem transição na tabela
-            if ($bCont) {
-                $sTabelaAutomato .= '-1;';
-                $aTabelaAutomato[$iPos][] = -1; //paralelo
-            }
-        }
-
-        $sTabelaAutomato .= " \n ";
-        $iPos++;
-        $aTabelaAutomato[$iPos][] = $iPos; //paralelo
-        ksort($sArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
-        //Monta o índice de tokens retornados e estados de transição de tokens compostos
-        $bCont = true;
-        //Array que armazena todos as expressões simples pelo token que são diferentes dos estados de transição e seu
-        //respectivo estado
-        $aArrayExprEst = array();
-        foreach ($sArrayEstTokenExpr as $iEstado => $aVal) {
-            if ($aVal[0] != "?") {
-                $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
-            }
-        }
-        //Armazena as palavras reservadas para persistir para análise léxica.
-        $aPalavrasReservadas = $sArrayTokenExpr2;
-        $iEst = $iEst + $iEst2; //Adiciona os estados que são transições das palavras reservadas
-        while (count($sArrayEstTokenExpr) >= $iPos) {
-            $sVal = $sArrayEstTokenExpr[$iPos];
-            $sTabelaAutomato .= $iPos . "; " . trim($sVal[0]) . "; "; //Seta o estado de cada expressão
-            $aTabelaAutomato[$iPos][] = trim($sVal[0]); //paralelo
-            $iki = 0; //Contador importante para as expressões compostas
-            //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
-            foreach ($aArrayCaracteres as $sChar) {
-                $bCont = true;
-                if ($sVal[0] == "?") { //Se for ? é por que é um token composto, estado de transição e não de aceitação
-                    $aArray1 = str_split($sVal[1]);
-                    //Possibilidade dupla caracteres igual
-                    if (strlen($sVal[1]) == 2) {
-                        if ($aArray1[1] == $sChar) {
-                            $iEst++;
-                            $sArrayEstTokenExpr[$iEst] = [$sVal[2], $aArray1[1]];
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            $bCont = false;
-                        }
-                    }
-                    //Possibilidade n caracteres iguais
-                    if (count($aArray1) > 2) {
-                        if ($aArray1[1] == $sChar) {
-                            $iEst++;
-                            $sArrayEstTokenExpr[$iEst] = ["?", substr($sVal[1], 1), $sVal[2]];
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            $bCont = false;
-                        }
-                    }
-                }
-                //Palavras reservadas
-                if (count($sArrayTokenExpr2) > 0) {
-                    foreach ($sArrayTokenExpr2 as $key => $sExprr) {
-                        $aArray1 = str_split($sExprr);
-                        if ((preg_match("/" . $sVal[1] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
-                            $iEst++;
-                            //Mais que dois caracteres
-                            if (strlen(substr($sExprr, 1)) > 2) {
-                                $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sExprr, 1), $key, $iPos, $sVal[1]];
-                            } else {
-                                $sArrayEstTokenExpr[$iEst] = [$key, substr($sExprr, 1), $key, $iPos, $sVal[1]];
-                            }
-                            $sTabelaAutomato .= '' . $iEst . ';';
-                            $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                            unset($sArrayTokenExpr2[$key]);
-                            $bCont = false;
-                        }
-                    }
-                }
-                //Tendo 3 é palavra reservada e precisa colocar o estado de transição composta por ex:id
-                //Ou indicar mais um estado dependendo dos caracteres
-                if (isset($sVal[3])) {
-                    if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
-                        if ($sVal[0] == $sVal[2]) {
-                            $sTabelaAutomato .= '' . $sVal[3] . ';';
-                            $aTabelaAutomato[$iPos][] = $sVal[3]; //paralelo
-                            $bCont = false;
-                        } else {
-                            $aArray1 = str_split($sVal[1]);
-                            if ((preg_match("/" . $sVal[4] . "/", $aArray1[1]) == 1) && $aArray1[1] == $sChar) {
-                                $iEst++;
-                                //Mais que dois caracteres
-                                if (strlen(substr($sVal[1], 1)) > 1) {
-                                    $sArrayEstTokenExpr[$iEst] = [$sVal[0], substr($sVal[1], 1), $sVal[2], $sVal[3], $sVal[4]];
-                                } else {
-                                    $sArrayEstTokenExpr[$iEst] = [$sVal[2], substr($sVal[2], 1), $sVal[2], $sVal[3], $sVal[4]];
-                                }
-                                $sTabelaAutomato .= '' . $iEst . ';';
-                                $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                $bCont = false;
-                            } else {
-                                $sTabelaAutomato .= '' . $sVal[3] . ';';
-                                $aTabelaAutomato[$iPos][] = $sVal[3]; //paralelo
-                                $bCont = false;
-                            }
-                        }
-                    }
-                }
-                //Tokens compostos por outros tokens
-                if (count($sArrayTokenExpr1) > 0) {
-                    foreach ($sArrayTokenExpr1 as $key => $sExprr) {
-                        $sValorExp1 = str_replace("}{", ",", trim($sExprr));
-                        $sValorExp2 = str_replace("{", "", $sValorExp1);
-                        $sValorExp = str_replace("}", "", $sValorExp2);
-                        $aArrayComp = explode(',', $sValorExp);
-                        foreach ($aArrayComp as $sKey1 => $sLexic) {
-                            if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
-                                $sChave = trim($aArrayComp[$sKey1 + 1]);
-                                $sExp2 = $aArrayExprEst[$sChave][1];
-                                if ((preg_match("/" . $sExp2 . "/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
-                                    if ($iki == 0) {
-                                        $iEst++;
-                                        $iki++;
-                                    }
-                                    $sTabelaAutomato .= '' . $iEst . ';';
-                                    $aTabelaAutomato[$iPos][] = $iEst; //paralelo
-                                    $sArrayEstTokenExpr[$iEst] = [$key, $aArrayComp];
-                                    $bCont = false;
-                                }
-                            }
-                        }
-                    }
-                }
-                //Coloca -1 em todas as posições que não possuem transição na tabela
-                if ($bCont) {
-                    $sTabelaAutomato .= '-1;';
-                    $aTabelaAutomato[$iPos][] = -1; //paralelo
-                }
-            }
-            $sTabelaAutomato .= " \n ";
-            $iPos++;
-            if (count($sArrayEstTokenExpr) >= $iPos) {
-                $aTabelaAutomato[$iPos][] = $iPos; //paralelo
-            }
-        }
-        //Parte que salva a tabela de análise léxica
-        $arquivo = "data\\tabelaAnaliseLexica.csv";
-
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp = fopen($arquivo, "w");
-
-        //Escreve no arquivo aberto.
-        fwrite($fp, $sTabelaAutomato);
-
-        //Fecha o arquivo.
-        fclose($fp);
-
-        $sCsvPalavrasRes = "";
-        //Parte que salva as palavras reservadas
-        foreach ($aPalavrasReservadas as $linha) {
-            $sCsvPalavrasRes .= $linha . ";" . $linha . " \n";
-        }
-
-        //Parte que salva a tabela de análise léxica
-        $arquivo2 = "data\\palavrasReservadas.csv";
-
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp2 = fopen($arquivo2, "w");
-
-        //Escreve no arquivo aberto.
-        fwrite($fp2, $sCsvPalavrasRes);
-
-        //Fecha o arquivo.
-        fclose($fp2);
-
-        //    $oPersistencia->gravaTabelaLexica($aTabelaAutomato);//paralelo
-
-        $sJson = '{"texto":"Sucesso!"}';
-
-        return json_encode($sJson);
+        return json_encode($sModal);
     }
 
 }

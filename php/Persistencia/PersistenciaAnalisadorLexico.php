@@ -3,23 +3,20 @@
 /**
  * Classe responsável por realizar a persistencia dos dados da análise léxica
  */
-//require_once 'PersistenciaCSV.php';
 
-class PersistenciaAnalisadorLexico{//extends PersistenciaCSV
+class PersistenciaAnalisadorLexico extends Persistencia{
 
     public function retornaPalavrasReservadas() {
 
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("palavrasReservadas.csv", 1);
+        $aCSV = $this->retornaArrayCSV("palavrasReservadas.csv", 1);
         return $aCSV;
-    }//Duvida quando extendo de uma classe pai não preciso fazer o new só chamar o this?
-    //Por que automáticamente já vai estar instanciada?
+        
+    }
 
     public function retornaTabelaDeTransicao() {
 
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
-        $aCab = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv", 0);
+        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+        $aCab = $this->retornaArrayCSV("caracteresValidos.csv", 0);
         
         //Apenas remove a ultima posição do array que no explode traz vazio ""
         //Cria um array no formato array[estado]=>array[caracter] = estado de transição  
@@ -45,8 +42,8 @@ class PersistenciaAnalisadorLexico{//extends PersistenciaCSV
      * @return type
      */
     public function retornaTabelaDeTokens() {
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+
+        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
         $aTokens = array();
         //array_pop($aCSV);
         foreach ($aCSV as $aVal) {
@@ -63,8 +60,7 @@ class PersistenciaAnalisadorLexico{//extends PersistenciaCSV
      */
     public function gravaResultadoAnaliseLexica($aArray){
         
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("resultadoAnaliseLexica.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayEmCSV("resultadoAnaliseLexica.csv", 1, $aArray);
         return $aCSV;
         
     }

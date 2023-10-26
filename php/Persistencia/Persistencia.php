@@ -4,7 +4,7 @@
  * Classe que realiza a manipulação de CSVs
  */
 
-class PersistenciaCSV {
+class Persistencia {
 
     /**
      * Grava um array em um arquivo CSV

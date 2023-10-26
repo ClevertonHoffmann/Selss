@@ -197,6 +197,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                             </div>
                         </div>
+                        <div id="myModal2" class="modal">
+                            <div class="modal-content">
+                                <div class="modal-header-wrapper">
+                                    <div class="modal-header">
+                                        <h2 class="mx-auto">Resultado da Análise Léxica</h2>
+                                        <span class="close-button" onclick="closeModal2()">&times;</span>
+                                    </div>
+                                </div>
+                                <div id="csvData2" class="modal-table">
+                                    <!-- Conteúdo da tabela aqui -->
+                                </div>
+                            </div>
+                        </div>
                     </body>
 
                 </html>

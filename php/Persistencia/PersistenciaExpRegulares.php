@@ -3,9 +3,8 @@
 /**
  * Classe responsável por realizar a persistencia dos dados da análise léxica
  */
-//require_once 'PersistenciaCSV.php';
 
-class PersistenciaExpRegulares{
+class PersistenciaExpRegulares extends Persistencia{
 
     /**
      * Grava o array da tabela do automato para análise léxica
@@ -13,8 +12,7 @@ class PersistenciaExpRegulares{
      */
     public function gravaTabelaLexica($aArray){
         
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("tabelaAnaliseLexica.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayEmCSV("tabelaAnaliseLexica.csv", 1, $aArray);
         return $aCSV;
         
     }
@@ -24,9 +22,10 @@ class PersistenciaExpRegulares{
      * @return type
      */
     public function retornaCabecalhoTabelaLexica() {
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("cabecalho.csv", 0);
+
+        $aCSV = $this->retornaArrayCSV("cabecalho.csv", 0);
         return $aCSV;
+        
     }
 
     /**
@@ -34,9 +33,10 @@ class PersistenciaExpRegulares{
      * @return type
      */
     public function retornaCaracteresValidos() {
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->retornaArrayCSV("caracteresValidos.csv", 0);
+
+        $aCSV = $this->retornaArrayCSV("caracteresValidos.csv", 0);
         return $aCSV;
+        
     }
     
     /**
@@ -45,32 +45,11 @@ class PersistenciaExpRegulares{
      */
     public function gravaPalavrasReservadas($aArray){
         
-        $oPersistenciaCSV = new PersistenciaCSV();
-        $aCSV = $oPersistenciaCSV->gravaArrayEmCSV("palavrasReservadas.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayEmCSV("palavrasReservadas.csv", 1, $aArray);
         return $aCSV;
         
     }
     
-    
-    
-    
-    /**
-     * Função que retorna um array de tokens com a seguinte estrutura [estado]=token
-     * @return type
-     */
-//    public function retornaTabelaDeTokens() {
-//        $oPersistenciaCSV = new PersistenciaCSV();
-//        $aCSV = $oPersistenciaCSV->retornaArrayCSV("tabelaAnaliseLexica.csv");
-//        $aTokens = array();
-//        array_pop($aCSV);
-//        foreach ($aCSV as $aVal) {
-//            if ($aCSV[0] != $aVal) {
-//                $aTokens[trim($aVal[0])] = trim($aVal[1]);
-//            }
-//        }
-//        return $aTokens;
-//    }
-
 }
 
 ?>

@@ -5,10 +5,13 @@
  */
 //require_once '../php/Persistencia/PersistenciaAnalisadorLexico.php';
 
-class ControllerAnalisadorLexico {
+class ControllerAnalisadorLexico extends Controller{
 
+    public function __construct() {
+        $this->carregaClasses('AnalisadorLexico');
+    }
+        
     //Variáveis e instancias iniciais carregegadas no construtor
-    public PersistenciaAnalisadorLexico $oPersistencia;
     public array $aPalavrasReservadas;
     public array $aTabelaDeTransicao;
     public array $aTabelaTokens;
@@ -25,8 +28,7 @@ class ControllerAnalisadorLexico {
      * @return string
      */
     public function InicializaAnalisadorLexico($sTexto) {
-
-        $this->oPersistencia = new PersistenciaAnalisadorLexico();
+        
         $this->aPalavrasReservadas = $this->oPersistencia->retornaPalavrasReservadas();
         $this->aTabelaDeTransicao = $this->oPersistencia->retornaTabelaDeTransicao();
         $this->aTabelaTokens = $this->oPersistencia->retornaTabelaDeTokens();
@@ -98,59 +100,73 @@ class ControllerAnalisadorLexico {
         return json_encode($sTextoRetorno);
     }
 
-    /*
-     * Método responsável por realizar a análise léxica do código
+    /**
+     * Método que mostra modal da tabela de saida do resultado da análise léxica
+     * @param type $sDados
+     * @return type
      */
+    public function mostraModalResultadoAnaliseLexica($sDados){
 
-    public function analiseLexicabkp($sDados) {
+        $aTabela = $this->oPersistencia->retornaArrayCSV("resultadoAnaliseLexica.csv", 1); 
+        $sModal = $this->oView->geraModalResAnaliseLexica($aTabela);
 
-        $sCampos = json_decode($sDados);
-        $sTexto = $sCampos->{'texto'};
-        $sText = trim($sTexto);
-
-        $this->InicializaAnalisadorLexico($sText);
-
-        //Inicia a análise léxica
-        $iK = 0;
-        while ($this->iCount > 0) {
-            try {
-                //Aceita o caractere e avança uma posição na entrada
-                if ((!(($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
-                    //Concatena até formar um token
-                    $this->sBuild .= $this->aCaracteresSeparados[$iK];
-                    //Seta o estado presente na tabela
-                    $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
-                    $this->iCount--;
-                    $iK++;
-                    //Aceita o token
-                } else {
-                    if (!($this->aTabelaTokens[$this->q] == '?')) {
-                        if (isset($this->aPalavrasReservadas[$this->sBuild])) {
-                            $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
-                        } else {
-                            $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-                        }
-                        $this->qntTokens++;
-                        $this->sBuild = "";
-                        $this->q = 0;
-                    } else {
-                        $iK++;
-                    }
-                }
-                //Regeita caractere não identificado
-            } catch (Exception $ex) {
-                $sJson = '{"texto":"Estado não encontrado!"}';
-                return json_encode($sJson);
-            }
-        }
-        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-        $sTeste = "Token    Lex    Pos \\n ";
-        $sTextoRetorno = '{"texto":';
-        foreach ($this->aListadeTokensLex as $aLex) {
-            $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
-        }
-        $sTextoRetorno .= '"' . $sTeste . '"}';
-        return json_encode($sTextoRetorno);
+        return json_encode($sModal);
     }
+    
+   
+//    /*
+//     * Método responsável por realizar a análise léxica do código
+//     */
+//
+//    public function analiseLexicabkp($sDados) {
+//
+//        $sCampos = json_decode($sDados);
+//        $sTexto = $sCampos->{'texto'};
+//        $sText = trim($sTexto);
+//
+//        $this->InicializaAnalisadorLexico($sText);
+//
+//        //Inicia a análise léxica
+//        $iK = 0;
+//        while ($this->iCount > 0) {
+//            try {
+//                //Aceita o caractere e avança uma posição na entrada
+//                if ((!(($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
+//                    //Concatena até formar um token
+//                    $this->sBuild .= $this->aCaracteresSeparados[$iK];
+//                    //Seta o estado presente na tabela
+//                    $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
+//                    $this->iCount--;
+//                    $iK++;
+//                    //Aceita o token
+//                } else {
+//                    if (!($this->aTabelaTokens[$this->q] == '?')) {
+//                        if (isset($this->aPalavrasReservadas[$this->sBuild])) {
+//                            $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
+//                        } else {
+//                            $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+//                        }
+//                        $this->qntTokens++;
+//                        $this->sBuild = "";
+//                        $this->q = 0;
+//                    } else {
+//                        $iK++;
+//                    }
+//                }
+//                //Regeita caractere não identificado
+//            } catch (Exception $ex) {
+//                $sJson = '{"texto":"Estado não encontrado!"}';
+//                return json_encode($sJson);
+//            }
+//        }
+//        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+//        $sTeste = "Token    Lex    Pos \\n ";
+//        $sTextoRetorno = '{"texto":';
+//        foreach ($this->aListadeTokensLex as $aLex) {
+//            $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
+//        }
+//        $sTextoRetorno .= '"' . $sTeste . '"}';
+//        return json_encode($sTextoRetorno);
+//    }
 
 }
