@@ -31,5 +31,11 @@ class ModelExpRegulares{
     
     //Contador composto caso de palavras reservadas
     public $iEst2 = 0;
+    
+    //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
+    public $sExp = '';
+    
+    //Guarda um array do tipo array[0]=>token; array[1]=>exp;
+    public $aArray1 = array();
 
 }
