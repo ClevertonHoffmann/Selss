@@ -6,7 +6,7 @@
 class ModelExpRegulares{
            
     //Responsável por armazenar a entrada dos dados pelo usuário nas definições regulares
-    public $aArray = array();
+    public $aArray = array(); 
     
     //Responsável por armazenar os caracteres válidos para a geração da tabela do automato de análise
     public $aArrayCaracteres = array();
@@ -21,7 +21,13 @@ class ModelExpRegulares{
     public $aArrayEstTokenExpr = array();
     
     //Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão
-    public $aArrayTokenExpr = 0;
+    public $aArrayTokenExpr = array();
+    
+    //Palavras reservadas quando não sozinhas
+    public $aArrayTokenExpr2 = array(); 
+    
+    //Guarda um array do tipo array[0]=>token; array[1]=>exp;
+    public $aArray1 = array();
     
     //Grava o estado de transição posição da chave no array inicia em -1 por causa do cabeçalho
     public $iPos = -1;
@@ -35,7 +41,7 @@ class ModelExpRegulares{
     //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
     public $sExp = '';
     
-    //Guarda um array do tipo array[0]=>token; array[1]=>exp;
-    public $aArray1 = array();
+    //Usada para controle de atribuições
+    public $bCont;    
 
 }
