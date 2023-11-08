@@ -42,6 +42,8 @@ class ModelExpRegulares{
     public $sExp = '';
     
     //Usada para controle de atribuições
-    public $bCont;    
+    public $bCont;   
+    
+    public $iEstRes=0;
 
 }

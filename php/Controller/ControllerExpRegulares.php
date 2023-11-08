@@ -212,7 +212,7 @@ class ControllerExpRegulares extends Controller {
         $this->montaEstadoInicial();
 
         //Monta os demais estados
-        //    $this->montaEstadosTransicao();
+        $this->montaEstadosTransicao();
         //Parte que salva as palavras reservadas
 
         $aCsvPalavrasRes = array();
@@ -263,90 +263,57 @@ class ControllerExpRegulares extends Controller {
 
                 /*
                  * Retira espaços em branco
+                 * Verifica palavras reservadas
                  * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
                  * E verifica se for igual a 1 inicia a criação da árvore
                  */
-
                 if (trim($this->oModel->aArray1[1]) != "") {
-                    //Todas as expressões exceto palavras token:token
-                    //    if (!(trim($this->oModel->aArray1[0]) == trim($this->oModel->aArray1[1]))) {
-                    
+
                     //Tratamento de expressões em branco
                     $this->analisaExprEmBranco($sChar);
 
-                    //Escapa simbolo quando contém aspas duplas
-                    $sEscapaCol = false;
-                    if (strpos($this->oModel->aArray1[1], '"') !== false) {
-                        $sEscapaCol = true;
-                    }
-                    if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $sEscapaCol) {
+                    $this->analisaPalavrasChaves($sChar);
 
-                        //Substitui textos encontrados com " por exemplo "{" por {
+                    //Todas as expressões exceto palavras token:token
+                    if (!($this->verificaPalavraChave($sChar))) {
+
+                        //Escapa simbolo quando contém aspas duplas
+                        $bEscapaCol = false;
                         if (strpos($this->oModel->aArray1[1], '"') !== false) {
-                            $this->oModel->aArray1[1] = str_replace('"', '', $this->oModel->aArray1[1]);
+                            $bEscapaCol = true;
                         }
+                        if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $bEscapaCol) {
 
-                        //Opção que analisa se a expressão regular é reconhecida pelo preg_match
-                        if ($this->oModel->bCont && (preg_match("/" . $this->oModel->aArray1[1] . "/", $sChar) == 1)) {
+                            //Substitui textos encontrados com " por exemplo "{" por {
+                            if (strpos($this->oModel->aArray1[1], '"') !== false) {
+                                $this->oModel->aArray1[1] = str_replace('"', '', $this->oModel->aArray1[1]);
+                            }
 
-                            $this->funcaoAtribuicaoVariaveis();
-                        }
-                        //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
-                        if ($this->oModel->bCont && substr_count($this->oModel->aArray1[1], $sChar) == strlen($this->oModel->aArray1[1]) && strlen($this->oModel->aArray1[1]) > 1) {
+                            //Opção que analisa se a expressão regular é reconhecida pelo preg_match
+                            if ($this->oModel->bCont && (preg_match("/" . $this->oModel->aArray1[1] . "/", $sChar) == 1)) {
 
-                            $this->funcaoAtribuicaoVariaveis2();
-                        }
-                        //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
-                        if ($this->oModel->bCont && (preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) && strlen($this->oModel->aArray1[1]) > 1) {
-                            $aCarac = str_split($this->oModel->aArray1[1]);
-                            if ($aCarac[0] == $sChar) {
+                                $this->funcaoAtribuicaoVariaveis();
+                            }
+                            //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
+                            if ($this->oModel->bCont && substr_count($this->oModel->aArray1[1], $sChar) == strlen($this->oModel->aArray1[1]) && strlen($this->oModel->aArray1[1]) > 1) {
 
                                 $this->funcaoAtribuicaoVariaveis2();
+                            }
+                            //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
+                            if ($this->oModel->bCont && (preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) && strlen($this->oModel->aArray1[1]) > 1) {
+                                $aCarac = str_split($this->oModel->aArray1[1]);
+                                if ($aCarac[0] == $sChar) {
 
-                                if ($this->oModel->aArray1[1] == $this->oModel->aArray1[0]) {
-                                   // $this->oModel->iEst--;//PAREI AQUI
-                                   // $this->oModel->iEst2++;
+                                    $this->funcaoAtribuicaoVariaveis2();
+
+                                    if ($this->oModel->aArray1[1] == $this->oModel->aArray1[0]) {
+                                        $this->oModel->iEst--;
+                                        $this->oModel->iEst2++;
+                                    }
                                 }
                             }
                         }
                     }
-                    //    }
-                    /**
-                     * Opção que armazena as palavras reservadas em um array extra caso tenha composições antes ou depois [a-z]
-                     * se não for composto realiza as transições das palavras chaves
-                     * ex: else, if, while 
-
-                      else {
-                      $sContr = false;
-                      //Percorre todas as entradas verificando se as palavras chaves 'else, if ...' não esteja em uma composição do tipo letras:[a-z]
-                      foreach ($this->oModel->aArray as $sVal3) {
-                      $aArrayAux = explode(':', $sVal3);
-                      $aArrayAux[0] = trim($aArrayAux[0]); //Remove espaços em branco
-                      $aArrayAux[1] = trim($aArrayAux[1]); //Remove espaços em branco
-
-                      if ((preg_match("/" . $aArrayAux[1] . "/", $this->oModel->aArray1[1]) == 1) && $aArrayAux[1] != $this->oModel->aArray1[1]) {
-                      $sContr = true;
-                      }
-                      }
-                      //Só entra caso as palavras chaves sejam compostas em uma expressão
-                      if ($sContr) {
-                      $this->oModel->aArrayTokenExpr2[$this->oModel->aArray1[0]] = $this->oModel->aArray1[1];
-                      }
-                      //Coloca no estado 0  as transições quando
-                      //as palavras chaves forem apenas composições simples sem ser composta em [a-z]
-                      if (!$sContr) {
-                      if ($this->oModel->bCont && (preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) && strlen($this->oModel->aArray1[1]) > 1) {
-                      $aCarac = str_split($this->oModel->aArray1[1]);
-                      if ($aCarac[0] == $sChar) {
-                      $this->funcaoAtribuicaoVariaveis2();
-                      }
-                      }
-                      }
-                      //Parte que retira as expressões que possuem estado (Ficar só compostas)
-                      if (isset($this->oModel->aArrayTokenExpr[$this->oModel->aArray1[0]])) {
-                      unset($this->oModel->aArrayTokenExpr[$this->oModel->aArray1[0]]);
-                      }
-                      } */
                 }
             }
             //Coloca -1 em todas as posições que não possuem transição na tabela
@@ -426,6 +393,53 @@ class ControllerExpRegulares extends Controller {
         $this->oModel->sExp = $this->oModel->aArray1[1];
     }
 
+    /**
+     * Retorna se o caracter pertence ou não a palavra chave
+     * @param type $sChar
+     * @return boolean
+     */
+    public function verificaPalavraChave($sChar) {
+        $bRetorno = false;
+        if ((trim($this->oModel->aArray1[0]) == trim($this->oModel->aArray1[1])) && preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) {
+            $bRetorno = true;
+        }
+        return $bRetorno;
+    }
+
+    /**
+     * Função que realiza a transição das palavras chaves conforme caracter
+     * @param type $sChar
+     */
+    public function analisaPalavrasChaves($sChar) {
+        if ($this->verificaPalavraChave($sChar)) {
+//            $sContr = false;
+//            //Percorre todas as entradas verificando se as palavras chaves 'else, if ...' não esteja em uma composição do tipo letras:[a-z]
+//            foreach ($this->oModel->aArray as $sVal3) {
+//                $aArrayAux = explode(':', $sVal3);
+//                $aArrayAux[0] = trim($aArrayAux[0]); //Remove espaços em branco
+//                $aArrayAux[1] = trim($aArrayAux[1]); //Remove espaços em branco
+//
+//                if ((preg_match("/" . $aArrayAux[1] . "/", $this->oModel->aArray1[1]) == 1) && $aArrayAux[1] != $this->oModel->aArray1[1]) {
+//                    $sContr = true;
+//                }
+//            }
+//            //Só entra caso as palavras chaves sejam compostas em uma expressão
+//            if ($sContr) {
+//                $this->oModel->aArrayTokenExpr2[$this->oModel->aArray1[0]] = $this->oModel->aArray1[1];
+//            }
+
+            if ($this->oModel->bCont && (preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) && strlen($this->oModel->aArray1[1]) > 1) {
+                $aCarac = str_split($this->oModel->aArray1[1]);
+                if ($aCarac[0] == $sChar) {
+                    $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes;
+                    $this->funcaoAtribuicaoVariaveis2();
+                    $this->oModel->iEstRes++;
+                    $this->oModel->iEst = $this->oModel->iEst - $this->oModel->iEstRes-1;
+                }
+            }
+        }
+    }
+
     /*
      * Monta os estados de transição e final
      */
@@ -445,7 +459,7 @@ class ControllerExpRegulares extends Controller {
         }
         //Armazena as palavras reservadas para persistir para análise léxica.
         $this->oModel->aPalavrasReservadas = $this->oModel->aArrayTokenExpr2;
-        $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEst2; //Adiciona os estados que são transições das palavras reservadas
+        $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEst2 + $this->oModel->iEstRes; //Adiciona os estados que são transições das palavras reservadas
         while (count($this->oModel->aArrayEstTokenExpr) >= $this->oModel->iPos) {
             $sVal = $this->oModel->aArrayEstTokenExpr[$this->oModel->iPos]; //Token, expressão
             $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = trim($sVal[0]); //Seta o estado de cada expressão

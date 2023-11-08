@@ -1,3 +1,7 @@
+maiorig:>=;
 else:else;
 if:if;
+then:then;
 letras:[a-z];
+num:[0-9];
+id:{num}{letras};
