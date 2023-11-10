@@ -289,11 +289,11 @@ class ControllerExpRegulares extends Controller {
                                 $this->oModel->aArray1[1] = str_replace('"', '', $this->oModel->aArray1[1]);
                             }
 
-                            //Opção que analisa se a expressão regular é reconhecida pelo preg_match
-                            if ($this->oModel->bCont && (preg_match("/" . $this->oModel->aArray1[1] . "/", $sChar) == 1)) {
+                            //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
+                            if ($this->oModel->bCont && (preg_match("/^" . $this->oModel->aArray1[1] . "$/", $sChar) == 1)) {
 
                                 $this->funcaoAtribuicaoVariaveis();
-                            }
+                            } 
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
                             if ($this->oModel->bCont && substr_count($this->oModel->aArray1[1], $sChar) == strlen($this->oModel->aArray1[1]) && strlen($this->oModel->aArray1[1]) > 1) {
 
@@ -305,11 +305,6 @@ class ControllerExpRegulares extends Controller {
                                 if ($aCarac[0] == $sChar) {
 
                                     $this->funcaoAtribuicaoVariaveis2();
-
-                                    if ($this->oModel->aArray1[1] == $this->oModel->aArray1[0]) {
-                                        $this->oModel->iEst--;
-                                        $this->oModel->iEst2++;
-                                    }
                                 }
                             }
                         }
@@ -434,7 +429,7 @@ class ControllerExpRegulares extends Controller {
                     $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes;
                     $this->funcaoAtribuicaoVariaveis2();
                     $this->oModel->iEstRes++;
-                    $this->oModel->iEst = $this->oModel->iEst - $this->oModel->iEstRes-1;
+                    $this->oModel->iEst = $this->oModel->iEst - $this->oModel->iEstRes - 1;
                 }
             }
         }
@@ -445,11 +440,13 @@ class ControllerExpRegulares extends Controller {
      */
 
     public function montaEstadosTransicao() {
+
         $this->oModel->iPos++;
         $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
         ksort($this->oModel->aArrayEstTokenExpr); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados e estados de transição de tokens compostos
         $this->oModel->bCont = true;
+
         //Array que armazena todos as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
         $aArrayExprEst = array();
         foreach ($this->oModel->aArrayEstTokenExpr as $iEstado => $aVal) {
@@ -457,9 +454,14 @@ class ControllerExpRegulares extends Controller {
                 $aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
             }
         }
+
         //Armazena as palavras reservadas para persistir para análise léxica.
         $this->oModel->aPalavrasReservadas = $this->oModel->aArrayTokenExpr2;
-        $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEst2 + $this->oModel->iEstRes; //Adiciona os estados que são transições das palavras reservadas
+
+        //Adiciona os estados que são transições das palavras reservadas
+        $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes;
+
+        //Percorre todos estados que possuem transição ou formam um estado de transição e final
         while (count($this->oModel->aArrayEstTokenExpr) >= $this->oModel->iPos) {
             $sVal = $this->oModel->aArrayEstTokenExpr[$this->oModel->iPos]; //Token, expressão
             $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = trim($sVal[0]); //Seta o estado de cada expressão
@@ -512,8 +514,8 @@ class ControllerExpRegulares extends Controller {
                 if (isset($sVal[3]) && $sVal[0] != "?") {
                     if (preg_match("/" . $sVal[4] . "/", $sChar) == 1 && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                         if ($sVal[0] == $sVal[2]) {
-                            //    $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $sVal[3]; 
-                            //    $this->oModel->bCont = false;
+                            $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $sVal[3];
+                            $this->oModel->bCont = false;
                         } else {
                             $this->oModel->aArray1 = str_split($sVal[1]);
                             if ((preg_match("/" . $sVal[4] . "/", $this->oModel->aArray1[1]) == 1) && $this->oModel->aArray1[1] == $sChar) {
@@ -527,8 +529,8 @@ class ControllerExpRegulares extends Controller {
                                 $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iEst;
                                 $this->oModel->bCont = false;
                             } else {
-                                //$this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $sVal[3]; 
-                                //$this->oModel->bCont = false;
+                                $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $sVal[3];
+                                $this->oModel->bCont = false;
                             }
                         }
                     }
@@ -544,7 +546,7 @@ class ControllerExpRegulares extends Controller {
                             if (trim($sVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
                                 $sChave = trim($aArrayComp[$sKey1 + 1]);
                                 $sExp2 = $aArrayExprEst[$sChave][1];
-                                if ((preg_match("/" . $sExp2 . "/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+                                if ((preg_match("/^" . $sExp2 . "$/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                                     if ($iki == 0) {
                                         $this->oModel->iEst++;
                                         $iki++;
@@ -568,6 +570,9 @@ class ControllerExpRegulares extends Controller {
             }
         }
     }
+    
+    
+    
 
     /**
      * Método que mostra modal da tabela do automato para a léxica

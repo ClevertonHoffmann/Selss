@@ -36,14 +36,12 @@ class ModelExpRegulares{
     public $iEst = 0;
     
     //Contador composto caso de palavras reservadas
-    public $iEst2 = 0;
+    public $iEstRes = 0;
     
     //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
     public $sExp = '';
     
-    //Usada para controle de atribuições
+    //Usada para controle de atribuições não deixando atribuir dois estados para o mesmo caracter na tabela de transição
     public $bCont;   
     
-    public $iEstRes=0;
-
 }

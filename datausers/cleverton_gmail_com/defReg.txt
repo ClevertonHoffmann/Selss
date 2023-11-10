@@ -1,7 +1,8 @@
+ap:"(";
 maiorig:>=;
 else:else;
 if:if;
 then:then;
-letras:[a-z];
+letras:[a-z]+;
 num:[0-9];
 id:{num}{letras};
