@@ -23,9 +23,6 @@ class ModelExpRegulares{
     //Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão
     public $aArrayTokenExpr = array();
     
-    //Palavras reservadas quando não sozinhas
-    public $aArrayTokenExpr2 = array(); 
-    
     //Guarda um array do tipo array[0]=>token; array[1]=>exp;
     public $aArray1 = array();
     
@@ -44,4 +41,14 @@ class ModelExpRegulares{
     //Usada para controle de atribuições não deixando atribuir dois estados para o mesmo caracter na tabela de transição
     public $bCont;   
     
+    //Parte dois
+    
+    //Contador importante para as expressões compostas
+    public $iki;
+    
+//    //Array responsável por armazenar o estado composto e sua respectivo token 
+//    public $aArrayTokenExpr2 = array(); 
+    
+    //Array que armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
+    public $aArrayExprEst = array();
 }

@@ -1,8 +1,11 @@
-ap:"(";
+letra:a*;
+barra:/;
+ap:+;
 maiorig:>=;
+igual:=;
 else:else;
 if:if;
 then:then;
 letras:[a-z]+;
 num:[0-9];
-id:{num}{letras};
+id:{num}{letras}{if};
