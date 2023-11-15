@@ -46,8 +46,8 @@ class ModelExpRegulares{
     //Contador importante para as expressões compostas
     public $iki;
     
-//    //Array responsável por armazenar o estado composto e sua respectivo token 
-//    public $aArrayTokenExpr2 = array(); 
+    //Array responsável por armazenar as palavras chaves no formato array[palavra] = palavra; 
+    public $aArrayTokenExpr2 = array(); 
     
     //Array que armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
     public $aArrayExprEst = array();
