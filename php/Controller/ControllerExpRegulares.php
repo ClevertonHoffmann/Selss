@@ -377,6 +377,7 @@ class ControllerExpRegulares extends Controller {
     public function funcaoAtribuicaoVariaveis2() {
         if ($this->oModel->sExp != $this->oModel->aArray1[1]) {
             $this->oModel->iEst++;
+            $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = $this->oModel->aArray1;
             $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = ["?", $this->oModel->aArray1[1], $this->oModel->aArray1[0]]; //Adiciona o token
             //Parte que retira as expressões que possuem estado (Ficar só compostas)
             if (isset($this->oModel->aArrayTokenExpr[$this->oModel->aArray1[0]])) {
@@ -411,7 +412,7 @@ class ControllerExpRegulares extends Controller {
                 $aCarac = str_split($this->oModel->aArray1[1]);
                 if ($aCarac[0] == $sChar) {
                     $this->oModel->aPalavrasReservadas[] = [trim($this->oModel->aArray1[0]), trim($this->oModel->aArray1[0])]; //Preenche array com as palavras chaves para posterior salvar em csv
-                    $this->oModel->aArrayTokenExpr2[trim($this->oModel->aArray1[0])] = trim($this->oModel->aArray1[0]); //Armazena palavras chaves para analise posterior
+                    $this->oModel->aArrayPalavraChave[trim($this->oModel->aArray1[0])] = trim($this->oModel->aArray1[0]); //Armazena palavras chaves para analise posterior
                     $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes; //Realiza controle dos estados das palavras reservadas
                     $this->funcaoAtribuicaoVariaveis2();
                     $this->oModel->iEstRes++;
@@ -424,7 +425,6 @@ class ControllerExpRegulares extends Controller {
     /*
      * Monta os estados de transição e final
      */
-
     public function montaEstadosTransicao() {
 
         $this->oModel->iPos++;
@@ -463,6 +463,7 @@ class ControllerExpRegulares extends Controller {
                 $this->funcaoAtribuicaoComposta($aVal, $sChar); //Expressões compostas por outras expressões
 
                 $this->funçãoAtribuicaoCuringa($sChar, $aToken); //Expressões compostas por + ou *
+                
                 //Coloca -1 em todas as posições que não possuem transição na tabela
                 if ($this->oModel->bCont) {
                     $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = -1;
@@ -565,7 +566,7 @@ class ControllerExpRegulares extends Controller {
             }
             else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
-                if (isset($this->oModel->aArrayTokenExpr2[$aToken[0]])) {
+                if (isset($this->oModel->aArrayPalavraChave[$aToken[0]])) {
                     foreach ($this->oModel->aArrayExprEst as $sKey1 => $aLexic) {
                             if (preg_match("/^" . $aLexic[1] . "$/", $sChar) == 1 &&
                                 preg_match("/^" . $aLexic[1] . "$/", $aToken[0]) == 1 &&
@@ -579,6 +580,18 @@ class ControllerExpRegulares extends Controller {
                             $this->oModel->bCont = false;
                         }
                         
+                    }
+                }else{
+                //Verifica se um estado final de atribuição composta necessita emplimento do mesmo, no ex soma:{mais}{num}; onde num:[0-9]*;
+                    if(isset($aToken[1][1])){ //Verifica se existe variáveis
+                        if(isset($this->oModel->aArrayExprEst[$aToken[1][1]][1])){
+                            if(preg_match("/^" . $this->oModel->aArrayExprEst[$aToken[1][1]][1] . "$/", $sChar) == 1
+                                    && (strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '*') !== false 
+                                    || strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '+') !== false)) {
+                                        $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
+                                        $this->oModel->bCont = false;
+                            }
+                        }
                     }
                 }
             }

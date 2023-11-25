@@ -1,3 +1,11 @@
 Token;Lex;Pos
-letras;l;0
-num;4;1
+prog;prog;0
+dp;:;1
+letras;if;2
+ap;(;3
+num;9;4
+menor;<;5
+num;2;6
+soma;+10;7
+fp;);8
+letras;teste;9

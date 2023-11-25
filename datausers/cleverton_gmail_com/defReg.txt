@@ -1,5 +1,10 @@
+menor:<;
+ap:(;
+fp:);
+prog:prog;
+dp:\:;
 mais:+;
 letras:[a-z]*;
 num:[0-9]*;
 id:{num}{letras};
-soma:{id}{mais}{id};
+soma:{mais}{num};

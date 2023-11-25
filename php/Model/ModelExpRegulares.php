@@ -47,7 +47,7 @@ class ModelExpRegulares{
     public $iki;
     
     //Array responsável por armazenar as palavras chaves no formato array[palavra] = palavra; 
-    public $aArrayTokenExpr2 = array(); 
+    public $aArrayPalavraChave = array(); 
     
     //Array que armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
     public $aArrayExprEst = array();
