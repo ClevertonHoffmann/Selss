@@ -156,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </h6>
                                         </div>
                                         <div class="div p-1 text-justify">
-                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder=\'Escreva o código a ser analisado\' onkeypress="analisaExpRegulares()"></textarea> 
+                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder=\'Escreva o código a ser analisado\' ></textarea> 
                                         </div>
                                     </div>
                                     <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">

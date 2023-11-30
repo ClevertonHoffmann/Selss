@@ -38,7 +38,6 @@ class ControllerAnalisadorLexico extends Controller{
         $this->qntTokens = 0;
         $this->sBuild = "";
         $this->aListadeTokensLex = array();
-        return '';
     }
 
     /*
@@ -57,8 +56,8 @@ class ControllerAnalisadorLexico extends Controller{
         $iK = 0;
         while ($this->iCount > 0) {
             try {
-                //Aceita o caractere e avança uma posição na entrada
-                if ((!(($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
+                //Aceita o caractere e avança uma posição na entrada caso for espaço valida como tal
+                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')||(($this->aTabelaDeTransicao[$this->q]['\''.$this->aCaracteresSeparados[$iK].'\'']) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
                     //Concatena até formar um token
                     $this->sBuild .= $this->aCaracteresSeparados[$iK];
                     //Seta o estado presente na tabela
@@ -75,9 +74,10 @@ class ControllerAnalisadorLexico extends Controller{
                     $this->qntTokens++;
                     $this->sBuild = "";
                     $this->q = 0;
+                    $this->iCount++;
                 } else {
                     $iK++;
-                   // $this->iCount--;
+                    $this->iCount--;
                 }
                 //Regeita caractere não identificado
             } catch (Exception $ex) {
@@ -87,7 +87,7 @@ class ControllerAnalisadorLexico extends Controller{
         }
         $aListaTokenLexPer = array();
         $aListaTokenLexPer[0] = ['Token', 'Lex', 'Pos'];
-        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+       // $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex) {
