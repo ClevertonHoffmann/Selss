@@ -3,14 +3,15 @@
 /*
  * Classe responsável pela analise léxica e retorno dos dados de análise léxica do código digitado pelo usuário
  */
+
 //require_once '../php/Persistencia/PersistenciaAnalisadorLexico.php';
 
-class ControllerAnalisadorLexico extends Controller{
+class ControllerAnalisadorLexico extends Controller {
 
     public function __construct() {
         $this->carregaClasses('AnalisadorLexico');
     }
-        
+
     //Variáveis e instancias iniciais carregegadas no construtor
     public array $aPalavrasReservadas;
     public array $aTabelaDeTransicao;
@@ -28,7 +29,7 @@ class ControllerAnalisadorLexico extends Controller{
      * @return string
      */
     public function InicializaAnalisadorLexico($sTexto) {
-        
+
         $this->aPalavrasReservadas = $this->oPersistencia->retornaPalavrasReservadas();
         $this->aTabelaDeTransicao = $this->oPersistencia->retornaTabelaDeTransicao();
         $this->aTabelaTokens = $this->oPersistencia->retornaTabelaDeTokens();
@@ -56,12 +57,20 @@ class ControllerAnalisadorLexico extends Controller{
         $iK = 0;
         while ($this->iCount > 0) {
             try {
-                //Aceita o caractere e avança uma posição na entrada caso for espaço valida como tal
-                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')||(($this->aTabelaDeTransicao[$this->q]['\''.$this->aCaracteresSeparados[$iK].'\'']) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
-                    //Concatena até formar um token
-                    $this->sBuild .= $this->aCaracteresSeparados[$iK];
-                    //Seta o estado presente na tabela
-                    $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
+                //Aceita o caractere e avança uma posição na entrada tanto normal como com espaços
+                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'".$this->aCaracteresSeparados[$iK]."'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
+                    //Estado com espaços
+                    if ($this->aCaracteresSeparados[$iK] == " ") {
+                        //Concatena até formar um token
+                        $this->sBuild .= "'".$this->aCaracteresSeparados[$iK]."'";
+                        //Seta o estado presente na tabela
+                        $this->q = (int) $this->aTabelaDeTransicao[$this->q]["'".$this->aCaracteresSeparados[$iK]."'"];
+                    } else {
+                        //Concatena até formar um token
+                        $this->sBuild .= $this->aCaracteresSeparados[$iK];
+                        //Seta o estado presente na tabela
+                        $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
+                    }
                     $this->iCount--;
                     $iK++;
                     //Aceita o token
@@ -87,15 +96,17 @@ class ControllerAnalisadorLexico extends Controller{
         }
         $aListaTokenLexPer = array();
         $aListaTokenLexPer[0] = ['Token', 'Lex', 'Pos'];
-       // $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+        if ($this->qntTokens == 0) {
+            $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+        }
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex) {
             $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
-            $aListaTokenLexPer[] = [$aLex[0],$aLex[1],$aLex[2]];
+            $aListaTokenLexPer[] = [$aLex[0], $aLex[1], $aLex[2]];
         }
         $this->oPersistencia->gravaResultadoAnaliseLexica($aListaTokenLexPer);
-        
+
         $sTextoRetorno .= '"' . $sTeste . '"}';
         return json_encode($sTextoRetorno);
     }
@@ -105,15 +116,14 @@ class ControllerAnalisadorLexico extends Controller{
      * @param type $sDados
      * @return type
      */
-    public function mostraModalResultadoAnaliseLexica($sDados){
+    public function mostraModalResultadoAnaliseLexica($sDados) {
 
-        $aTabela = $this->oPersistencia->retornaArrayCSV("resultadoAnaliseLexica.csv", 1); 
+        $aTabela = $this->oPersistencia->retornaArrayCSV("resultadoAnaliseLexica.csv", 1);
         $sModal = $this->oView->geraModalResAnaliseLexica($aTabela);
 
         return json_encode($sModal);
     }
-    
-   
+
 //    /*
 //     * Método responsável por realizar a análise léxica do código
 //     */
@@ -168,5 +178,4 @@ class ControllerAnalisadorLexico extends Controller{
 //        $sTextoRetorno .= '"' . $sTeste . '"}';
 //        return json_encode($sTextoRetorno);
 //    }
-
 }

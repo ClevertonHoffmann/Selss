@@ -1,9 +1,9 @@
 Token;Lex;Pos
-prog;prog;0
-dp;" :";1
-letras;" teste";2
-ap;" (";3
-letras;" a";4
-menor;<;5
-num;8;6
-fp;" )";7
+letras;teste;0
+esp;"' '";1
+dp;:;2
+esp;"' '";3
+id;5prog;4
+esp;"' '";5
+soma;+9;6
+esp;"' '";7
