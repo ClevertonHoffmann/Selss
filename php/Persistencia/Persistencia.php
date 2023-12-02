@@ -86,6 +86,28 @@ class Persistencia {
 
         return $aCSV;
     }
+    
+    /**
+     * Função para escrever as entradas do usuário para ficar salvo para o próximo logon
+     * @param type $sArquivo
+     * @param type $sText
+     */
+    public function gravaArquivo($sArquivo, $sText){
+       
+        $sDiretorio = $_SESSION['diretorio'];
+
+        $arquivo = $sDiretorio . "//".$sArquivo;
+
+        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
+        $fp = fopen($arquivo, "w");
+
+        //Escreve no arquivo aberto.
+        fwrite($fp, $sText);
+
+        //Fecha o arquivo.
+        fclose($fp);
+        
+    }
 
 }
 

@@ -26,18 +26,7 @@ class ControllerExpRegulares extends Controller {
 
         $sText2 = $this->analisador($sText);
 
-        $sDiretorio = $_SESSION['diretorio'];
-
-        $arquivo = $sDiretorio . "//defReg.txt";
-
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp = fopen($arquivo, "w");
-
-        //Escreve no arquivo aberto.
-        fwrite($fp, $sText);
-
-        //Fecha o arquivo.
-        fclose($fp);
+        $this->oPersistencia->gravaArquivo("defReg.txt", $sText2);
 
         $sJson = '{"texto":"' . $sText2 . '"}';
 
@@ -607,6 +596,7 @@ class ControllerExpRegulares extends Controller {
 
         $aTabela = $this->oPersistencia->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
         $sModal = $this->oView->geraModalTabelaLexica($aTabela);
+        $this->oPersistencia->gravaArquivo("modal.html", $sModal);
 
         return json_encode($sModal);
     }

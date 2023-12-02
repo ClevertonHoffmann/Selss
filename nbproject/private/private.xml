@@ -5,10 +5,11 @@
         <group>
             <file>file:/C:/xampp/htdocs/Selss/js/app.js</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerAnalisadorLexico.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/principal.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/View/ViewAnalisadorLexico.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/principal.php</file>
             <file>file:/C:/xampp/htdocs/Selss/index.php</file>
             <file>file:/C:/xampp/htdocs/Selss/login.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/css/app.css</file>
         </group>
     </open-files>
 </project-private>

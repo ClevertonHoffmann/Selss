@@ -7,7 +7,7 @@
  */
 //Pega valor do request POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     //Inicializa a variável de sessão
     session_start();
 
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Variável para mostrar a tela principal caso seja válido o email
     $bEmailValido = false;
-    
+
     //Pasta que inicializa em branco caso exista traz o conteúdo dos arquivos
     $pasta = '';
 
@@ -30,14 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pasta = $diretorio . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $email);
 
         //Salva valores iniciais na variável de sessão do usuário
-        $_SESSION['diretorio'] = "..//".$pasta;
+        $_SESSION['diretorio'] = "..//" . $pasta;
         $_SESSION['email'] = $email;
 
         // Verifique se a pasta já existe
         if (!file_exists($pasta)) {
             // Crie a pasta
             mkdir($pasta, 0777, true);
-            
+
             $bEmailValido = true;
         } else {
             $bEmailValido = true;
@@ -48,18 +48,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //Apresenta a tela inicial do sistema
     if ($bEmailValido) {
-        
-        $texto = '';
-        
-        $arquivo = $pasta.'//defReg.txt';
 
-        // Verifica se o arquivo existe
-        if (file_exists($arquivo)) {
-            // Lê o conteúdo do arquivo e armazena em uma variável
-            $texto = file_get_contents($arquivo);
-        }
-        
-        
+        $defReg = retornaTexto($pasta . '//defReg.txt');//Definições regulares do usuário no sistema
+        $codigoParaAnalise = retornaTexto($pasta . '//codigoParaAnalise.txt');//Definições regulares do usuário no sistema
+
         echo '<!DOCTYPE html>
                 <html lang="pt">    
                     <head>
@@ -92,26 +84,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </h4>
                         </nav>
                         <nav class="navbar p-1" style="background:#e3f2fd;">
-                            <div style="width: calc(27vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
+                            <div style="width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
                                 <nav class="navbar p-1">
                                     <form class="container-fluid justify-content-start p-0">
                                         <button class="btn btn-sm btn-outline-secondary me-1 " onclick="loadTabLexica()"
                                                 style="width: calc(vw); height: calc(vh); font-size:calc(1vw)" type="button">TABELA DE ANÁLISE
                                             LÉXICA</button>
                                         <div class="div text-center"
-                                             style="width: calc(27vw); height: calc(62vh); background-color: rgba(0,0,255,0.1);">
+                                             style="width: calc(27vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);">
                                             <div class="div text-center p-1">
                                                 <h6 class="justify"
                                                     style="border:1px solid black; font-size:calc(1vw);">DEFINIÇÕES REGULARES/TOKENS</h6>
                                             </div>
                                             <div class="div text-justify">
-                                                <textarea id="defReg" name="defReg" style="width: calc(26vw); height: calc(55vh);" placeholder=\'Escreva as definições regulares, tokens\'>'.$texto.'</textarea>
+                                                <textarea id="defReg" name="defReg" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições regulares, tokens\'>' . $defReg . '</textarea>
                                             </div>
                                         </div>
                                     </form>
                                 </nav>
                             </div>
-                            <div style="width: calc(27vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
+                            <div style="width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
                                 <nav class="navbar p-1">
                                     <form class="container-fluid justify-content-start p-0">
                                         <button class="btn btn-sm btn-outline-secondary me-1 "
@@ -124,19 +116,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             SINTÁTICA</button>
                                     </form>
 
-                                    <div style="width: calc(27vw); height: calc(62vh); background-color: rgba(0,0,255,0.1);">
+                                    <div style="width: calc(27vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);">
                                         <div class="div p-1 text-center">
                                             <h6 class="justify" style="border:1px solid black; font-size:calc(1vw); ">
                                                 GRAMÁTICA
                                             </h6>
                                         </div>
                                         <div class="div text-justify">
-                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(55vh);" placeholder=\'Escreva as definições da gramática\' onkeypress="analisaExpRegulares()"></textarea> 
+                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições da gramática\' onkeypress="analisaExpRegulares()"></textarea> 
                                         </div>
                                     </div>
                                 </nav>
                             </div>
-                            <div style="width: calc(42vw); height: calc(70vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
+                            <div style="width: calc(42vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
 
                                 <nav class="navbar p-1">
                                     <form class="container-fluid justify-content-start p-0">
@@ -149,24 +141,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <button class="btn btn-sm btn-secondary" style="width: calc(vw); height: calc(vh); font-size:calc(1vw)"
                                                 type="button">?</button>
                                     </form>
-                                    <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
+                                    <div style="width: calc(42vw); height: calc(30vh); background-color: rgba(0,0,255,0.1);">
                                         <div class="div p-1 text-center">
                                             <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
                                                 ÁREA PARA INSERIR CÓDIGO DE TESTE PARA AS DEFINIÇÕES CRIADAS
                                             </h6>
                                         </div>
                                         <div class="div p-1 text-justify">
-                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(24vh);" placeholder=\'Escreva o código a ser analisado\' ></textarea> 
+                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(22vh);" placeholder=\'Escreva o código a ser analisado\' >'.$codigoParaAnalise.'</textarea> 
                                         </div>
                                     </div>
-                                    <div style="width: calc(42vw); height: calc(32vh); background-color: rgba(0,0,255,0.1);">
+                                    <div style="width: calc(42vw); height: calc(27vh); background-color: rgba(0,0,255,0.1);">
                                         <div class="div p-1 text-center">
                                             <h6 class="container-fluid justify-content-start" style="border:1px solid black; font-size:calc(1vw);">
                                                 SAÍDA DO TESTE
                                             </h6>
                                         </div>
                                         <div class="div p-1 text-justify">
-                                            <textarea id="saidaAnalise" name="saidaAnalise" style="resize:none; overflow:auto; width: calc(41vw); height: calc(24vh);"></textarea> 
+                                            <textarea id="saidaAnalise" name="saidaAnalise" style="resize:none; overflow:auto; width: calc(41vw); height: calc(19vh);"></textarea> 
                                         </div>
                                     </div>
                                 </nav>
@@ -217,6 +209,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else {
     header("Location: login.php?erro=login_invalido");
+}
+
+/**
+ * Função que realiza a leitura para retornar caso já exista os arquivos pré-carregados no sistema
+ * @param type $sNome
+ * @return string
+ */
+function retornaTexto($sNome) {
+    // Verifica se o arquivo existe
+    if (file_exists($sNome)) {
+        // Lê o conteúdo do arquivo e retorna
+        return file_get_contents($sNome);
+    } else {
+        return '';
+    }
 }
 
 ?>

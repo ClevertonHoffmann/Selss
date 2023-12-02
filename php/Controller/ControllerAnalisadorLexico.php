@@ -4,8 +4,6 @@
  * Classe responsável pela analise léxica e retorno dos dados de análise léxica do código digitado pelo usuário
  */
 
-//require_once '../php/Persistencia/PersistenciaAnalisadorLexico.php';
-
 class ControllerAnalisadorLexico extends Controller {
 
     public function __construct() {
@@ -49,7 +47,9 @@ class ControllerAnalisadorLexico extends Controller {
 
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
-        $sText = trim($sTexto);
+        $sText = str_replace("\n", " ", trim($sTexto));
+        
+        $this->oPersistencia->gravaArquivo("codigoParaAnalise.txt", $sText);
 
         $this->InicializaAnalisadorLexico($sText);
 
@@ -95,14 +95,14 @@ class ControllerAnalisadorLexico extends Controller {
             }
         }
         $aListaTokenLexPer = array();
-        $aListaTokenLexPer[0] = ['Token', 'Lex', 'Pos'];
+        $aListaTokenLexPer[0] = ['Token', 'Lexema', 'Posição'];
         if ($this->qntTokens == 0) {
             $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
         }
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex) {
-            $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
+            $sTeste .= "" . $aLex[0] . "       " . $aLex[1] . "            " . $aLex[2] . " \\n ";
             $aListaTokenLexPer[] = [$aLex[0], $aLex[1], $aLex[2]];
         }
         $this->oPersistencia->gravaResultadoAnaliseLexica($aListaTokenLexPer);
@@ -123,59 +123,5 @@ class ControllerAnalisadorLexico extends Controller {
 
         return json_encode($sModal);
     }
-
-//    /*
-//     * Método responsável por realizar a análise léxica do código
-//     */
-//
-//    public function analiseLexicabkp($sDados) {
-//
-//        $sCampos = json_decode($sDados);
-//        $sTexto = $sCampos->{'texto'};
-//        $sText = trim($sTexto);
-//
-//        $this->InicializaAnalisadorLexico($sText);
-//
-//        //Inicia a análise léxica
-//        $iK = 0;
-//        while ($this->iCount > 0) {
-//            try {
-//                //Aceita o caractere e avança uma posição na entrada
-//                if ((!(($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
-//                    //Concatena até formar um token
-//                    $this->sBuild .= $this->aCaracteresSeparados[$iK];
-//                    //Seta o estado presente na tabela
-//                    $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
-//                    $this->iCount--;
-//                    $iK++;
-//                    //Aceita o token
-//                } else {
-//                    if (!($this->aTabelaTokens[$this->q] == '?')) {
-//                        if (isset($this->aPalavrasReservadas[$this->sBuild])) {
-//                            $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
-//                        } else {
-//                            $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-//                        }
-//                        $this->qntTokens++;
-//                        $this->sBuild = "";
-//                        $this->q = 0;
-//                    } else {
-//                        $iK++;
-//                    }
-//                }
-//                //Regeita caractere não identificado
-//            } catch (Exception $ex) {
-//                $sJson = '{"texto":"Estado não encontrado!"}';
-//                return json_encode($sJson);
-//            }
-//        }
-//        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-//        $sTeste = "Token    Lex    Pos \\n ";
-//        $sTextoRetorno = '{"texto":';
-//        foreach ($this->aListadeTokensLex as $aLex) {
-//            $sTeste .= "" . $aLex[0] . "    " . $aLex[1] . "         " . $aLex[2] . " \\n ";
-//        }
-//        $sTextoRetorno .= '"' . $sTeste . '"}';
-//        return json_encode($sTextoRetorno);
-//    }
+    
 }

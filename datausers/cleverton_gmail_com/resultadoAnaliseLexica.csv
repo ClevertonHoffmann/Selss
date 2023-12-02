@@ -1,9 +1,26 @@
-Token;Lex;Pos
+Token;Lexema;Posição
 letras;teste;0
 esp;"' '";1
 dp;:;2
 esp;"' '";3
-id;5prog;4
+prog;prog;4
 esp;"' '";5
-soma;+9;6
+ap;(;6
 esp;"' '";7
+letras;a;8
+esp;"' '";9
+menor;<;10
+esp;"' '";11
+0;0;12
+esp;"' '";13
+letras;")\n";14
+esp;"' '";15
+letras;casa;16
+esp;"' '";17
+letras;teste;18
+esp;"' '";19
+letras;asa;20
+esp;"' '";21
+letras;meu;22
+esp;"' '";23
+letras;chapeu;24
