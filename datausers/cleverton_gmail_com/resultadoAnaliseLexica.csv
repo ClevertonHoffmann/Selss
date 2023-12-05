@@ -1,26 +1,14 @@
 Token;Lexema;Posição
 letras;teste;0
-esp;"' '";1
-dp;:;2
-esp;"' '";3
-prog;prog;4
-esp;"' '";5
-ap;(;6
-esp;"' '";7
-letras;a;8
-esp;"' '";9
-menor;<;10
-esp;"' '";11
-0;0;12
-esp;"' '";13
-letras;")\n";14
-esp;"' '";15
-letras;casa;16
-esp;"' '";17
-letras;teste;18
-esp;"' '";19
-letras;asa;20
-esp;"' '";21
-letras;meu;22
-esp;"' '";23
-letras;chapeu;24
+dp;:;1
+prog;prog;2
+ap;(;3
+letras;a;4
+menor;<;5
+0;0;6
+fp;);7
+letras;casa;8
+letras;teste;9
+letras;asa;10
+letras;meu;11
+letras;chapeu;12

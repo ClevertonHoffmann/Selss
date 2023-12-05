@@ -24,9 +24,9 @@ class ControllerExpRegulares extends Controller {
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
 
+        $this->oPersistencia->gravaArquivo("defReg.txt", $sText);
+        
         $sText2 = $this->analisador($sText);
-
-        $this->oPersistencia->gravaArquivo("defReg.txt", $sText2);
 
         $sJson = '{"texto":"' . $sText2 . '"}';
 
@@ -106,7 +106,7 @@ class ControllerExpRegulares extends Controller {
         $sAfd[":"] = 0;
         $sAfd[","] = 0;
         $sAfd["."] = 0;
-        $sAfd["\'"] = -1;
+        $sAfd["\'"] = 0;
         $sAfd["@"] = -1;
         $sAfd["#"] = -1;
         $sAfd["$"] = -1;
@@ -132,7 +132,7 @@ class ControllerExpRegulares extends Controller {
         $sAfd[";"] = 0;
         $sAfd["?"] = -1;
         $sAfd["/"] = -1;
-        $sAfd["\\"] = -1;
+        $sAfd["\\"] = 0;
         $sAfd["\t"] = 0;
         $sAfd["\n"] = 0;
         $sAfd["\r"] = 0;
@@ -279,7 +279,6 @@ class ControllerExpRegulares extends Controller {
 
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
                             if ($this->oModel->bCont && (preg_match("/^" . $this->oModel->aArray1[1] . "$/", $sChar) == 1)) {
-
                                 $this->funcaoAtribuicaoVariaveis();
                             }
 

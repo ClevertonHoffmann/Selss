@@ -8,13 +8,15 @@ window.onload = (function () {
      * @returns retorna erros de especificação das expressões regulares
      */
     document.getElementById('defReg').addEventListener('keyup', analisaExpRegulares);
+
+    document.getElementById('downloadTabelaAnaliseLexica').addEventListener('click', function (event) {
+        downloadTabela(event, 'tabelaAnaliseLexica.csv');
+    });
     
-//    var textarea = document.getElementById("defGram");
-//    var texto = textarea.value;
-//    texto = texto.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-//    texto = texto.replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/g, '<b>$1</b>');
-//    textarea.value = texto;
-    
+    document.getElementById('downloadResultadoAnaliseLexica').addEventListener('click', function (event) {
+        downloadTabela(event, 'resultadoAnaliseLexica.csv');
+    });
+
     //****Inicio fechar modal*****//
     var modal = document.getElementById('myModal');
 
@@ -23,7 +25,7 @@ window.onload = (function () {
             closeModal();
         }
     }
-    
+
     var modal2 = document.getElementById('myModal2');
 
     window.onclick = function (event) {
@@ -92,7 +94,7 @@ function closeModal() {
 /*
  * Método responsável por chamar a classe de análise léxica
  */
-function analiseLexica(){
+function analiseLexica() {
     var defreg = $("#codTest").val();
     var dataToSend = JSON.stringify({
         "texto": defreg
@@ -128,4 +130,18 @@ function closeModal2() {
     div.innerHTML = '';
     var modal = document.getElementById('myModal2');
     modal.style.display = 'none';
+}
+
+function downloadTabela(event, nome) {
+    // Cria um elemento de link temporário
+    var link = document.createElement('a');
+
+    // Define o atributo 'href' do link com o caminho para o script download.php e o nome do arquivo
+    link.href = 'http://localhost/Selss/php/biblioteca/download.php?arquivo=' + encodeURIComponent(nome);
+
+    // Define o atributo 'target' para '_blank' para abrir o link em uma nova janela/tab
+    link.target = '_blank';
+
+    // Simula um clique no link para iniciar o download
+    link.click();
 }

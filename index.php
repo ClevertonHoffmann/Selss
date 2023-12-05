@@ -187,6 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div id="csvData" class="modal-table">
                                     <!-- Conteúdo da tabela aqui -->
                                 </div>
+                                <button id="downloadTabelaAnaliseLexica">Baixar Tabela</button>
                             </div>
                         </div>
                         <div id="myModal2" class="modal">
@@ -200,6 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div id="csvData2" class="modal-table">
                                     <!-- Conteúdo da tabela aqui -->
                                 </div>
+                                <button id="downloadResultadoAnaliseLexica">Baixar Tabela</button>
                             </div>
                         </div>
                     </body>

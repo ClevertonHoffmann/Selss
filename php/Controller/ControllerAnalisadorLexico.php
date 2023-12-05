@@ -46,9 +46,9 @@ class ControllerAnalisadorLexico extends Controller {
     public function analiseLexica($sDados) {
 
         $sCampos = json_decode($sDados);
-        $sTexto = $sCampos->{'texto'};
-        $sText = str_replace("\n", " ", trim($sTexto));
-        
+        $sTexto = $sCampos->{'texto'} . " ";
+        $sText = str_replace("\n", " ", $sTexto);
+
         $this->oPersistencia->gravaArquivo("codigoParaAnalise.txt", $sText);
 
         $this->InicializaAnalisadorLexico($sText);
@@ -58,13 +58,13 @@ class ControllerAnalisadorLexico extends Controller {
         while ($this->iCount > 0) {
             try {
                 //Aceita o caractere e avança uma posição na entrada tanto normal como com espaços
-                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'".$this->aCaracteresSeparados[$iK]."'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
+                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
                     //Estado com espaços
                     if ($this->aCaracteresSeparados[$iK] == " ") {
                         //Concatena até formar um token
-                        $this->sBuild .= "'".$this->aCaracteresSeparados[$iK]."'";
+                        $this->sBuild .= "'" . $this->aCaracteresSeparados[$iK] . "'";
                         //Seta o estado presente na tabela
-                        $this->q = (int) $this->aTabelaDeTransicao[$this->q]["'".$this->aCaracteresSeparados[$iK]."'"];
+                        $this->q = (int) $this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"];
                     } else {
                         //Concatena até formar um token
                         $this->sBuild .= $this->aCaracteresSeparados[$iK];
@@ -83,22 +83,25 @@ class ControllerAnalisadorLexico extends Controller {
                     $this->qntTokens++;
                     $this->sBuild = "";
                     $this->q = 0;
-                    $this->iCount++;
                 } else {
-                    $iK++;
-                    $this->iCount--;
+                    //Deixa passar caracter em branco caso não tenha sido definido
+                    if ($this->aCaracteresSeparados[$iK] == ' ') {
+                        $iK++;
+                        $this->iCount--;
+                    } else {
+                        $this->aListadeTokensLex[] = ['?', 'Caractére não identificado', $this->qntTokens];
+                        break;
+                    }
                 }
                 //Regeita caractere não identificado
             } catch (Exception $ex) {
+                $this->aListadeTokensLex[] = ['?', 'Caractére não identificado', $this->qntTokens];
                 $sJson = '{"texto":"Estado não encontrado!"}';
                 return json_encode($sJson);
             }
         }
         $aListaTokenLexPer = array();
         $aListaTokenLexPer[0] = ['Token', 'Lexema', 'Posição'];
-        if ($this->qntTokens == 0) {
-            $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-        }
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
         foreach ($this->aListadeTokensLex as $aLex) {
@@ -123,5 +126,5 @@ class ControllerAnalisadorLexico extends Controller {
 
         return json_encode($sModal);
     }
-    
+
 }

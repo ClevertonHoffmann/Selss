@@ -1,1 +1,1 @@
-teste : prog ( a < 0 )\n casa teste asa meu chapeu
+teste : prog ( a < 0 ) casa teste asa meu chapeu                           
