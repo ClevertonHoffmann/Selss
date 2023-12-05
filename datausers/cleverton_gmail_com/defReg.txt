@@ -1,9 +1,11 @@
-asp:';
+prog:prog;
+dp:\:;
+ac:"{";
+fc:"}";
 menor:<;
 ap:(;
 fp:);
-prog:prog;
-dp:\:;
+atrib:=;
 mais:+;
 letras:[a-z]*;
 num:[0-9]*;

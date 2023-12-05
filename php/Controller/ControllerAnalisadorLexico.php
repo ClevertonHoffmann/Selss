@@ -49,7 +49,7 @@ class ControllerAnalisadorLexico extends Controller {
         $sTexto = $sCampos->{'texto'} . " ";
         $sText = str_replace("\n", " ", $sTexto);
 
-        $this->oPersistencia->gravaArquivo("codigoParaAnalise.txt", $sText);
+        $this->oPersistencia->gravaArquivo("codigoParaAnalise.txt", trim($sText));
 
         $this->InicializaAnalisadorLexico($sText);
 
@@ -58,7 +58,9 @@ class ControllerAnalisadorLexico extends Controller {
         while ($this->iCount > 0) {
             try {
                 //Aceita o caractere e avança uma posição na entrada tanto normal como com espaços
-                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK])) {
+                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') 
+                        || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) 
+                        && isset($this->aCaracteresSeparados[$iK]) && isset($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]])) {
                     //Estado com espaços
                     if ($this->aCaracteresSeparados[$iK] == " ") {
                         //Concatena até formar um token
@@ -89,7 +91,7 @@ class ControllerAnalisadorLexico extends Controller {
                         $iK++;
                         $this->iCount--;
                     } else {
-                        $this->aListadeTokensLex[] = ['?', 'Caractére não identificado', $this->qntTokens];
+                        $this->aListadeTokensLex[] = ['?', 'Caractére '.$this->aCaracteresSeparados[$iK].' não identificado', $this->qntTokens];
                         break;
                     }
                 }

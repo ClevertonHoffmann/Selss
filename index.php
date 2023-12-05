@@ -51,7 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $defReg = retornaTexto($pasta . '//defReg.txt');//Definições regulares do usuário no sistema
         $codigoParaAnalise = retornaTexto($pasta . '//codigoParaAnalise.txt');//Definições regulares do usuário no sistema
-
+        $defGram = retornaTexto($pasta . '//defGram.txt');//Definições gramatica do usuário no sistema
+        
         echo '<!DOCTYPE html>
                 <html lang="pt">    
                     <head>
@@ -123,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             </h6>
                                         </div>
                                         <div class="div text-justify">
-                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições da gramática\' onkeypress="analisaExpRegulares()"></textarea> 
+                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições da gramática\'>'.$defGram.'</textarea> 
                                         </div>
                                     </div>
                                 </nav>

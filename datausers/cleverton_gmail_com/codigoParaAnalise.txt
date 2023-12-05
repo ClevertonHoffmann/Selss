@@ -1,1 +1,1 @@
-teste : prog ( a < 0 ) casa teste asa meu chapeu                           
+prog : if ( a < 0 ) { a = b }

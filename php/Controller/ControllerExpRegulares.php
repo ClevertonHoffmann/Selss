@@ -25,7 +25,7 @@ class ControllerExpRegulares extends Controller {
         $sText = trim($sTexto);
 
         $this->oPersistencia->gravaArquivo("defReg.txt", $sText);
-        
+
         $sText2 = $this->analisador($sText);
 
         $sJson = '{"texto":"' . $sText2 . '"}';
@@ -284,14 +284,12 @@ class ControllerExpRegulares extends Controller {
 
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
                             if ($this->oModel->bCont && substr_count($this->oModel->aArray1[1], $sChar) == strlen($this->oModel->aArray1[1]) && strlen($this->oModel->aArray1[1]) > 1) {
-
                                 $this->funcaoAtribuicaoVariaveis2();
                             }
                             //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
                             if ($this->oModel->bCont && (preg_match("/[" . $this->oModel->aArray1[1] . "]/", $sChar) == 1) && strlen($this->oModel->aArray1[1]) > 1) {
                                 $aCarac = str_split($this->oModel->aArray1[1]);
                                 if ($aCarac[0] == $sChar) {
-
                                     $this->funcaoAtribuicaoVariaveis2();
                                 }
                             }
@@ -316,8 +314,8 @@ class ControllerExpRegulares extends Controller {
         //Função que aceita o :
         if (strpos($sVal, '\:') !== false) {
             $aArray2 = explode(':', $sVal);
-            $this->oModel->aArray1[0] = $aArray2[0];
-            $this->oModel->aArray1[1] = ":";
+            $this->oModel->aArray1[0] = trim($aArray2[0]);
+            $this->oModel->aArray1[1] = ':';
         } else {
             $this->oModel->aArray1 = explode(':', $sVal);
             $this->oModel->aArray1[0] = trim($this->oModel->aArray1[0]); //Remove espaços em branco
@@ -401,10 +399,10 @@ class ControllerExpRegulares extends Controller {
                 if ($aCarac[0] == $sChar) {
                     $this->oModel->aPalavrasReservadas[] = [trim($this->oModel->aArray1[0]), trim($this->oModel->aArray1[0])]; //Preenche array com as palavras chaves para posterior salvar em csv
                     $this->oModel->aArrayPalavraChave[trim($this->oModel->aArray1[0])] = trim($this->oModel->aArray1[0]); //Armazena palavras chaves para analise posterior
-                    $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes; //Realiza controle dos estados das palavras reservadas
+                //    $this->oModel->iEst = $this->oModel->iEst + $this->oModel->iEstRes; //Realiza controle dos estados das palavras reservadas
                     $this->funcaoAtribuicaoVariaveis2();
-                    $this->oModel->iEstRes++;
-                    $this->oModel->iEst = $this->oModel->iEst - $this->oModel->iEstRes - 1;
+                //    $this->oModel->iEstRes++;
+                //    $this->oModel->iEst = $this->oModel->iEst - $this->oModel->iEstRes - 1;
                 }
             }
         }
@@ -413,6 +411,7 @@ class ControllerExpRegulares extends Controller {
     /*
      * Monta os estados de transição e final
      */
+
     public function montaEstadosTransicao() {
 
         $this->oModel->iPos++;
@@ -451,7 +450,6 @@ class ControllerExpRegulares extends Controller {
                 $this->funcaoAtribuicaoComposta($aVal, $sChar); //Expressões compostas por outras expressões
 
                 $this->funçãoAtribuicaoCuringa($sChar, $aToken); //Expressões compostas por + ou *
-                
                 //Coloca -1 em todas as posições que não possuem transição na tabela
                 if ($this->oModel->bCont) {
                     $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = -1;
@@ -528,12 +526,13 @@ class ControllerExpRegulares extends Controller {
                         $sChave = trim($aArrayComp[$sKey1 + 1]);
                         $sExp2 = $this->oModel->aArrayExprEst[$sChave][1];
                         if ((preg_match("/^" . $sExp2 . "$/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+
+                            $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iEst;
+                            $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = [$key, $aArrayComp];
                             if ($this->oModel->iki == 0) {
                                 $this->oModel->iEst++;
                                 $this->oModel->iki++;
                             }
-                            $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iEst;
-                            $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = [$key, $aArrayComp];
                             $this->oModel->bCont = false;
                         }
                     }
@@ -551,33 +550,30 @@ class ControllerExpRegulares extends Controller {
             if (preg_match("/^" . $aToken[1] . "$/", $sChar) == 1 && (strpos($aToken[1], '*') !== false || strpos($aToken[1], '+') !== false)) {
                 $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
                 $this->oModel->bCont = false;
-            }
-            else {
+            } else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
                 if (isset($this->oModel->aArrayPalavraChave[$aToken[0]])) {
                     foreach ($this->oModel->aArrayExprEst as $sKey1 => $aLexic) {
-                            if (preg_match("/^" . $aLexic[1] . "$/", $sChar) == 1 &&
+                        if (preg_match("/^" . $aLexic[1] . "$/", $sChar) == 1 &&
                                 preg_match("/^" . $aLexic[1] . "$/", $aToken[0]) == 1 &&
                                 (strpos($aLexic[1], '*') !== false || strpos($aLexic[1], '+') !== false)) {
+
+                            $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = [$sKey1, $aLexic[1]];
+                            $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iEst;
                             if ($this->oModel->iki == 0) {
                                 $this->oModel->iEst++;
                                 $this->oModel->iki++;
                             }
-                            $this->oModel->aArrayEstTokenExpr[$this->oModel->iEst] = [$sKey1,$aLexic[1]];
-                            $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iEst;
                             $this->oModel->bCont = false;
                         }
-                        
                     }
-                }else{
-                //Verifica se um estado final de atribuição composta necessita emplimento do mesmo, no ex soma:{mais}{num}; onde num:[0-9]*;
-                    if(isset($aToken[1][1])){ //Verifica se existe variáveis
-                        if(isset($this->oModel->aArrayExprEst[$aToken[1][1]][1])){
-                            if(preg_match("/^" . $this->oModel->aArrayExprEst[$aToken[1][1]][1] . "$/", $sChar) == 1
-                                    && (strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '*') !== false 
-                                    || strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '+') !== false)) {
-                                        $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
-                                        $this->oModel->bCont = false;
+                } else {
+                    //Verifica se um estado final de atribuição composta necessita emplimento do mesmo, no ex soma:{mais}{num}; onde num:[0-9]*;
+                    if (isset($aToken[1][1])) { //Verifica se existe variáveis
+                        if (isset($this->oModel->aArrayExprEst[$aToken[1][1]][1])) {
+                            if (preg_match("/^" . $this->oModel->aArrayExprEst[$aToken[1][1]][1] . "$/", $sChar) == 1 && (strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '*') !== false || strpos($this->oModel->aArrayExprEst[$aToken[1][1]][1], '+') !== false)) {
+                                $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
+                                $this->oModel->bCont = false;
                             }
                         }
                     }

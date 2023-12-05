@@ -9,13 +9,25 @@ window.onload = (function () {
      */
     document.getElementById('defReg').addEventListener('keyup', analisaExpRegulares);
 
+    /**
+     * Responsável por chamar método para download da tabela do automato de análise léxica
+     */
     document.getElementById('downloadTabelaAnaliseLexica').addEventListener('click', function (event) {
         downloadTabela(event, 'tabelaAnaliseLexica.csv');
     });
     
+    /**
+     * Responsável por chamar método para download da tabela do resultado da análise léxica
+     */
     document.getElementById('downloadResultadoAnaliseLexica').addEventListener('click', function (event) {
         downloadTabela(event, 'resultadoAnaliseLexica.csv');
     });
+
+    /**
+     * Verifica se símbolos pertencem aos tokens válidos e separa 
+     * @returns retorna erros de especificação das expressões regulares
+     */
+    document.getElementById('defGram').addEventListener('keyup', analisaGramatica);
 
     //****Inicio fechar modal*****//
     var modal = document.getElementById('myModal');
@@ -144,4 +156,29 @@ function downloadTabela(event, nome) {
 
     // Simula um clique no link para iniciar o download
     link.click();
+}
+
+/**
+ * Analisa a gramática digitada pelo usuário
+ */
+function analisaGramatica() {
+    var defgram = $("#defGram").val();
+    var dataToSend = JSON.stringify({
+        "texto": defgram
+    });
+    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $("#saidaDefErros").val(JSON.parse(result).texto);
+    });
+}
+
+function loadFirstFollow() {
+    var defgram = $("#defGram").val();
+    var dataToSend = JSON.stringify({
+        "texto": defgram
+    });
+    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $("#saidaDefErros").val(JSON.parse(result).texto);
+    });
+    //Abre a modal
+   // openModalTabLex(dataToSend);
 }
