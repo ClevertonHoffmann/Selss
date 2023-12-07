@@ -1,1 +1,1 @@
-prog : if ( a < 0 ) { a = b }
+prog : if ( a < 0 )  { a = b } ;

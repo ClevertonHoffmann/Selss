@@ -12,7 +12,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     session_start();
 
     // Obtenha o email do formulário
-    $email = $_POST["email"];
+    $sEmail = $_POST["email"];
+    
+    // Obtenha o email do formulário
+    $sPass = $_POST["pass"];
+    
+    // Obtenha o email do formulário
+    $sModo = $_POST["modo"];
+    
+    if($sModo=='convidado'){
+        $sEmail = "teste@gmail.com";
+        
+    }
 
     //Variável para mostrar a tela principal caso seja válido o email
     $bEmailValido = false;
@@ -21,17 +32,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pasta = '';
 
     // Verifica se o email é válido
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (filter_var($sEmail, FILTER_VALIDATE_EMAIL)) {
 
         // Diretório para criar pasta de arquivos
         $diretorio = "datausers//";
 
         // Crie a pasta com o nome do email
-        $pasta = $diretorio . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $email);
+        $pasta = $diretorio . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $sEmail);
 
         //Salva valores iniciais na variável de sessão do usuário
         $_SESSION['diretorio'] = "..//" . $pasta;
-        $_SESSION['email'] = $email;
+        $_SESSION['email'] = $sEmail;
 
         // Verifique se a pasta já existe
         if (!file_exists($pasta)) {
@@ -77,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="dropdown-content">
                                     <a href="#">Link 1</a>
                                     <a href="#">Link 2</a>
-                                    <a href="#">Link 3</a>
+                                    <a href="#">Documentação</a>
                                 </div>
                             </div>
                             <h4 class="mx-auto" style="font-size:calc(5px + 1vw)">SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E

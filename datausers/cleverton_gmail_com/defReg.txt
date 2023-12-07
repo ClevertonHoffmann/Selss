@@ -1,3 +1,6 @@
+9e:9e;
+if:if;
+teste:teste;
 prog:prog;
 dp:\:;
 ac:"{";

@@ -19,3 +19,22 @@ if (location.search.includes("erro=email_invalido")) {
 if (location.search.includes("erro=login_invalido")) {
     showToast("Atenção ocorreu algum erro de login!", "erro");
 }
+
+function mostrarSenha() {
+    var senhaInput = document.getElementById("pass");
+    var olhoIcon = document.getElementById("olho");
+
+    if (senhaInput.type === "password") {
+        senhaInput.type = "text";
+        olhoIcon.src = "https://cdn0.iconfinder.com/data/icons/ui-icons-pack/100/ui-icon-pack-15-512.png"; // ícone de olho aberto
+    } else {
+        senhaInput.type = "password";
+        olhoIcon.src = "https://cdn0.iconfinder.com/data/icons/ui-icons-pack/100/ui-icon-pack-14-512.png"; // ícone de olho fechado
+    }
+}
+
+document.getElementById('btnConvidado').addEventListener('click', function() {
+    // Atualiza o valor do campo oculto "modo"
+    document.querySelector('input[name="modo"]').value = "convidado";
+    document.querySelector('.login-form').submit();
+});
