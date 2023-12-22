@@ -1,17 +1,17 @@
 <?php
 
 class ViewSistema {
-    
-    public function retornaTelaSistema(){
-        
+
+    public function retornaTelaSistema() {
+
         $defReg = '';
         $codigoParaAnalise = '';
         $defGram = '';
-        
-       // $defReg = retornaTexto($pasta . '//defReg.txt');//Definições regulares do usuário no sistema
-       // $codigoParaAnalise = retornaTexto($pasta . '//codigoParaAnalise.txt');//Definições regulares do usuário no sistema
-       // $defGram = retornaTexto($pasta . '//defGram.txt');//Definições gramatica do usuário no sistema
-        
+
+        // $defReg = retornaTexto($pasta . '//defReg.txt');//Definições regulares do usuário no sistema
+        // $codigoParaAnalise = retornaTexto($pasta . '//codigoParaAnalise.txt');//Definições regulares do usuário no sistema
+        // $defGram = retornaTexto($pasta . '//defGram.txt');//Definições gramatica do usuário no sistema
+
         return '<!DOCTYPE html>
                 <html lang="pt">    
                     <head>
@@ -42,6 +42,14 @@ class ViewSistema {
                             <h4 class="mx-auto" style="font-size:calc(5px + 1vw)">SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
                                 SEMÂNTICO
                             </h4>
+                            <button class="btn btn-sm btn-outline-secondary me-1 "id="btnSair">Sair</button>
+                            <div id="modalSair" class="modal">
+                                <div class="modal-content-sair">
+                                        <p><h4>Você tem certeza que deseja sair?</h4></p>
+                                        <button class="btsairLogout" id="btnSairLogout">Sim, Sair</button>
+                                        <button class="btcancelarLogout" id="cancelarLogout">Cancelar</button>
+                                </div>
+                            </div>
                         </nav>
                         <nav class="navbar p-1" style="background:#e3f2fd;">
                             <div style="width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;">
@@ -83,7 +91,7 @@ class ViewSistema {
                                             </h6>
                                         </div>
                                         <div class="div text-justify">
-                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições da gramática\'>'.$defGram.'</textarea> 
+                                            <textarea id="defGram" name="defGram" style="width: calc(26vw); height: calc(50vh);" placeholder=\'Escreva as definições da gramática\'>' . $defGram . '</textarea> 
                                         </div>
                                     </div>
                                 </nav>
@@ -108,7 +116,7 @@ class ViewSistema {
                                             </h6>
                                         </div>
                                         <div class="div p-1 text-justify">
-                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(22vh);" placeholder=\'Escreva o código a ser analisado\' >'.$codigoParaAnalise.'</textarea> 
+                                            <textarea id="codTest" name="codTest" style="width: calc(41vw); height: calc(22vh);" placeholder=\'Escreva o código a ser analisado\' >' . $codigoParaAnalise . '</textarea> 
                                         </div>
                                     </div>
                                     <div style="width: calc(42vw); height: calc(27vh); background-color: rgba(0,0,255,0.1);">
@@ -168,7 +176,5 @@ class ViewSistema {
 
                 </html>
                 ';
-        
     }
-    
 }

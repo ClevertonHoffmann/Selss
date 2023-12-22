@@ -15,7 +15,7 @@ window.onload = (function () {
     document.getElementById('downloadTabelaAnaliseLexica').addEventListener('click', function (event) {
         downloadTabela(event, 'tabelaAnaliseLexica.csv');
     });
-    
+
     /**
      * Responsável por chamar método para download da tabela do resultado da análise léxica
      */
@@ -28,6 +28,21 @@ window.onload = (function () {
      * @returns retorna erros de especificação das expressões regulares
      */
     document.getElementById('defGram').addEventListener('keyup', analisaGramatica);
+
+    /**
+     * Abre a modal para sair do sistema
+     */
+    document.getElementById('btnSair').addEventListener('click', openModalSair);
+
+    /**
+     * Chama a função que realiza o logout do sistema
+     */
+    document.getElementById('btnSairLogout').addEventListener('click', logout);
+
+    /**
+     * Fecha a modal de logout caso não seja do interesse de sair do sistema
+     */
+    document.getElementById('cancelarLogout').addEventListener('click', closeModalSair);
 
     //****Inicio fechar modal*****//
     var modal = document.getElementById('myModal');
@@ -180,5 +195,24 @@ function loadFirstFollow() {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
     //Abre a modal
-   // openModalTabLex(dataToSend);
+    // openModalTabLex(dataToSend);
+}
+
+function openModalSair() {
+    document.getElementById("modalSair").style.display = "block";
+}
+
+function closeModalSair() {
+    document.getElementById("modalSair").style.display = "none";
+}
+
+function logout() {
+    document.getElementById("modalSair").style.display = "none";
+    var dataToSend = JSON.stringify({
+        "texto": "logout"
+    });
+    var teste;
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    });
+    window.location.href = 'index.php';
 }

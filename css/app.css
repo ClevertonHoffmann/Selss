@@ -79,7 +79,7 @@ code:before{
     height: auto;
     max-height: 80%;
     overflow: auto;
-    position: relative; 
+    position: relative;
 }
 
 .modal-header-wrapper {
@@ -132,10 +132,73 @@ code:before{
 
 /* Adicione este trecho para definir larguras dinâmicas */
 .modal-table th, .modal-table td {
-  width: calc(100%/3); /* Define largura para 3 colunas igualmente */
+    width: calc(100%/3); /* Define largura para 3 colunas igualmente */
 }
 
 /* Se houver 4 ou mais colunas, mantenha a largura igual */
 .modal-table th:nth-child(n+4), .modal-table td:nth-child(n+4) {
-  width: calc(100%/4); /* Define largura para 4 ou mais colunas igualmente */
+    width: calc(100%/4); /* Define largura para 4 ou mais colunas igualmente */
+}
+
+.modalSair{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content-sair {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 30%;
+    max-width: 80%;
+    height: auto;
+    max-height: 80%;
+    overflow: auto;
+    position: relative;
+}
+
+.btsairLogout {
+    background-color: #1ad111;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btsairLogout:hover {
+    background-color: green;
+}
+
+.btsairLogout:focus {
+    outline: none;
+    box-shadow: 0 0 5px #ff0000;
+}
+
+.btcancelarLogout {
+    background-color: #ff0000;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btcancelarLogout:hover {
+    background-color: #cc0000;
+}
+
+.btcancelarLogout:focus {
+    outline: none;
+    box-shadow: 0 0 5px #ff0000;
 }

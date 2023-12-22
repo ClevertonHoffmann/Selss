@@ -22,9 +22,20 @@ class ControllerSistema extends Controller {
 
         if (!$bLogin) {
             return $oControllerLogin->mostraTelaLogin($sDados);
-        } else {     
+        } else {
             return $this->oView->retornaTelaSistema();
         }
     }
 
+    /**
+     * Método responsável por realizar o logout do sistema
+     */
+    public function realizaLogout($sDados) {
+        session_start();
+        session_destroy();
+        $_SESSION = array();
+        //header('Location: index.php');
+       // $sJson = '{"retorno":false}';
+       // return $sJson;
+    }
 }

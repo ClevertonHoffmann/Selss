@@ -36,21 +36,25 @@ class ControllerLogin extends Controller {
         //Pega valor do request POST
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-            // Obtenha o email do formulário
+            // Obtem o email do formulário
             $sEmail = $_POST["email"];
 
-            // Obtenha o email do formulário
+            // Obtem a senha do formulário
             $sSenha = $_POST["pass"];
             $sPass = password_hash($sSenha, PASSWORD_BCRYPT);
 
-            // Obtenha o email do formulário
-            $sModo = $_POST["modo"];
-
-            if ($sModo == 'convidado') {
-                $sEmail = "teste@gmail.com";
-            }
+            $bVal = false;//Valor a ser recebido caso e-mail com senha válido
             
-            password_verify($senha, $hash);
+            //Obtém o modo, convidado ou usuário
+            $sModo = $_POST["modo"];
+            
+            //Modo convidado senão modo usuário
+            if ($sModo == 'convidado') {
+               
+                
+            } else {
+               $bVal = true;//$this->oPersistencia->verificaEmailPass($sEmail, $sPass);
+            }
 
             //Variável para mostrar a tela principal caso seja válido o email
             $bEmailValido = false;
@@ -74,8 +78,7 @@ class ControllerLogin extends Controller {
                 $_SESSION['pass'] = $sPass;
                 $_SESSION['modo'] = $sModo;
 
-            //    $this->oPersistencia->gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray);
-                
+                //    $this->oPersistencia->gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray);
                 // Verifique se a pasta já existe
                 if (!file_exists($pasta)) {
                     // Crie a pasta
