@@ -44,3 +44,9 @@ document.getElementById('btnEntrar').addEventListener('click', function() {
     document.querySelector('input[name="modo"]').value = "entrar";
     document.querySelector('.login-form').submit();
 });
+
+document.getElementById('btnCadastro').addEventListener('click', function() {
+    // Atualiza o valor do campo oculto "modo"
+    document.querySelector('input[name="modo"]').value = "cadastro";
+    document.querySelector('.login-form').submit();
+});

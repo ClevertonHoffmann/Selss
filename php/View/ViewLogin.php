@@ -33,6 +33,7 @@ class ViewLogin {
                                 <button type="submit" id="btnEntrar">Entrar</button>
                                 <br>
                                 <button type="button" id="btnConvidado">Convidado</button>
+                                <button type="button" id="btnCadastro">Cadastro</button>
                             </form>
                         </div>
                         <div id="toast-container"></div>
@@ -42,5 +43,4 @@ class ViewLogin {
                     ';
         return $sLogin;
     }
-
 }

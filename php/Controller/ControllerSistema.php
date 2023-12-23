@@ -34,8 +34,6 @@ class ControllerSistema extends Controller {
         session_start();
         session_destroy();
         $_SESSION = array();
-        //header('Location: index.php');
-       // $sJson = '{"retorno":false}';
-       // return $sJson;
+        return true;
     }
 }

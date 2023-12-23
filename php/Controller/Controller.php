@@ -30,4 +30,14 @@ class Controller{
        return new $sNomeClasse();
     }
     
+    /**
+     *         $this->Mensagem('Convidado', 1);
+     * Método responsável por exibir as mensagens do sistema
+     * @param type $sMensagem
+     * @param type $iTipo SUCCESS = 1; INFO = 2; WARNING = 3; ERROR = 4;
+     */
+    public function Mensagem($sMensagem, $iTipo){
+        return Mensagem::exibirToast($sMensagem, $iTipo);
+    }
+    
 }

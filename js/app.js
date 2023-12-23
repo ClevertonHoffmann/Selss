@@ -198,20 +198,28 @@ function loadFirstFollow() {
     // openModalTabLex(dataToSend);
 }
 
+/**
+ * Abre a modal de logout do sistema
+ */
 function openModalSair() {
     document.getElementById("modalSair").style.display = "block";
 }
 
+/*
+ * Fecha a modal de sair do sistema
+ */
 function closeModalSair() {
     document.getElementById("modalSair").style.display = "none";
 }
 
+/**
+ * Realiza o Logout do sistema
+ */
 function logout() {
-    document.getElementById("modalSair").style.display = "none";
+    closeModalSair();
     var dataToSend = JSON.stringify({
         "texto": "logout"
     });
-    var teste;
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
     });
     window.location.href = 'index.php';

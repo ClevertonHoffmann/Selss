@@ -4,13 +4,10 @@ class ViewSistema {
 
     public function retornaTelaSistema() {
 
-        $defReg = '';
-        $codigoParaAnalise = '';
-        $defGram = '';
-
-        // $defReg = retornaTexto($pasta . '//defReg.txt');//Definições regulares do usuário no sistema
-        // $codigoParaAnalise = retornaTexto($pasta . '//codigoParaAnalise.txt');//Definições regulares do usuário no sistema
-        // $defGram = retornaTexto($pasta . '//defGram.txt');//Definições gramatica do usuário no sistema
+        $pasta = $_SESSION['pasta'];
+        $defReg = $this->retornaTexto($pasta . '//defReg.txt'); //Definições regulares do usuário no sistema
+        $codigoParaAnalise = $this->retornaTexto($pasta . '//codigoParaAnalise.txt'); //Definições regulares do usuário no sistema
+        $defGram = $this->retornaTexto($pasta . '//defGram.txt'); //Definições gramatica do usuário no sistema
 
         return '<!DOCTYPE html>
                 <html lang="pt">    
@@ -176,5 +173,20 @@ class ViewSistema {
 
                 </html>
                 ';
+    }
+
+    /**
+     * Função que realiza a leitura para retornar caso já exista os arquivos pré-carregados no sistema
+     * @param type $sNome
+     * @return string
+     */
+    function retornaTexto($sNome) {
+        // Verifica se o arquivo existe
+        if (file_exists($sNome)) {
+            // Lê o conteúdo do arquivo e retorna
+            return file_get_contents($sNome);
+        } else {
+            return '';
+        }
     }
 }

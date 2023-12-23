@@ -45,7 +45,8 @@ if ($sClasse != "" && $sMetodo != "") {
 //Carrega as classes das pastas inicialmente sem precisar ficando dando require_once
 function custom_autoloader($class) {
     // Diretórios a serem pesquisados para as classes
-    $directories = ['config/', 
+    $directories = ['config/',
+                    'php/biblioteca/', 
                     'php/Controller/', 
                     'php/Model/', 
                     'php/Persistencia/', 
