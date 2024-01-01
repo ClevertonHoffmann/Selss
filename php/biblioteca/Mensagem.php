@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Classe responsável por exibir as menagens no sistema
+ * Classe responsável por exibir as mensagens no sistema
  */
 class Mensagem {
     
@@ -15,7 +15,7 @@ class Mensagem {
      * @param string $sMensagem
      * @param int $iTipo SUCCESS = 1; INFO = 2; WARNING = 3; ERROR = 4;
      */
-    public static function exibirToast($sMensagem, $iTipo = self::SUCCESS) {
+    public function exibirToast($sMensagem, $iTipo = self::SUCCESS) {
         $tiposValidos = [self::SUCCESS, self::INFO, self::WARNING, self::ERROR];
 
         // Verifica se o tipo fornecido é válido
@@ -24,14 +24,14 @@ class Mensagem {
         }
 
         $tipoNomes = [
-            self::SUCCESS => 'success',
-            self::INFO => 'info',
-            self::WARNING => 'warning',
-            self::ERROR => 'error'
+            self::SUCCESS => 'successMsg',
+            self::INFO => 'infoMsg',
+            self::WARNING => 'warningMsg',
+            self::ERROR => 'erroMsg'
         ];
 
-        // Inclui o estilo diretamente no echo
-        echo "<div class='toast toast-" . $tipoNomes[$iTipo] . "' style='background-color: #e5e5e5; border: 1px solid #ccc; padding: 10px; margin: 10px; color: #333;'>$sMensagem</div>";
+        echo "<script>var ".$tipoNomes[$iTipo]." = '".$sMensagem."';</script>";
+        
     }
 }
 

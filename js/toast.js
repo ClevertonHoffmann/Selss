@@ -9,15 +9,31 @@ function showToast(message, type) {
     // Após 3 segundos, ocultar o toast
     setTimeout(() => {
         toast.remove();
-    }, 3000);
+    }, 5000);
 }
 
-// Verifique se há um erro no parâmetro GET
-if (location.search.includes("erro=email_invalido")) {
-    showToast("O email inserido é inválido!", "erro");
+// Verifica se há uma mensagem de erro definida
+if (typeof erroMsg !== 'undefined') {
+    showToast(erroMsg, "toast-error");
+    erroMsg = 'undefined';
 }
-if (location.search.includes("erro=login_invalido")) {
-    showToast("Atenção ocorreu algum erro de login!", "erro");
+
+// Verifica se há uma mensagem de erro definida
+if (typeof infoMsg !== 'undefined') {
+    showToast(infoMsg, "toast-info");
+    infoMsg = 'undefined';
+}
+
+// Verifica se há uma mensagem de erro definida
+if (typeof warningMsg !== 'undefined') {
+    showToast(warningMsg, "toast-warning");
+    warningMsg = 'undefined';
+}
+
+// Verifica se há uma mensagem de erro definida
+if (typeof successMsg !== 'undefined') {
+    showToast(successMsg, "toast-success");
+    successMsg = 'undefined';
 }
 
 function mostrarSenha() {

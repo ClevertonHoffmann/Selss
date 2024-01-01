@@ -35,7 +35,7 @@ if($sClasse == "" && $sMetodo == ""){
 
 if ($sClasse != "" && $sMetodo != "") {
     if (isset($_REQUEST['dados'])) {
-
+        
         $Controller = new $sClasse();
 
         echo $Controller->$sMetodo($_REQUEST['dados']);

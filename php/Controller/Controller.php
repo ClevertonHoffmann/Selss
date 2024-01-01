@@ -31,13 +31,14 @@ class Controller{
     }
     
     /**
-     *         $this->Mensagem('Convidado', 1);
+     * $this->Mensagem('Mensagem a ser apresentada', 1);
      * Método responsável por exibir as mensagens do sistema
      * @param type $sMensagem
      * @param type $iTipo SUCCESS = 1; INFO = 2; WARNING = 3; ERROR = 4;
      */
     public function Mensagem($sMensagem, $iTipo){
-        return Mensagem::exibirToast($sMensagem, $iTipo);
+        $oMensagem = new Mensagem();
+        $oMensagem->exibirToast($sMensagem, $iTipo);
     }
     
 }

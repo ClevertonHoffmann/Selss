@@ -97,12 +97,13 @@ class ControllerLogin extends Controller {
 
                 //Apresenta a tela inicial do sistema
                 if ($bEmailValido) {
+                    $this->Mensagem('Bem vindo ao sistema!', 1);
                     return true;
                 }else{
                     return false;
                 }
             } else {
-                header("Location:index.php?metodo=login_invalido");
+                $this->Mensagem('TESTE DO SISTEMA', 4);
                 return false;
             }
         } else {
