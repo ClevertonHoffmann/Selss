@@ -70,7 +70,7 @@ function analisaExpRegulares() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
 }
@@ -85,7 +85,7 @@ function loadTabLexica() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
     //Abre a modal
@@ -100,7 +100,7 @@ function openModalTabLex(dataToSend) {
     div.innerHTML = '';
     document.getElementById("myModal").style.display = "block";
     setTimeout(function () {
-        $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerExpRegulares&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
             var div = document.getElementById('csvData');
             // Altera o conteúdo da div
             div.innerHTML = result;
@@ -126,7 +126,7 @@ function analiseLexica() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerAnalisadorLexico&metodo=analiseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerAnalisadorLexico&metodo=analiseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaAnalise").val(JSON.parse(result).texto);
     });
     //Abre a modal
@@ -141,7 +141,7 @@ function openModalResLex(dataToSend) {
     div.innerHTML = '';
     document.getElementById("myModal2").style.display = "block";
     setTimeout(function () {
-        $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerAnalisadorLexico&metodo=mostraModalResultadoAnaliseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $.getJSON("http://localhost/Selss/index.php?classe=ControllerAnalisadorLexico&metodo=mostraModalResultadoAnaliseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
             var div = document.getElementById('csvData2');
             // Altera o conteúdo da div
             div.innerHTML = result;
@@ -181,7 +181,7 @@ function analisaGramatica() {
     var dataToSend = JSON.stringify({
         "texto": defgram
     });
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
 }
@@ -191,7 +191,7 @@ function loadFirstFollow() {
     var dataToSend = JSON.stringify({
         "texto": defgram
     });
-    $.getJSON("http://localhost/Selss/php/principal.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
     //Abre a modal

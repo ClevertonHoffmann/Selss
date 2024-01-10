@@ -38,21 +38,10 @@ class PersistenciaLogin extends Persistencia {
      * @return type
      */
     public function cadastraUsuario($sEmail, $sPass) {
+        
         $pdo = Conexao::getInstance();
 
-        // Verificar se o e-mail já está cadastrado
-        $verificarEmailSql = "SELECT COUNT(*) FROM tbusuarios WHERE email = :email";
-        $verificarEmailQuery = $pdo->prepare($verificarEmailSql);
-        $verificarEmailQuery->bindParam(':email', $sEmail);
-        $verificarEmailQuery->execute();
-        $emailExistente = $verificarEmailQuery->fetchColumn();
-
-        if ($emailExistente > 0) {
-            // Usuário com o mesmo e-mail já cadastrado, retornar falso ou tratar de acordo
-            return false;
-        }
-
-        // Corrigindo a string SQL e usando prepared statement para prevenir SQL injection
+        //SQL usando prepared statement para prevenir SQL injection
         $inserirUsuarioSql = "INSERT INTO tbusuarios (email, senha) VALUES (:email, :senha)";
 
         // Preparando a query

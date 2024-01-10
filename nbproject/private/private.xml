@@ -6,12 +6,12 @@
             <file>file:/C:/xampp/htdocs/Selss/js/app.js</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerSistema.php</file>
             <file>file:/C:/xampp/htdocs/Selss/js/toast.js</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewLogin.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/css/toast.css</file>
+            <file>file:/C:/xampp/htdocs/Selss/index.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/biblioteca/Mensagem.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/Controller.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/View/ViewSistema.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerLogin.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerExpRegulares.php</file>
         </group>
     </open-files>
 </project-private>

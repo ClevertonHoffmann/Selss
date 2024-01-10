@@ -42,20 +42,30 @@ class ControllerLogin extends Controller {
             $sSenha = $_POST["pass"];
             $sPass = password_hash($sSenha, PASSWORD_BCRYPT);
 
-            $bVal = false; //Valor a ser recebido caso e-mail com senha válido
             //Obtém o modo, convidado ou usuário
             $sModo = $_POST["modo"];
 
-            //Opta pelo modo sendo os possíveis: convidado, cadastro, usuário
-            switch ($sModo) {
-                case "convidado":
-                    //////////////////////////////////////////
-                    break;
-                case "cadastro":
-                    $bVal = $this->oPersistencia->cadastraUsuario($sEmail, $sPass);
-                    break;
-                default:
-                    $bVal = $this->oPersistencia->verificaEmailPass($sEmail, $sSenha);
+            //Valor a ser recebido caso e-mail com senha válido
+            $bVal = $this->oPersistencia->verificaEmailPass($sEmail, $sSenha);
+
+            //Ignora modo convidado
+            if (!$bVal || $sModo=="convidado") {
+                //Opta pelo modo sendo os possíveis casos: convidado, cadastro (isso se diferente de usuário)
+                switch ($sModo) {
+                    case "convidado":
+                        $sSenha = $this->gerarNomeConvidado();
+                        $sEmail = $sSenha;
+                        $sPass = $sSenha;
+                        $bVal = true;
+                        break;
+                    case "cadastro":
+                        
+                        $bVal = $this->oPersistencia->cadastraUsuario($sEmail, $sPass);
+                        
+                        break;
+                    default :
+                        $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
+                }
             }
 
             if ($bVal) {
@@ -65,8 +75,8 @@ class ControllerLogin extends Controller {
                 //Pasta que inicializa em branco caso exista traz o conteúdo dos arquivos
                 $pasta = '';
 
-                // Verifica se o email é válido
-                if (filter_var($sEmail, FILTER_VALIDATE_EMAIL)) {
+                // Verifica se o email é válido e ignora quando for modo convidado
+                if (filter_var($sEmail, FILTER_VALIDATE_EMAIL) || $sModo=="convidado") {
 
                     // Diretório para criar pasta de arquivos
                     $diretorio = "datausers//";
@@ -99,11 +109,11 @@ class ControllerLogin extends Controller {
                 if ($bEmailValido) {
                     $this->Mensagem('Bem vindo ao sistema!', 1);
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             } else {
-                $this->Mensagem('TESTE DO SISTEMA', 4);
+                $this->Mensagem('Email ou senha incorretos!', 4);
                 return false;
             }
         } else {
@@ -111,6 +121,19 @@ class ControllerLogin extends Controller {
         }
         //  header("Location: login.php?erro=email_invalido");
         // 
-        
+    }
+
+    // Função para gerar um nome de convidado único
+    public function gerarNomeConvidado() {
+        // Obter timestamp atual
+        $timestamp = time();
+
+        // Gerar identificador único
+        $identificadorUnico = uniqid();
+
+        // Concatenar timestamp e identificador único para criar um nome único
+        $nomeConvidado = "convidado" . $timestamp . "@" . $identificadorUnico;
+
+        return $nomeConvidado;
     }
 }

@@ -25,10 +25,10 @@ class ViewSistema {
 
                     </head>
                     <body> 
-                        <nav class="navbar p-0" style="background:#e3f2fd; display:flex;">
+                        <nav class="navbar p-1" style="background:#e3f2fd; display:flex;">
                             <div class="dropdown p-1">
                                 <button class="dropbtn" type="button" id="dropdownMenu1" data-bs-toggle="dropdown" style="background:cornflowerblue;">
-                                    <span class="icon-asset material-icons ng-star-inserted" style="font-size: calc(1.7vw); width: calc(1.7vw); height: calc(1vh)">menu</span>
+                                    <span class="icon-asset material-icons ng-star-inserted" style="font-size: calc(1vw); width: calc(1vw); height: calc(1vh)">menu</span>
                                 </button>
                                 <div class="dropdown-content">
                                     <a href="#">Link 1</a>
@@ -39,7 +39,7 @@ class ViewSistema {
                             <h4 class="mx-auto" style="font-size:calc(5px + 1vw)">SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
                                 SEMÂNTICO
                             </h4>
-                            <button class="btn btn-sm btn-outline-secondary me-1 "id="btnSair">Sair</button>
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="btnSair">Sair</button>
                             <div id="modalSair" class="modal">
                                 <div class="modal-content-sair">
                                         <p><h4>Você tem certeza que deseja sair?</h4></p>
@@ -170,7 +170,6 @@ class ViewSistema {
                             </div>
                         </div>
                     </body>
-
                 </html>
                 ';
     }
