@@ -13,7 +13,7 @@ if (isset($_GET['arquivo'])) {
     $nomeArquivo = $_GET['arquivo'];
 
     // Caminho para o arquivo no servidor
-    $caminhoArquivo = '../'.$sDiretorio.'/' . $nomeArquivo;
+    $caminhoArquivo = '../../'.$sDiretorio.'/' . $nomeArquivo;
 
     // Verifique se o arquivo existe
     if (file_exists($caminhoArquivo)) {

@@ -62,6 +62,35 @@ window.onload = (function () {
     }
     //****Fim fechar modais*****//
 
+
+//    var botaoAjuda = document.getElementById("botaoAjuda");
+//var caixaAjuda = document.getElementById("caixaAjuda");
+//var textoAjuda = document.getElementById("textoAjuda");
+//
+//// Defina o texto da ajuda desejado
+//var textoAjudaConteudo = "Novo texto de ajuda ou explicação.";
+//
+//botaoAjuda.addEventListener("click", function() {
+//  exibirAjuda(textoAjudaConteudo);
+//});
+//
+//function exibirAjuda(texto) {
+//  textoAjuda.textContent = texto;
+//  caixaAjuda.style.display = "block";
+//}
+//
+//document.addEventListener("click", function(e) {
+//  // Esconder a caixa de ajuda se o clique não foi no botão ou na própria caixa de ajuda
+//  if (e.target !== botaoAjuda && e.target !== caixaAjuda) {
+//    caixaAjuda.style.display = "none";
+//  }
+//});
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
+
 });
 
 

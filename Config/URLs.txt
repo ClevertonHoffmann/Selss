@@ -1,6 +1,7 @@
 Importantes:
 https://github.com/ClevertonHoffmann/Selss
 
+https://getbootstrap.com.br/docs/4.1/components/tooltips/
 
 
 Todos:

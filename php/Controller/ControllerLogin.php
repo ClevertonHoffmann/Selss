@@ -59,9 +59,17 @@ class ControllerLogin extends Controller {
                         $bVal = true;
                         break;
                     case "cadastro":
-                        
+                        if(trim($sEmail)==''||$sEmail==null){
+                            $this->Mensagem('Não é possível cadastrar sem email!', 4);
+                            return false;
+                        }
                         $bVal = $this->oPersistencia->cadastraUsuario($sEmail, $sPass);
-                        
+                        if($bVal){
+                            $this->Mensagem('Cadastro realizado com sucesso!', 1);
+                        }else{
+                            $this->Mensagem('Não é possível Cadastrar, Email já cadastrado!', 4);
+                            return false;
+                        }
                         break;
                     default :
                         $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
@@ -86,7 +94,7 @@ class ControllerLogin extends Controller {
 
                     //Salva valores iniciais na variável de sessão do usuário
                     $_SESSION['pasta'] = $pasta;
-                    $_SESSION['diretorio'] = "..//" . $pasta;
+                    $_SESSION['diretorio'] = $pasta;
                     $_SESSION['email'] = $sEmail;
                     $_SESSION['pass'] = $sPass;
                     $_SESSION['modo'] = $sModo;
@@ -119,8 +127,6 @@ class ControllerLogin extends Controller {
         } else {
             return false;
         }
-        //  header("Location: login.php?erro=email_invalido");
-        // 
     }
 
     // Função para gerar um nome de convidado único
