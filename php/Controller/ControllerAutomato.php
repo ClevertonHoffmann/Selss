@@ -10,4 +10,12 @@ class ControllerAutomato extends Controller {
         $this->carregaClasses('Automato');
     }
     
+    public function mostraModalAutomato($sTexto){
+        
+        $sModal = $this->oView->montaModalAutomato();
+        $this->oPersistencia->gravaArquivo("modalAutomato.html", $sModal);
+
+        return json_encode($sModal);
+    }
+        
 }

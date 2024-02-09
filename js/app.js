@@ -60,34 +60,18 @@ window.onload = (function () {
             closeModal2();
         }
     }
+    
+    var modal3 = document.getElementById('myModal3');
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal3();
+        }
+    }
     //****Fim fechar modais*****//
 
-
-//    var botaoAjuda = document.getElementById("botaoAjuda");
-//var caixaAjuda = document.getElementById("caixaAjuda");
-//var textoAjuda = document.getElementById("textoAjuda");
-//
-//// Defina o texto da ajuda desejado
-//var textoAjudaConteudo = "Novo texto de ajuda ou explicação.";
-//
-//botaoAjuda.addEventListener("click", function() {
-//  exibirAjuda(textoAjudaConteudo);
-//});
-//
-//function exibirAjuda(texto) {
-//  textoAjuda.textContent = texto;
-//  caixaAjuda.style.display = "block";
-//}
-//
-//document.addEventListener("click", function(e) {
-//  // Esconder a caixa de ajuda se o clique não foi no botão ou na própria caixa de ajuda
-//  if (e.target !== botaoAjuda && e.target !== caixaAjuda) {
-//    caixaAjuda.style.display = "none";
-//  }
-//});
-
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
 
@@ -187,6 +171,50 @@ function closeModal2() {
     var modal = document.getElementById('myModal2');
     modal.style.display = 'none';
 }
+
+/**
+ * Método que constroi o automato finito das expressões regulares gráficamente
+ * com base na tabela de transição utilizada na análise léxica
+ * @returns tela do automato finito
+ */
+function loadAutomato() {
+//    var defreg = $("#defReg").val();
+    var dataToSend = 'TESTE'; //JSON.stringify({
+//        "texto": defreg
+//    });
+//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+//        $("#saidaDefErros").val(JSON.parse(result).texto);
+//    });
+    //Abre a modal
+    openModalAutomato(dataToSend);
+}
+
+/*
+ * Responsável por chamar a classe para abrir a tela modal e apresentar o automato para análise léxica
+ */
+function openModalAutomato(dataToSend) {
+    var div = document.getElementById('csvData3');
+    div.innerHTML = '';
+    document.getElementById("myModal3").style.display = "block";
+    setTimeout(function () {
+        $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=mostraModalAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+            var div = document.getElementById('csvData3');
+            // Altera o conteúdo da div
+            div.innerHTML = result;
+        });
+    }, 5000);
+}
+
+/*
+ * Método responsável por fechar a modal da tabela de análise léxica
+ */
+function closeModal3() {
+    var div = document.getElementById('csvData3');
+    div.innerHTML = '';
+    var modal = document.getElementById('myModal3');
+    modal.style.display = 'none';
+}
+
 
 function downloadTabela(event, nome) {
     // Cria um elemento de link temporário

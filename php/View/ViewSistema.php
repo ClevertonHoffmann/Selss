@@ -75,7 +75,7 @@ class ViewSistema {
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
                                                 data-toggle='tooltip' data-placement='right' title='Gera a tabela do automato para análise léxica'>TABELA DE ANÁLISE
                                             LÉXICA</button>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadTabLexica()'
+                                        <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadAutomato()'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
                                                 data-toggle='tooltip' data-placement='right' title='Automato de análise léxica'>AUTÔMATO</button>
                                     </form>
@@ -188,6 +188,21 @@ class ViewSistema {
                             </div>
                         </div>";
         
+        //Modal autômato de análise léxica
+        $oTela .= "     <div id='myModal3' class='modal'>
+                            <div class='modal-content'>
+                                <div class='modal-header-wrapper'>
+                                    <div class='modal-header'>
+                                        <h2 class='mx-auto'>Autômato de análise léxica</h2>
+                                        <span class='close-button' onclick='closeModal3()'>&times;</span>
+                                    </div>
+                                </div>
+                                <div id='csvData3' class='modal-table'>
+                                    <!-- Conteúdo da tabela aqui -->
+                                </div>
+                            </div>
+                        </div>";
+        
         //Modal Resultado da Análise Léxica
         $oTela .= "     <div id='myModal2' class='modal'>
                             <div class='modal-content'>
@@ -206,6 +221,7 @@ class ViewSistema {
                     </body>
                 </html>
                 ";
+        
         
         return $oTela;
         
