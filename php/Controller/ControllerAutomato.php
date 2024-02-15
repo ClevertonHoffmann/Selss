@@ -10,9 +10,15 @@ class ControllerAutomato extends Controller {
         $this->carregaClasses('Automato');
     }
     
-    public function mostraModalAutomato($sTexto){
+    /**
+     * Monta e grava a pagina contendo o automato gráfico em html
+     * E Retorna o diretório do arquivo de html para ser aberto na nova tela
+     * @param type $sTexto
+     * @return type
+     */
+    public function gravaPaginaAutomato($sTexto){
         
-        $sModal = $this->oView->montaModalAutomato();
+        $sModal = $this->oView->montaPaginaAutomato();
         $this->oPersistencia->gravaArquivo("modalAutomato.html", $sModal);
 
         return json_encode($sModal);

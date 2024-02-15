@@ -60,14 +60,7 @@ window.onload = (function () {
             closeModal2();
         }
     }
-    
-    var modal3 = document.getElementById('myModal3');
 
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            closeModal3();
-        }
-    }
     //****Fim fechar modais*****//
 
     $(function () {
@@ -178,41 +171,15 @@ function closeModal2() {
  * @returns tela do automato finito
  */
 function loadAutomato() {
-//    var defreg = $("#defReg").val();
-    var dataToSend = 'TESTE'; //JSON.stringify({
-//        "texto": defreg
-//    });
-//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-//        $("#saidaDefErros").val(JSON.parse(result).texto);
-//    });
+    
+    var dataToSend = ''; 
+
+    $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $("#saidaDefErros").val(JSON.parse(result).texto);
+    });
+    
     //Abre a modal
-    openModalAutomato(dataToSend);
-}
-
-/*
- * Responsável por chamar a classe para abrir a tela modal e apresentar o automato para análise léxica
- */
-function openModalAutomato(dataToSend) {
-    var div = document.getElementById('csvData3');
-    div.innerHTML = '';
-    document.getElementById("myModal3").style.display = "block";
-    setTimeout(function () {
-        $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=mostraModalAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-            var div = document.getElementById('csvData3');
-            // Altera o conteúdo da div
-            div.innerHTML = result;
-        });
-    }, 5000);
-}
-
-/*
- * Método responsável por fechar a modal da tabela de análise léxica
- */
-function closeModal3() {
-    var div = document.getElementById('csvData3');
-    div.innerHTML = '';
-    var modal = document.getElementById('myModal3');
-    modal.style.display = 'none';
+    window.open("http://localhost/Selss/datausers/cleverton_gmail_com/modalAutomato.html", "minhaJanela", "height=800,width=800");
 }
 
 

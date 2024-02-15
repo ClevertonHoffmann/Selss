@@ -1,142 +1,102 @@
 <!DOCTYPE html>
-<html lang=\'pt-BR\'>
+<html lang="pt-BR">
 <head>
-  <meta charset=\'UTF-8\'>
-  <meta name=\'viewport' content='width=device-width, initial-scale=1.0\'>
-  <style>
-    /* Estilos para os estados e transições */
-    .estado {
-      fill: #99cc99;
-      stroke: #336633;
-    }
-
-    .transicao {
-      fill: none;
-      stroke: #333;
-      stroke-width: 2px;
-    }
-
-    .texto {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      fill: #333;
-    }
-
-    .estado-inicial {
-      fill: #99cc99;
-      stroke: #336633;
-      stroke-width: 2px;
-    }
-
-    .estado-final {
-      fill: #cc9999;
-      stroke: #993333;
-      stroke-width: 2px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desenhar e Conectar Círculos</title>
+    <style>
+        #canvas { border: 1px solid #000; cursor: pointer; }
+    </style>
 </head>
 <body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+        // Obtém o elemento canvas e seu contexto
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
 
-<svg width='600' height='400' id='automato'>
-  <!-- Elementos do autômato serão renderizados aqui -->
-</svg>
+        // Define as coordenadas dos círculos e seus rótulos
+        var circle1 = { x: 100, y: 100, radius: 20, isDragging: false, label: "q0" };
+        var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
 
-<script src=\'https://d3js.org/d3.v7.min.js\'></script>
-<script>
-  // Exemplo de dados para a tabela de transição
-  const tabelaTransicao = {
-    q0: { 0: 'q1', 1: 'q0' },
-    q1: { 0: 'q1', 1: 'q2' },
-    q2: { 0: 'q2', 1: 'q3' },
-    q3: { 0: 'q3', 1: 'q0' }
-  };
+        // Função para desenhar os círculos
+        function drawCircle(circle) {
+            // Desenha o círculo
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = "rgba(0, 149, 221, 0.5)"; // Azul claro para o preenchimento
+            ctx.fill();
+            ctx.strokeStyle = "#0095DD"; // Azul para o contorno
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
 
-  // Adiciona uma transição específica para a palavra reservada 'if'
-  tabelaTransicao.q2.i = 'q3';
-  tabelaTransicao.q3.f = 'q4';
+            // Desenha o rótulo
+            ctx.fillStyle = "#000"; // Cor preta para o texto
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(circle.label, circle.x, circle.y);
+        }
 
-  // Configuração do SVG
-  const svg = d3.select('#automato');
+        // Função para redesenhar toda a tela
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCircle(circle1);
+            drawCircle(circle2);
 
-  // Adiciona os estados ao SVG
-  const estados = svg.selectAll('.estado')
-    .data(Object.keys(tabelaTransicao))
-    .enter().append('circle')
-    .attr('class', d => d === 'q0' ? 'estado estado-inicial' : d === 'q4' ? 'estado estado-final' : 'estado')
-    .attr('r', 20)
-    .attr('cx', d => Math.random() * 600)
-    .attr('cy', d => Math.random() * 400)
-    .call(d3.drag()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended));
+            // Desenha a linha conectando as bordas dos círculos
+            ctx.beginPath();
+            ctx.moveTo(circle1.x + circle1.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
+                        circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+            ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
+                        circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+            ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+        }
 
-  // Adiciona texto dentro dos estados
-  const textos = svg.selectAll('.texto')
-    .data(Object.keys(tabelaTransicao))
-    .enter().append('text')
-    .attr('class', 'texto')
-    .attr('x', d => Math.random() * 600)
-    .attr('y', d => Math.random() * 400)
-    .attr('text-anchor', 'middle') // Alinha o texto no centro do círculo
-    .attr('dy', 5) // Desloca o texto para baixo para centralizá-lo verticalmente
-    .text(d => d);
+        // Função para verificar se o mouse está sobre um círculo
+        function isMouseOverCircle(mouseX, mouseY, circle) {
+            var dx = mouseX - circle.x;
+            var dy = mouseY - circle.y;
+            return dx * dx + dy * dy < circle.radius * circle.radius;
+        }
 
-  // Adiciona as transições ao SVG
-  const transicoes = svg.selectAll('.transicao')
-    .data(Object.entries(tabelaTransicao))
-    .enter().append('g')
-    .selectAll('line')
-    .data(d => Object.entries(d[1]))
-    .enter().append('line')
-    .attr('class', 'transicao')
-    .attr('x1', d => getXPos(d[0]))
-    .attr('y1', d => getYPos(d[0]))
-    .attr('x2', d => getXPos(d[1]))
-    .attr('y2', d => getYPos(d[1]));
+        // Evento de clique do mouse
+        canvas.addEventListener("mousedown", function(event) {
+            var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+            var mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
-  // Função de arrasto
-  function dragstarted(event, d) {
-    d3.select(this).raise().classed('active', true);
-  }
+            if (isMouseOverCircle(mouseX, mouseY, circle1)) {
+                circle1.isDragging = true;
+            } else if (isMouseOverCircle(mouseX, mouseY, circle2)) {
+                circle2.isDragging = true;
+            }
+        });
 
-  function dragged(event, d) {
-    d3.select(this).attr('cx', d.x = event.x).attr('cy', d.y = event.y);
-    updateTransicoes();
-    updateTextos();
-  }
+        // Evento de movimento do mouse
+        canvas.addEventListener("mousemove", function(event) {
+            if (circle1.isDragging) {
+                circle1.x = event.clientX - canvas.getBoundingClientRect().left;
+                circle1.y = event.clientY - canvas.getBoundingClientRect().top;
+                redraw();
+            } else if (circle2.isDragging) {
+                circle2.x = event.clientX - canvas.getBoundingClientRect().left;
+                circle2.y = event.clientY - canvas.getBoundingClientRect().top;
+                redraw();
+            }
+        });
 
-  function dragended(event, d) {
-    d3.select(this).classed('active', false);
-  }
+        // Evento de soltar o botão do mouse
+        canvas.addEventListener("mouseup", function() {
+            circle1.isDragging = false;
+            circle2.isDragging = false;
+        });
 
-  // Atualiza as posições das transições durante o arrasto
-  function updateTransicoes() {
-    transicoes
-      .attr('x1', d => getXPos(d[0]))
-      .attr('y1', d => getYPos(d[0]))
-      .attr('x2', d => getXPos(d[1]))
-      .attr('y2', d => getYPos(d[1]));
-  }
-
-  // Atualiza as posições dos textos durante o arrasto
-  function updateTextos() {
-    textos
-      .attr('x', d => getXPos(d))
-      .attr('y', d => getYPos(d));
-  }
-
-  // Funções auxiliares para obter as posições x e y com base no nome do estado
-  function getXPos(estado) {
-    const estadoSelecionado = estados.filter(node => node.__data__ === estado).node();
-    return parseFloat(estadoSelecionado.getAttribute('cx'));
-  }
-
-  function getYPos(estado) {
-    const estadoSelecionado = estados.filter(node => node.__data__ === estado).node();
-    return parseFloat(estadoSelecionado.getAttribute('cy'));
-  }
-</script>
-
+        // Desenhar os círculos pela primeira vez
+        redraw();
+    </script>
 </body>
-</html>'
+</html>
