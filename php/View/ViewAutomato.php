@@ -8,7 +8,7 @@ class ViewAutomato {
      */
     public function montaPaginaAutomato(){
         
-        $sHtmlModal = '<!DOCTYPE html>
+        $sHtmlModal = ' <!DOCTYPE html>
                         <html lang="pt-BR">
                             <head>
                                 <meta charset="UTF-8">
@@ -18,8 +18,10 @@ class ViewAutomato {
                                     #canvas { border: 1px solid #000; cursor: pointer; }
                                 </style>
                             </head>
-                            <body>
-                                <canvas id="canvas" width="400" height="400"></canvas>
+                            <br>';
+        
+        $sHtmlModal .= ' <body style="text-align:center">
+                                <canvas id="canvas" width="600" height="600"></canvas>
                                 <script>
                                     // Obtém o elemento canvas e seu contexto
                                     var canvas = document.getElementById("canvas");
