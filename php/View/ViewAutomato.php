@@ -8,7 +8,8 @@ class ViewAutomato {
      */
     public function montaPaginaAutomato(){
         
-        $sHtmlModal = ' <!DOCTYPE html>
+        //Cabeçalho da página
+        $sHtmlTela = ' <!DOCTYPE html>
                         <html lang="pt-BR">
                             <head>
                                 <meta charset="UTF-8">
@@ -18,11 +19,15 @@ class ViewAutomato {
                                     #canvas { border: 1px solid #000; cursor: pointer; }
                                 </style>
                             </head>
+                            <br>
                             <br>';
         
-        $sHtmlModal .= ' <body style="text-align:center">
-                                <canvas id="canvas" width="600" height="600"></canvas>
-                                <script>
+        //Define o canvas para desenho dos círculos
+        $sHtmlTela .= ' <body style="text-align:center">
+                                <canvas id="canvas" width="700" height="700"></canvas>';
+                           
+        //Script que renderiza os desenhos dos estados do automato
+        $sHtmlTela .= ' <script>
                                     // Obtém o elemento canvas e seu contexto
                                     var canvas = document.getElementById("canvas");
                                     var ctx = canvas.getContext("2d");
@@ -30,6 +35,7 @@ class ViewAutomato {
                                     // Define as coordenadas dos círculos e seus rótulos
                                     var circle1 = { x: 100, y: 100, radius: 20, isDragging: false, label: "q0" };
                                     var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
+                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
 
                                     // Função para desenhar os círculos
                                     function drawCircle(circle) {
@@ -56,6 +62,7 @@ class ViewAutomato {
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                                         drawCircle(circle1);
                                         drawCircle(circle2);
+                                        drawCircle(circle3);/////////////////////////////////////////////////////////novo
 
                                         // Desenha a linha conectando as bordas dos círculos
                                         ctx.beginPath();
@@ -63,6 +70,20 @@ class ViewAutomato {
                                                     circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
                                         ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
                                                     circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+                                        /////////////////////////////////////////////////////////novo
+                                        ctx.moveTo(circle2.x + circle2.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
+                                                    circle2.y + circle2.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
+                                        ctx.lineTo(circle3.x - circle3.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
+                                                    circle3.y - circle3.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
+
+                                        ctx.moveTo(circle1.x, circle1.y - circle1.radius); // Move para a borda superior do círculo 1
+                                        ctx.bezierCurveTo(
+                                            circle1.x + 20, circle1.y - 50, // Ponto de controle 1
+                                            circle1.x + 80, circle1.y - 50, // Ponto de controle 2
+                                            circle1.x, circle1.y - circle1.radius // Chega de volta ao círculo 1
+                                        );
+
+                                        ///////////////////////////////////////////////////////// fim novo
                                         ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
                                         ctx.lineWidth = 2;
                                         ctx.stroke();
@@ -85,6 +106,8 @@ class ViewAutomato {
                                             circle1.isDragging = true;
                                         } else if (isMouseOverCircle(mouseX, mouseY, circle2)) {
                                             circle2.isDragging = true;
+                                        }else if (isMouseOverCircle(mouseX, mouseY, circle3)) {/////////////////////////////////////////////////////////novo
+                                            circle3.isDragging = true;
                                         }
                                     });
 
@@ -98,6 +121,10 @@ class ViewAutomato {
                                             circle2.x = event.clientX - canvas.getBoundingClientRect().left;
                                             circle2.y = event.clientY - canvas.getBoundingClientRect().top;
                                             redraw();
+                                        }else if (circle3.isDragging) {/////////////////////////////////////////////////////////novo
+                                            circle3.x = event.clientX - canvas.getBoundingClientRect().left;
+                                            circle3.y = event.clientY - canvas.getBoundingClientRect().top;
+                                            redraw();
                                         }
                                     });
 
@@ -105,15 +132,18 @@ class ViewAutomato {
                                     canvas.addEventListener("mouseup", function() {
                                         circle1.isDragging = false;
                                         circle2.isDragging = false;
+                                        circle3.isDragging = false;/////////////////////////////////////////////////////////novo
                                     });
 
                                     // Desenhar os círculos pela primeira vez
                                     redraw();
-                                </script>
-                            </body>
+                                </script>';
+          
+        //Finalização do HTML
+        $sHtmlTela .= '    </body>
                         </html>';
         
-        return $sHtmlModal;
+        return $sHtmlTela;
         
     }
     

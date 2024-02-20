@@ -175,11 +175,10 @@ function loadAutomato() {
     var dataToSend = 'teste'; 
 
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        $("#saidaDefErros").val(JSON.parse(result).texto);
+        //Abre a página com automato de análise léxica gráficamente conforme usuário
+        window.open("http://localhost/Selss/"+JSON.parse(result).texto+"/modalAutomato.html", "minhaJanela", "height=800,width=1000");
     });
     
-    //Abre a modal
-    window.open("http://localhost/Selss/datausers/cleverton_gmail_com/modalAutomato.html", "minhaJanela", "height=800,width=800");
 }
 
 

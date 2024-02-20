@@ -20,8 +20,11 @@ class ControllerAutomato extends Controller {
         
         $sModal = $this->oView->montaPaginaAutomato();
         $this->oPersistencia->gravaArquivo("modalAutomato.html", $sModal);
-
-        return json_encode($sModal);
+        
+        //Retorna diretório da pasta do usuário para abrir a página com o automato gráfico
+        $sRetorno = '{"texto":"'.$_SESSION['diretorio'].'"}';
+        return json_encode($sRetorno);
+        
     }
         
 }
