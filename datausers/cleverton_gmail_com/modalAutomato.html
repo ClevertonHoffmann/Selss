@@ -48,24 +48,53 @@
                                         drawCircle(circle3);/////////////////////////////////////////////////////////novo
 
                                         // Desenha a linha conectando as bordas dos círculos
+//                                        ctx.beginPath();
+//                                        ctx.moveTo(circle1.x + circle1.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
+//                                                    circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+//                                        ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
+//                                                    circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+//                                        /////////////////////////////////////////////////////////novo
+//                                        ctx.moveTo(circle2.x + circle2.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
+//                                                    circle2.y + circle2.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
+//                                        ctx.lineTo(circle3.x - circle3.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
+//                                                    circle3.y - circle3.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
+//
+//                                        ctx.moveTo(circle1.x, circle1.y - circle1.radius); // Move para a borda superior do círculo 1
+//                                        ctx.bezierCurveTo(
+//                                            circle1.x - 50, circle1.y - 100, // Ponto de controle 1
+//                                            circle1.x + 100, circle1.y - 50, // Ponto de controle 2
+//                                            circle1.x, circle1.y - circle1.radius // Chega de volta ao círculo 1
+//                                        );
+
+
+                                        // Desenha a linha conectando as bordas dos círculos
                                         ctx.beginPath();
-                                        ctx.moveTo(circle1.x + circle1.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
-                                                    circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
-                                        ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)),
-                                                    circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
-                                        /////////////////////////////////////////////////////////novo
-                                        ctx.moveTo(circle2.x + circle2.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
-                                                    circle2.y + circle2.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
-                                        ctx.lineTo(circle3.x - circle3.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)),
-                                                    circle3.y - circle3.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));/////////////////////////////////////////////////////////novo
+                                        ctx.moveTo(circle1.x + circle1.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)), circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
+                                        ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)), circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
 
-                                        ctx.moveTo(circle1.x, circle1.y - circle1.radius); // Move para a borda superior do círculo 1
-                                        ctx.bezierCurveTo(
-                                            circle1.x + 20, circle1.y - 50, // Ponto de controle 1
-                                            circle1.x + 80, circle1.y - 50, // Ponto de controle 2
-                                            circle1.x, circle1.y - circle1.radius // Chega de volta ao círculo 1
-                                        );
+                                        // Adiciona a seta na ponta da linha
+                                        var arrowSize = 10; // Tamanho da seta
+                                        var angle = Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x);
+                                        var circle2EdgeX = circle2.x - circle2.radius * Math.cos(angle);
+                                        var circle2EdgeY = circle2.y - circle2.radius * Math.sin(angle);
+                                        ctx.moveTo(circle2EdgeX, circle2EdgeY);
+                                        ctx.lineTo(circle2EdgeX - arrowSize * Math.cos(angle - Math.PI / 6), circle2EdgeY - arrowSize * Math.sin(angle - Math.PI / 6));
+                                        ctx.moveTo(circle2EdgeX, circle2EdgeY);
+                                        ctx.lineTo(circle2EdgeX - arrowSize * Math.cos(angle + Math.PI / 6), circle2EdgeY - arrowSize * Math.sin(angle + Math.PI / 6));
+                                        
+                                        // Repete o mesmo processo para a linha entre circle2 e circle3
+                                        ctx.moveTo(circle2.x + circle2.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)), circle2.y + circle2.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));
+                                        ctx.lineTo(circle3.x - circle3.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)), circle3.y - circle3.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));
 
+                                        // Adiciona a seta na ponta da linha entre circle2 e circle3
+                                        var angle2 = Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x);
+                                        var circle3EdgeX = circle3.x - circle3.radius * Math.cos(angle2);
+                                        var circle3EdgeY = circle3.y - circle3.radius * Math.sin(angle2);
+                                        ctx.moveTo(circle3EdgeX, circle3EdgeY);
+                                        ctx.lineTo(circle3EdgeX - arrowSize * Math.cos(angle2 - Math.PI / 6), circle3EdgeY - arrowSize * Math.sin(angle2 - Math.PI / 6));
+                                        ctx.moveTo(circle3EdgeX, circle3EdgeY);
+                                        ctx.lineTo(circle3EdgeX - arrowSize * Math.cos(angle2 + Math.PI / 6), circle3EdgeY - arrowSize * Math.sin(angle2 + Math.PI / 6));
+                                       
                                         ///////////////////////////////////////////////////////// fim novo
                                         ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
                                         ctx.lineWidth = 2;

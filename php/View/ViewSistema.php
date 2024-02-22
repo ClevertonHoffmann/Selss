@@ -53,8 +53,8 @@ class ViewSistema {
                                     <a href='#'>Documentação</a>
                                 </div>
                             </div>
-                            <h4 class='mx-auto' style='font-size:calc(5px + 1vw)'>SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
-                                SEMÂNTICO
+                            <h4 class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
+                                SEMÂNTICO'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
                             </h4>
                             <button class='btn btn-sm btn-outline-secondary me-2' id='btnSair'>Sair</button>
                             <div id='modalSair' class='modal' style='text-align: center;'>
@@ -218,6 +218,8 @@ class ViewSistema {
                                 <button id='downloadResultadoAnaliseLexica'>Baixar Tabela</button>
                             </div>
                         </div>
+                        
+                        <div id='mensagemCarregando' style='display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 5px; z-index: 9999;'>Carregando...Aguarde!</div>   
                     </body>
                 </html>
                 ";

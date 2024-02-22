@@ -87,6 +87,8 @@ function analisaExpRegulares() {
  * @returns tela do automato finito
  */
 function loadTabLexica() {
+    // Exibe a mensagem de carregamento
+    $("#mensagemCarregando").show();
     var defreg = $("#defReg").val();
     var dataToSend = JSON.stringify({
         "texto": defreg
@@ -108,6 +110,8 @@ function openModalTabLex(dataToSend) {
     setTimeout(function () {
         $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
             var div = document.getElementById('csvData');
+            // Depois de obter o resultado, oculta a mensagem de carregamento
+            $("#mensagemCarregando").hide();
             // Altera o conteúdo da div
             div.innerHTML = result;
         });
@@ -128,6 +132,8 @@ function closeModal() {
  * Método responsável por chamar a classe de análise léxica
  */
 function analiseLexica() {
+    // Exibe a mensagem de carregamento
+    $("#mensagemCarregando").show();
     var defreg = $("#codTest").val();
     var dataToSend = JSON.stringify({
         "texto": defreg
@@ -151,6 +157,8 @@ function openModalResLex(dataToSend) {
             var div = document.getElementById('csvData2');
             // Altera o conteúdo da div
             div.innerHTML = result;
+            // Depois de obter o resultado, oculta a mensagem de carregamento
+            $("#mensagemCarregando").hide();
         });
     }, 5000);
 }
@@ -171,14 +179,14 @@ function closeModal2() {
  * @returns tela do automato finito
  */
 function loadAutomato() {
-    
-    var dataToSend = 'teste'; 
+
+    var dataToSend = 'teste';
 
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         //Abre a página com automato de análise léxica gráficamente conforme usuário
-        window.open("http://localhost/Selss/"+JSON.parse(result).texto+"/modalAutomato.html", "minhaJanela", "height=800,width=1000");
+        window.open("http://localhost/Selss/" + JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
     });
-    
+
 }
 
 
@@ -246,4 +254,16 @@ function logout() {
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
     });
     window.location.href = 'index.php';
+}
+
+/**
+ * Mensagem de carregando no sistema
+ */
+function mostrarCarregando() {
+    document.getElementById('loading').style.display = 'block';
+}
+
+// Função para esconder mensagem de carregamento
+function esconderCarregando() {
+    document.getElementById('loading').style.display = 'none';
 }

@@ -19,7 +19,10 @@ class ViewLogin {
                     <body>
                         <div class="container">
                             <form class="login-form" action="index.php" method="POST">
-                                <h1>SELSS</h1>
+                                <img src="http://localhost/Selss/img/logo.png" alt="Sua Imagem" id="logo" style="width: 200px; height: 100px;" data-toggle="tooltip" data-placement="right" title="SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
+                                SEMÂNTICO">
+                                <br>
+                                <br>
                                 <div class="input-container">
                                     <label for="email">Login Email</label>
                                     <input name="email" type="email" id="email" placeholder="Digite seu email" required>

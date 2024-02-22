@@ -202,3 +202,16 @@ code:before{
     outline: none;
     box-shadow: 0 0 5px #ff0000;
 }
+
+/* Estilo para a mensagem de carregamento */
+.loading-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  display: none;
+}
