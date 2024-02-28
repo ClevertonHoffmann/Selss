@@ -5,8 +5,6 @@
  * e realiza a criação da tabela de transição (automato) para a análise léxica
  */
 
-//require_once '../php/Persistencia/PersistenciaExpRegulares.php';
-
 class ControllerExpRegulares extends Controller {
 
     public function __construct() {

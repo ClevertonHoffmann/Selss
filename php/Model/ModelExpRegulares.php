@@ -51,4 +51,7 @@ class ModelExpRegulares{
     
     //Array que armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
     public $aArrayExprEst = array();
+    
+    //Não deixa no estado inicial 0 atribuir um estado já usado para outro caracter que não conste a expressão composta [a-b] por exemplo.
+    public $iEstadoJaUsado = 0;
 }

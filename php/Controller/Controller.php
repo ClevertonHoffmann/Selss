@@ -3,7 +3,6 @@
  * Classe controller que implementa os controles essenciais do sistema
  * e a fabricação das classes
  */
-
 class Controller{
     
     public $oPersistencia;

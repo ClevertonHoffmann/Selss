@@ -1,14 +1,2 @@
-9e:9e;
-if:if;
-teste:teste;
-prog:prog;
-dp:\:;
-ac:"{";  
-fc:"}";
-menor:<;
-ap:(;
-fp:);
-atrib:=;
-mais:+;
-letras:[a-z]*;
-id:{num}{letras};
+else:else; 
+ids

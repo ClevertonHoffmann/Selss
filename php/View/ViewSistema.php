@@ -37,6 +37,7 @@ class ViewSistema {
 
                             <!-- JS personalizado do projeto-->
                             <script src='js/app.js' type='text/javascript'></script>
+
                     </head>
                 "; 
         
@@ -89,7 +90,8 @@ class ViewSistema {
                                                 <textarea id='defReg' name='defReg' style='width: calc(26vw); height: calc(50vh);' placeholder=\"Escreva as definições regulares, tokens\">" . $defReg . "</textarea>
                                             </div>
                                         </div>
-                                    
+                                    <!-- Balão de sugestão -->
+                                    <div id='balaoSugestao'></div>   
                                 </nav>
                             </div>";
         

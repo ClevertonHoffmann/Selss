@@ -49,18 +49,21 @@ function mostrarSenha() {
     }
 }
 
+//Evento click no botão inicial convidado
 document.getElementById('btnConvidado').addEventListener('click', function() {
     // Atualiza o valor do campo oculto "modo"
     document.querySelector('input[name="modo"]').value = "convidado";
     document.querySelector('.login-form').submit();
 });
 
+//Evento click no botão inicial entrar
 document.getElementById('btnEntrar').addEventListener('click', function() {
     // Atualiza o valor do campo oculto "modo"
     document.querySelector('input[name="modo"]').value = "entrar";
     document.querySelector('.login-form').submit();
 });
 
+//Evento click no botão inicial cadastro
 document.getElementById('btnCadastro').addEventListener('click', function() {
     // Atualiza o valor do campo oculto "modo"
     document.querySelector('input[name="modo"]').value = "cadastro";

@@ -67,6 +67,105 @@ window.onload = (function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
 
+    /*********************************Inicio da parte das sugestões********************************/
+    // Array de sugestões
+    var arquivo = new XMLHttpRequest();
+    arquivo.open("GET", "http://localhost/Selss/data/sugestoes.txt", false);
+    arquivo.send(null);
+
+    // Processa as sugestões do arquivo
+    var sugestoes = arquivo.responseText.split('\n');
+    sugestoes = sugestoes.map(function (sugestao) {
+        return sugestao.trim();
+    });
+
+    // Obtém o elemento textarea
+    var campoTexto = document.getElementById('defReg');
+
+    // Obtém o elemento do balão de sugestão
+    var balaoSugestao = document.getElementById('balaoSugestao');
+
+    // Função para mostrar as sugestões
+    function mostrarSugestoes() {
+        // Limpa as sugestões anteriores
+        balaoSugestao.innerHTML = '';
+
+        // Obtém o texto digitado
+        var textoDigitado = campoTexto.value.trim().toLowerCase();
+
+        // Verifica se há texto digitado e se a última palavra está incompleta
+        var palavras = textoDigitado.split(' ');
+        var ultimaPalavra = palavras.pop();
+        if (campoTexto.selectionStart == textoDigitado.length && ultimaPalavra.length > 0) {
+            // Verifica se há sugestões para a palavra digitada
+            var sugestoesFiltradas = sugestoes.filter(function (sugestao) {
+                return sugestao.startsWith(ultimaPalavra);
+            });
+
+            // Exibe as sugestões no balão de sugestão
+            sugestoesFiltradas.forEach(function (sugestao) {
+                var sugestaoElemento = document.createElement('div');
+                sugestaoElemento.textContent = sugestao;
+                sugestaoElemento.classList.add('sugestao');
+                sugestaoElemento.addEventListener('click', function () {
+                    completarTexto(sugestao);
+                });
+                balaoSugestao.appendChild(sugestaoElemento);
+            });
+
+            // Exibe o balão de sugestão se houver sugestões filtradas
+            if (sugestoesFiltradas.length > 0) {
+                balaoSugestao.style.display = 'block';
+                balaoSugestao.style.top = campoTexto.offsetTop + campoTexto.offsetHeight + 'px';
+                balaoSugestao.style.left = campoTexto.offsetLeft + 'px';
+                return;
+            }
+        }
+
+        // Se não houver sugestões ou texto incompleto, oculta o balão de sugestão
+        balaoSugestao.style.display = 'none';
+    }
+
+    // Evento keyup para monitorar a digitação no campo de texto
+    campoTexto.addEventListener('keyup', function () {
+        mostrarSugestoes();
+    });
+    
+
+    // Função para completar o texto do campo com a sugestão selecionada
+    function completarTexto(sugestao) {
+        var textoAtual = campoTexto.value; // Texto atual do campo
+        var textoAntesCursor = textoAtual.substring(0, campoTexto.selectionStart); // Texto antes do cursor
+        var textoDepoisCursor = textoAtual.substring(campoTexto.selectionEnd); // Texto depois do cursor
+
+        // Encontrar a última palavra digitada no texto atual
+        var palavras = textoAntesCursor.split(' ');
+        var ultimaPalavra = palavras.pop();
+
+        // Remover a última palavra digitada e adicionar a sugestão completa
+        palavras.push(sugestao);
+        var novoTexto = palavras.join(' ');
+
+        // Adicionar o restante do texto depois do cursor
+        novoTexto += textoDepoisCursor;
+
+        // Atualizar o texto do campo
+        campoTexto.value = novoTexto;
+
+        // Reposicionar o cursor
+        campoTexto.selectionStart = campoTexto.selectionEnd = novoTexto.length;
+
+        // Ocultar o balão de sugestão
+        balaoSugestao.style.display = 'none';
+    }
+
+    // Fechar o balão de sugestão ao clicar em qualquer lugar fora dele
+    document.addEventListener('click', function (event) {
+        if (!balaoSugestao.contains(event.target) && event.target !== campoTexto) {
+            balaoSugestao.style.display = 'none';
+        }
+    });
+    /*********************************Fim da parte das sugestões********************************/
 
 });
 

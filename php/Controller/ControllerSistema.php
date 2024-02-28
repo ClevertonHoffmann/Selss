@@ -49,13 +49,18 @@ class ControllerSistema extends Controller {
     public function removerConteudoDaPasta($caminho_da_pasta) {
         $diretorio = new RecursiveDirectoryIterator($caminho_da_pasta, FilesystemIterator::SKIP_DOTS);
         $arquivos = new RecursiveIteratorIterator($diretorio, RecursiveIteratorIterator::CHILD_FIRST);
-
+        $iK = 0; 
         foreach ($arquivos as $arquivo) {
             if ($arquivo->isDir()) {
                 rmdir($arquivo->getRealPath());
             } else {
                 unlink($arquivo->getRealPath());
             }
+            rmdir($caminho_da_pasta);
+            $iK++;
+        }
+        //Verifica se não contém arquivos remove apenas a pasta
+        if($iK==0){
             rmdir($caminho_da_pasta);
         }
     }
