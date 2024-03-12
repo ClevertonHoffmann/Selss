@@ -1,2 +1,6 @@
-else:else; 
-ids
+teste:" "; 
+if:if;
+teste:teste;  
+prog:prog; 
+letras:[a-z]*; 
+num:[0-9]*;

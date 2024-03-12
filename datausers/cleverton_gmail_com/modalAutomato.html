@@ -13,15 +13,14 @@
                                 <canvas id="canvas" width="700" height="700"></canvas> <script>
                                     // Obtém o elemento canvas e seu contexto
                                     var canvas = document.getElementById("canvas");
-                                    var ctx = canvas.getContext("2d");
-
-                                    // Define as coordenadas dos círculos e seus rótulos
+                                    var ctx = canvas.getContext("2d");             // Define as coordenadas dos círculos e seus rótulos
                                     var circle1 = { x: 100, y: 100, radius: 20, isDragging: false, label: "q0" };
                                     var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
                                     var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-
+                      
                                     // Função para desenhar os círculos
                                     function drawCircle(circle) {
+                                    
                                         // Desenha o círculo
                                         ctx.beginPath();
                                         ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
@@ -31,6 +30,31 @@
                                         ctx.lineWidth = 2;
                                         ctx.stroke();
                                         ctx.closePath();
+                                   // Desenha a flecha apontando para o estado inicial q0
+                                        if (circle.label === "q0") {
+                                            ctx.beginPath();
+                                            ctx.moveTo(circle.x - circle.radius, circle.y);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y - 10);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y + 10);
+                                            ctx.closePath();
+                                            ctx.fillStyle = "rgba(200, 200, 200, 0.5)"; // Cinza claro para o preenchimento
+                                            ctx.fill();
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                        }
+                                                       
+                                        // Desenha a borda dupla para o círculo do estado final
+                                        if (circle.label === "q2") {
+                                            ctx.beginPath();
+                                            ctx.arc(circle.x, circle.y, circle.radius - 4, 0, 2 * Math.PI); // Aumenta o raio para a borda dupla
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a cor da primeira borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                            ctx.closePath();
+                                        }
+
+        
 
                                         // Desenha o rótulo
                                         ctx.fillStyle = "#000"; // Cor preta para o texto
@@ -149,5 +173,6 @@
 
                                     // Desenhar os círculos pela primeira vez
                                     redraw();
+                                    
                                 </script>    </body>
                         </html>

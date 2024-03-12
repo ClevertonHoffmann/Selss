@@ -37,112 +37,16 @@ class ControllerExpRegulares extends Controller {
      * @return string
      */
     public function analisador($sTexto) {
-
-        $sAfd = array();
-        $sAfd["a"] = 0;
-        $sAfd["b"] = 0;
-        $sAfd["c"] = 0;
-        $sAfd["d"] = 0;
-        $sAfd["e"] = 0;
-        $sAfd["f"] = 0;
-        $sAfd["g"] = 0;
-        $sAfd["h"] = 0;
-        $sAfd["i"] = 0;
-        $sAfd["j"] = 0;
-        $sAfd["k"] = 0;
-        $sAfd["l"] = 0;
-        $sAfd["m"] = 0;
-        $sAfd["n"] = 0;
-        $sAfd["o"] = 0;
-        $sAfd["p"] = 0;
-        $sAfd["q"] = 0;
-        $sAfd["r"] = 0;
-        $sAfd["s"] = 0;
-        $sAfd["t"] = 0;
-        $sAfd["u"] = 0;
-        $sAfd["v"] = 0;
-        $sAfd["x"] = 0;
-        $sAfd["y"] = 0;
-        $sAfd["z"] = 0;
-        $sAfd["ç"] = 0;
-        $sAfd["A"] = 0;
-        $sAfd["B"] = 0;
-        $sAfd["C"] = 0;
-        $sAfd["D"] = 0;
-        $sAfd["E"] = 0;
-        $sAfd["F"] = 0;
-        $sAfd["G"] = 0;
-        $sAfd["I"] = 0;
-        $sAfd["J"] = 0;
-        $sAfd["K"] = 0;
-        $sAfd["L"] = 0;
-        $sAfd["M"] = 0;
-        $sAfd["N"] = 0;
-        $sAfd["O"] = 0;
-        $sAfd["P"] = 0;
-        $sAfd["Q"] = 0;
-        $sAfd["R"] = 0;
-        $sAfd["S"] = 0;
-        $sAfd["T"] = 0;
-        $sAfd["U"] = 0;
-        $sAfd["V"] = 0;
-        $sAfd["X"] = 0;
-        $sAfd["Y"] = 0;
-        $sAfd["Z"] = 0;
-        $sAfd["Ç"] = 0;
-        $sAfd["1"] = 0;
-        $sAfd["2"] = 0;
-        $sAfd["3"] = 0;
-        $sAfd["4"] = 0;
-        $sAfd["5"] = 0;
-        $sAfd["6"] = 0;
-        $sAfd["7"] = 0;
-        $sAfd["8"] = 0;
-        $sAfd["9"] = 0;
-        $sAfd["0"] = 0;
-        $sAfd[" "] = 0;
-        $sAfd[":"] = 0;
-        $sAfd[","] = 0;
-        $sAfd["."] = 0;
-        $sAfd["\'"] = 0;
-        $sAfd["@"] = -1;
-        $sAfd["#"] = -1;
-        $sAfd["$"] = -1;
-        $sAfd["%"] = 0;
-        $sAfd["¨"] = -1;
-        $sAfd["&"] = 0;
-        $sAfd["*"] = 0;
-        $sAfd["("] = 0;
-        $sAfd[")"] = 0;
-        $sAfd["_"] = -1;
-        $sAfd["+"] = 0;
-        $sAfd["-"] = 0;
-        $sAfd["´"] = -1;
-        $sAfd["`"] = -1;
-        $sAfd["{"] = 0;
-        $sAfd["}"] = 0;
-        $sAfd["ª"] = -1;
-        $sAfd["º"] = -1;
-        $sAfd["~"] = 0;
-        $sAfd["^"] = 0;
-        $sAfd["<"] = 0;
-        $sAfd[">"] = 0;
-        $sAfd[";"] = 0;
-        $sAfd["?"] = -1;
-        $sAfd["/"] = -1;
-        $sAfd["\\"] = 0;
-        $sAfd["\t"] = 0;
-        $sAfd["\n"] = 0;
-        $sAfd["\r"] = 0;
-        $sAfd["]"] = 0;
-        $sAfd["["] = 0;
-
+        
+        $aAfd = $this->oPersistencia->retornaCaracteresInvalidos()[0];//Retorna todos os caracteres inválidos
         $aChar = str_split($sTexto);
         $sRetorno = ' ';
         foreach ($aChar as $sPos) {
-            if ($sAfd[$sPos] != 0) {
-                $sRetorno = 'Erro Léxico Caractere ( ' . $sPos . ' ) inesperado!';
-            }
+            $sPos = trim($sPos);
+            //Verifica se o caracter é inválido
+            if (in_array($sPos, $aAfd)) { 
+                $sRetorno = 'Erro Léxico Caractere (' . $sPos . ') inesperado!'; 
+            } 
         }
         return $sRetorno;
     }
@@ -180,7 +84,7 @@ class ControllerExpRegulares extends Controller {
         //Inicializa a variável de controle de estado
         $this->oModel->iPos = 0;
 
-        //Estado 0
+        //Estado 0 sempe inicia com uma incógnita pois não reconhece nenhum elemento apenas indica para qual estado ir para reconhecer
         $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = $this->oModel->iPos;
         $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = '?';
 

@@ -34,7 +34,18 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCaracteresValidos() {
 
-        $aCSV = $this->retornaArrayCSV("caracteresValidos.csv", 0);
+        $aCSV = $this->retornaArrayCSV("caracteresvalidos.csv", 0);
+        return $aCSV;
+        
+    }
+    
+    /**
+     * Método responsável por retornar os caractéres válidos para a análise léxica
+     * @return type
+     */
+    public function retornaCaracteresInvalidos() {
+
+        $aCSV = $this->retornaArrayCSV("caracteresinvalidos.csv", 0);
         return $aCSV;
         
     }
