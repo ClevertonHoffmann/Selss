@@ -23,7 +23,7 @@ class ControllerSistema extends Controller {
         if (!$bLogin) {
             return $oControllerLogin->mostraTelaLogin($sDados);
         } else {
-            return $this->oView->retornaTelaSistema();
+            return $this->getOView()->retornaTelaSistema();
         }
     }
 

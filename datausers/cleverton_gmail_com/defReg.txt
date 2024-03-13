@@ -4,3 +4,4 @@ teste:teste;
 prog:prog; 
 letras:[a-z]*; 
 num:[0-9]*;
+teste:\:;

@@ -1,3 +1,4 @@
 Token;Lexema;Posição
 prog;prog;0
-9e;9e;1
+num;9;1
+letras;e;2

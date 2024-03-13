@@ -11,15 +11,15 @@ class ControllerAnalisadorLexico extends Controller {
     }
 
     //Variáveis e instancias iniciais carregegadas no construtor
-    public array $aPalavrasReservadas;
-    public array $aTabelaDeTransicao;
-    public array $aTabelaTokens;
-    public array $aCaracteresSeparados;
-    public int $iCount;
-    public int $q;
-    public int $qntTokens;
-    public string $sBuild;
-    public array $aListadeTokensLex;
+    private array $aPalavrasReservadas;
+    private array $aTabelaDeTransicao;
+    private array $aTabelaTokens;
+    private array $aCaracteresSeparados;
+    private int $iCount;
+    private int $q;
+    private int $qntTokens;
+    private string $sBuild;
+    private array $aListadeTokensLex;
 
     /**
      * Funcão que inicializa as variáveis utilizadas na análise léxica
@@ -28,9 +28,9 @@ class ControllerAnalisadorLexico extends Controller {
      */
     public function InicializaAnalisadorLexico($sTexto) {
 
-        $this->aPalavrasReservadas = $this->oPersistencia->retornaPalavrasReservadas();
-        $this->aTabelaDeTransicao = $this->oPersistencia->retornaTabelaDeTransicao();
-        $this->aTabelaTokens = $this->oPersistencia->retornaTabelaDeTokens();
+        $this->aPalavrasReservadas = $this->getOPersistencia()->retornaPalavrasReservadas();
+        $this->aTabelaDeTransicao = $this->getOPersistencia()->retornaTabelaDeTransicao();
+        $this->aTabelaTokens = $this->getOPersistencia()->retornaTabelaDeTokens();
         $this->aCaracteresSeparados = str_split($sTexto);
         $this->iCount = count($this->aCaracteresSeparados);
         $this->q = 0;
@@ -49,7 +49,7 @@ class ControllerAnalisadorLexico extends Controller {
         $sTexto = $sCampos->{'texto'} . " ";
         $sText = str_replace("\n", " ", $sTexto);
 
-        $this->oPersistencia->gravaArquivo("codigoParaAnalise.txt", trim($sText));
+        $this->getOPersistencia()->gravaArquivo("codigoParaAnalise.txt", trim($sText));
 
         $this->InicializaAnalisadorLexico($sText);
 
@@ -110,7 +110,7 @@ class ControllerAnalisadorLexico extends Controller {
             $sTeste .= "" . $aLex[0] . "       " . $aLex[1] . "            " . $aLex[2] . " \\n ";
             $aListaTokenLexPer[] = [$aLex[0], $aLex[1], $aLex[2]];
         }
-        $this->oPersistencia->gravaResultadoAnaliseLexica($aListaTokenLexPer);
+        $this->getOPersistencia()->gravaResultadoAnaliseLexica($aListaTokenLexPer);
 
         $sTextoRetorno .= '"' . $sTeste . '"}';
         return json_encode($sTextoRetorno);
@@ -123,8 +123,8 @@ class ControllerAnalisadorLexico extends Controller {
      */
     public function mostraModalResultadoAnaliseLexica($sDados) {
 
-        $aTabela = $this->oPersistencia->retornaArrayCSV("resultadoAnaliseLexica.csv", 1);
-        $sModal = $this->oView->geraModalResAnaliseLexica($aTabela);
+        $aTabela = $this->getOPersistencia()->retornaArrayCSV("resultadoAnaliseLexica.csv", 1);
+        $sModal = $this->getOView()->geraModalResAnaliseLexica($aTabela);
 
         return json_encode($sModal);
     }

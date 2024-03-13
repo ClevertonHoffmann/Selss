@@ -5,9 +5,9 @@
  */
 class Controller{
     
-    public $oPersistencia;
-    public $oModel;
-    public $oView;
+    private $oPersistencia;
+    private $oModel;
+    private $oView;
     
     public function carregaClasses($sNomeClasse){
 
@@ -38,6 +38,30 @@ class Controller{
     public function Mensagem($sMensagem, $iTipo){
         $oMensagem = new Mensagem();
         $oMensagem->exibirToast($sMensagem, $iTipo);
+    }
+    
+    function getOPersistencia() {
+        return $this->oPersistencia;
+    }
+
+    function getOModel() {
+        return $this->oModel;
+    }
+
+    function getOView() {
+        return $this->oView;
+    }
+
+    function setOPersistencia($oPersistencia){
+        $this->oPersistencia = $oPersistencia;
+    }
+
+    function setOModel($oModel) {
+        $this->oModel = $oModel;
+    }
+
+    function setOView($oView) {
+        $this->oView = $oView;
     }
     
 }

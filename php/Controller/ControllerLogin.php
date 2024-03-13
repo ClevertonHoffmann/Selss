@@ -16,7 +16,7 @@ class ControllerLogin extends Controller {
      * @return type
      */
     public function mostraTelaLogin($sDados) {
-        $sLoginHtml = $this->oView->retornaTelaLogin();
+        $sLoginHtml = $this->getOView()->retornaTelaLogin();
         return $sLoginHtml;
     }
 
@@ -46,7 +46,7 @@ class ControllerLogin extends Controller {
             $sModo = $_POST["modo"];
 
             //Valor a ser recebido caso e-mail com senha válido
-            $bVal = $this->oPersistencia->verificaEmailPass($sEmail, $sSenha);
+            $bVal = $this->getOPersistencia()->verificaEmailPass($sEmail, $sSenha);
 
             //Ignora modo convidado
             if (!$bVal || $sModo=="convidado") {
@@ -63,7 +63,7 @@ class ControllerLogin extends Controller {
                             $this->Mensagem('Não é possível cadastrar sem email!', 4);
                             return false;
                         }
-                        $bVal = $this->oPersistencia->cadastraUsuario($sEmail, $sPass);
+                        $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
                         if($bVal){
                             $this->Mensagem('Cadastro realizado com sucesso!', 1);
                         }else{

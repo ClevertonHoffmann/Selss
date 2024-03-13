@@ -22,7 +22,7 @@ class ControllerExpRegulares extends Controller {
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
 
-        $this->oPersistencia->gravaArquivo("defReg.txt", $sText);
+        $this->getOPersistencia()->gravaArquivo("defReg.txt", $sText);
 
         $sText2 = $this->analisador($sText);
 
@@ -32,14 +32,15 @@ class ControllerExpRegulares extends Controller {
     }
 
     /**
-     * Método responsável por realizar a indentificação dos caracteres válidos nas expressões regulares
+     * Método responsável por realizar a indentificação dos caracteres inválidos, resultando só expressões regulares válidas
      * @param type $sTexto
      * @return string
      */
     public function analisador($sTexto) {
         
-        $aAfd = $this->oPersistencia->retornaCaracteresInvalidos()[0];//Retorna todos os caracteres inválidos
-        $aChar = str_split($sTexto);
+        $aAfd = $this->getOPersistencia()->retornaCaracteresInvalidos()[0];//Retorna todos os caracteres inválidos
+        $aChar = preg_split('//u', $sTexto, -1, PREG_SPLIT_NO_EMPTY); //Consegue lidar com caracteres especiais, caracteres multibyte.
+        
         $sRetorno = ' ';
         foreach ($aChar as $sPos) {
             $sPos = trim($sPos);
@@ -76,7 +77,7 @@ class ControllerExpRegulares extends Controller {
         }
 
         // Obtem o cabeçalho do array
-        $aCabecalhoTabelaLexica = $this->oPersistencia->retornaCabecalhoTabelaLexica()[0];
+        $aCabecalhoTabelaLexica = $this->getOPersistencia()->retornaCabecalhoTabelaLexica()[0];
 
         //Cria cabeçalho da tabela
         $this->oModel->aTabelaAutomato[-1] = $aCabecalhoTabelaLexica;
@@ -89,7 +90,7 @@ class ControllerExpRegulares extends Controller {
         $this->oModel->aTabelaAutomato[$this->oModel->iPos][] = '?';
 
         //Busca caracteres válidos usados para analisar e criar estados de transição conforme correspondência.
-        $this->oModel->aArrayCaracteres = $this->oPersistencia->retornaCaracteresValidos()[0];
+        $this->oModel->aArrayCaracteres = $this->getOPersistencia()->retornaCaracteresValidos()[0];
 
         /*
          * Inicio da análise: Percore caracteres possíveis e analisar se eles estão especificados
@@ -106,10 +107,10 @@ class ControllerExpRegulares extends Controller {
         $this->montaEstadosTransicao();
 
         //Parte que salva as palavras reservadas
-        $this->oPersistencia->gravaPalavrasReservadas($this->oModel->aPalavrasReservadas);
+        $this->getOPersistencia()->gravaPalavrasReservadas($this->oModel->aPalavrasReservadas);
 
         //Parte que grava a tabela do automato para análise léxica
-        $this->oPersistencia->gravaTabelaLexica($this->oModel->aTabelaAutomato);
+        $this->getOPersistencia()->gravaTabelaLexica($this->oModel->aTabelaAutomato);
 
         $sJson = '{"texto":"Sucesso!"}';
 
@@ -491,9 +492,9 @@ class ControllerExpRegulares extends Controller {
      */
     public function mostraModalTabelaLexica($sDados) {
 
-        $aTabela = $this->oPersistencia->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
-        $sModal = $this->oView->geraModalTabelaLexica($aTabela);
-        $this->oPersistencia->gravaArquivo("modal.html", $sModal);
+        $aTabela = $this->getOPersistencia()->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+        $sModal = $this->getOView()->geraModalTabelaLexica($aTabela);
+        $this->getOPersistencia()->gravaArquivo("modal.html", $sModal);
 
         return json_encode($sModal);
     }
