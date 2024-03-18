@@ -1,1 +1,1 @@
-prog 9e
+prog 9e >=

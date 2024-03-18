@@ -2,3 +2,4 @@ Token;Lexema;Posição
 prog;prog;0
 num;9;1
 letras;e;2
+maiorigual;>=;3

@@ -1,7 +1,9 @@
-teste:" "; 
+abre:abre;
 if:if;
 teste:teste;  
 prog:prog; 
-letras:[a-z]*; 
+letras:[a-z]*;
+3e:3e;
 num:[0-9]*;
-teste:\:;
+soma:++;
+maiorigual:>=;
