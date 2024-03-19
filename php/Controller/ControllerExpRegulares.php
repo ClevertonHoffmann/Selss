@@ -377,15 +377,15 @@ class ControllerExpRegulares extends Controller {
     }
 
     /**
-     * Função responsável por retornar nome do token da expressão equivalente caso o estado for composto
+     * Função responsável por retornar nome do token da expressão equivalente caso o estado for composto e se o token deve ser mudado
      * @param type $aVal
      * @return type
      */
     public function verificaEstadoComposto($aVal) {
         if ($aVal[0] == "?") {
             foreach ($this->getOModel()->aArrayEstTokenExpr as $iEstado => $aValor) {
-                if (($aValor[1] != $aVal[1]) && preg_match("/^" . $aValor[1] . "$/", $aVal[1]) == 1 && (strpos($aValor[1], '*') !== false || strpos($aValor[1], '+') !== false)) {
-                    return $aValor;
+                if (($aValor[1] != $aVal[1]) && preg_match("/^" . $aValor[1] . "$/", substr($aVal[1], 0, 1)) == 1 && (strpos($aValor[1], '*') !== false || strpos($aValor[1], '+') !== false)) {
+                    return $aValor; //AQUI O TOKEN PARA REPRESENTAR INÍCIO SUBSTITUI O ?
                 }
             }
             return $aVal;
@@ -419,10 +419,6 @@ class ControllerExpRegulares extends Controller {
                     $this->getOModel()->aTabelaAutomato[$this->getOModel()->iPos][] = $this->getOModel()->iEst;
                     $this->getOModel()->bCont = false;
                 }
-            }
-            //Parte que///////////////////////////////////////////?????????????????????????????????????????????
-            if($this->getOModel()->bCont){
-                
             }
         }
     }
@@ -465,7 +461,7 @@ class ControllerExpRegulares extends Controller {
         if ($this->getOModel()->bCont) {
             //Atribui a transição para seu próprio estado caso necessário
             if (preg_match("/^" . $aToken[1] . "$/", $sChar) == 1 && (strpos($aToken[1], '*') !== false || strpos($aToken[1], '+') !== false)) {
-                $this->getOModel()->aTabelaAutomato[$this->getOModel()->iPos][] = $this->getOModel()->iPos;
+                $this->getOModel()->aTabelaAutomato[$this->getOModel()->iPos][] = $this->getOModel()->aTokenEstado[$aToken[1]][1];//$this->getOModel()->iPos;///VER AQUI ALTERA O ESTADO QUE VOLTA PARA O MESMO
                 $this->getOModel()->bCont = false;
             } else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
