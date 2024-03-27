@@ -1,1 +1,1 @@
-prog 9e >=
+prog a int 9

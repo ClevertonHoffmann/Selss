@@ -1,9 +1,8 @@
+case:case;
 abre:abre;
 if:if;
-teste:teste;  
-prog:prog; 
+teste:teste;
+prog:prog;
 letras:[a-z]*;
-3e:3e;
 num:[0-9]*;
-soma:++;
-maiorigual:>=;
+id:{num}{letras};
