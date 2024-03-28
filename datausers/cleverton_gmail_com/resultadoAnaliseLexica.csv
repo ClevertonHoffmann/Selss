@@ -1,6 +1,5 @@
 Token;Lexema;Posição
-letras;prog;0
+prog;prog;0
 letras;a;1
-;in;2
-letras;t;3
-?;"Caractére 9 não identificado";4
+letras;int;2
+num;9;3

@@ -1,8 +1,4 @@
-case:case;
-abre:abre;
-if:if;
-teste:teste;
 prog:prog;
-letras:[a-z]*;
 num:[0-9]*;
+letras:[a-z]*;
 id:{num}{letras};
