@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/xampp/htdocs/Selss/php/Model/ModelExpRegulares.php</file>
             <file>file:/C:/xampp/htdocs/Selss/index.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/Controller.php</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerExpRegulares.php</file>
         </group>
     </open-files>

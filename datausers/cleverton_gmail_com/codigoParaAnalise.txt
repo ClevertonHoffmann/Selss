@@ -1,1 +1,1 @@
-prog a int 9
++ testea ++
