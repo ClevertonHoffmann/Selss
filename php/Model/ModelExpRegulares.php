@@ -6,14 +6,59 @@
 class ModelExpRegulares{
            
     //Responsável por armazenar a entrada dos dados pelo usuário nas definições regulares
-    public $aArray = array(); 
+    private $aArray = array(); 
     
+    public function getAArray() {
+        return $this->aArray;
+    }
+    
+    public function getValorAArray($iPosicao){
+        return $this->aArray[$iPosicao];
+    }
+
+    public function setAArray($aArray){
+        $this->aArray = $aArray;
+    }
+    
+    public function setValorAArray($iPosicao, $sValor){
+        $this->aArray[$iPosicao] = $sValor;
+    }
+    
+    public function unsetAArray($key){
+        unset($this->aArray[$key]);
+    }
+ 
     //Responsável por armazenar os caracteres válidos para a geração da tabela do automato de análise
-    public $aArrayCaracteres = array();
+    private $aArrayCaracteres = array();
     
+    function getAArrayCaracteres() {
+        return $this->aArrayCaracteres;
+    }
+
+    function setAArrayCaracteres($aArrayCaracteres){
+        $this->aArrayCaracteres = $aArrayCaracteres;
+    }
+        
     //Responsável por armazenar a tabela de transição dos estados do automato para análise léxica
-    public $aTabelaAutomato = array();
+    private $aTabelaAutomato = array();
     
+    function getATabelaAutomato() {
+        return $this->aTabelaAutomato;
+    }
+    
+    public function setValorATabelaAutomato($iPosicao, $sValor){
+        $this->aTabelaAutomato[$iPosicao] = $sValor;
+    }
+    
+    //aTabelaAutomato[$iPosicao][] = $sValor;
+    public function setValorAutATabelaAutomato($iPosicao, $sValor){
+        $this->aTabelaAutomato[$iPosicao][] = $sValor;
+    }
+    
+    function setATabelaAutomato($aTabelaAutomato){
+        $this->aTabelaAutomato = $aTabelaAutomato;
+    }
+                
     //Armazena as palavras reservadas para posterior análise léxica e salva as palavras reservadas
     public $aPalavrasReservadas = array();
     
