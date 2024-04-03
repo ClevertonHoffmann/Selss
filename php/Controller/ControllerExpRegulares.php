@@ -153,7 +153,7 @@ class ControllerExpRegulares extends Controller {
                  * Pega posição que contém as definições de cada tokem ex: [a-b] ou &&
                  * E verifica se for igual a 1 inicia a criação da árvore
                  */
-                if (trim($this->getOModel()->aArray1[1]) != "") {
+                if (trim($this->getOModel()->getValorAArray1(1)) != "") {
 
                     //Tratamento de expressões em branco
                     $this->analisaExprEmBranco($sChar);
@@ -165,33 +165,33 @@ class ControllerExpRegulares extends Controller {
 
                         //Escapa simbolo quando contém aspas duplas
                         $bEscapaCol = false;
-                        if (strpos($this->getOModel()->aArray1[1], '"') !== false) {
+                        if (strpos($this->getOModel()->getValorAArray1(1), '"') !== false) {
                             $bEscapaCol = true;
                         }
                         if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $bEscapaCol) {
 
                             //Substitui textos encontrados com " por exemplo "{" por { (sem aspas)
-                            if (strpos($this->getOModel()->aArray1[1], '"') !== false) {
-                                $this->getOModel()->aArray1[1] = str_replace('"', '', $this->getOModel()->aArray1[1]);
+                            if (strpos($this->getOModel()->getValorAArray1(1), '"') !== false) {
+                                $this->getOModel()->setValorAArray1(1, str_replace('"', '', $this->getOModel()->getValorAArray1(1)));
                             }
 
                             //Opção de caracteres simples +, -, *, /
-                            if ($this->getOModel()->bCont && $this->getOModel()->aArray1[1] == $sChar) {
+                            if ($this->getOModel()->bCont && $this->getOModel()->getValorAArray1(1) == $sChar) {
                                 $this->funcaoAtribuicaoVariaveis();
                             }
 
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
-                            if ($this->getOModel()->bCont && (preg_match("/^" . $this->getOModel()->aArray1[1] . "$/", $sChar) == 1)) {
+                            if ($this->getOModel()->bCont && (preg_match("/^" . $this->getOModel()->getValorAArray1(1) . "$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
                             }
 
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
-                            if ($this->getOModel()->bCont && substr_count($this->getOModel()->aArray1[1], $sChar) == strlen($this->getOModel()->aArray1[1]) && strlen($this->getOModel()->aArray1[1]) > 1) {
+                            if ($this->getOModel()->bCont && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $this->funcaoAtribuicaoVariaveis2();
                             }
                             //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
-                            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->aArray1[1] . "]/", $sChar) == 1) && strlen($this->getOModel()->aArray1[1]) > 1) {
-                                $aCarac = str_split($this->getOModel()->aArray1[1]);
+                            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                                $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                                 if ($aCarac[0] == $sChar) {
                                     $this->funcaoAtribuicaoVariaveis2();
                                 }
@@ -212,17 +212,17 @@ class ControllerExpRegulares extends Controller {
      * removendo espaços em branco e escapa o caractere ":" (Dois pontos)
      */
     public function retornaArrayPosTokenExp($sVal) {
-        $this->getOModel()->aArray1 = array();
+        $this->getOModel()->setAArray1(array());
 
         //Função que aceita o :
         if (strpos($sVal, '\:') !== false) {
             $aArray2 = explode(':', $sVal);
-            $this->getOModel()->aArray1[0] = trim($aArray2[0]);
-            $this->getOModel()->aArray1[1] = ':';
+            $this->getOModel()->setValorAArray1(0, trim($aArray2[0]));
+            $this->getOModel()->setValorAArray1(1, ':');
         } else {
-            $this->getOModel()->aArray1 = explode(':', $sVal);
-            $this->getOModel()->aArray1[0] = trim($this->getOModel()->aArray1[0]); //Remove espaços em branco
-            $this->getOModel()->aArray1[1] = trim($this->getOModel()->aArray1[1]); //Remove espaços em branco
+            $this->getOModel()->setAArray1(explode(':', $sVal));
+            $this->getOModel()->setValorAArray1(0, trim($this->getOModel()->getValorAArray1(0))); //Remove espaços em branco
+            $this->getOModel()->setValorAArray1(1, trim($this->getOModel()->getValorAArray1(1))); //Remove espaços em branco
         }
     }
 
@@ -230,13 +230,13 @@ class ControllerExpRegulares extends Controller {
      * Realiza a verificação caso exista um caracter digitado como \t, \r, ou \n
      */
     public function analisaExprEmBranco($sChar) {
-        if ($sChar == "\\t" && $sChar == $this->getOModel()->aArray1[1]) {
+        if ($sChar == "\\t" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
         }
-        if ($sChar == "\\n" && $sChar == $this->getOModel()->aArray1[1]) {
+        if ($sChar == "\\n" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
         }
-        if ($sChar == "\\r" && $sChar == $this->getOModel()->aArray1[1]) {
+        if ($sChar == "\\r" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
         }
     }
@@ -247,17 +247,17 @@ class ControllerExpRegulares extends Controller {
      */
     public function funcaoAtribuicaoVariaveis() {
 
-        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->aArray1[1]])) {
+        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
             $this->getOModel()->iEst++;
-            $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->aArray1);
+            $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->getAArray1());
             //Parte que retira as expressões que possuem estado (Ficar só compostas)
-            $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->aArray1[0]);
+            $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
         }
-        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->aArray1[1]])) {
-            $this->getOModel()->aTokenEstado[$this->getOModel()->aArray1[1]] = [$this->getOModel()->aArray1[0], $this->getOModel()->iEst];
+        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
+            $this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)] = [$this->getOModel()->getValorAArray1(0), $this->getOModel()->iEst];
         }
-        if (isset($this->getOModel()->aTokenEstado[$this->getOModel()->aArray1[1]])) {
-            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->aTokenEstado[$this->getOModel()->aArray1[1]][1]); //ESTADO JÁ DEFINIDO
+        if (isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)][1]); //ESTADO JÁ DEFINIDO
         } else {
             $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
         }
@@ -270,10 +270,10 @@ class ControllerExpRegulares extends Controller {
      */
     public function funcaoAtribuicaoVariaveis2() {
         $this->getOModel()->iEst++;
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->aArray1);
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, ["?", $this->getOModel()->aArray1[1], $this->getOModel()->aArray1[0]]); //Adiciona o token
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->getAArray1());
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
         //Parte que retira as expressões que possuem estado (Ficar só compostas)
-        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->aArray1[0]);
+        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
         $this->getOModel()->bCont = false;
     }
@@ -285,7 +285,7 @@ class ControllerExpRegulares extends Controller {
      */
     public function verificaPalavraChave($sChar) {
         $bRetorno = false;
-        if ((trim($this->getOModel()->aArray1[0]) == trim($this->getOModel()->aArray1[1])) && preg_match("/[" . $this->getOModel()->aArray1[1] . "]/", $sChar) == 1) {
+        if ((trim($this->getOModel()->getValorAArray1(0)) == trim($this->getOModel()->getValorAArray1(1))) && preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) {
             $bRetorno = true;
         }
         return $bRetorno;
@@ -297,11 +297,11 @@ class ControllerExpRegulares extends Controller {
      */
     public function analisaPalavrasChaves($sChar) {
         if ($this->verificaPalavraChave($sChar)) {
-            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->aArray1[1] . "]/", $sChar) == 1) && strlen($this->getOModel()->aArray1[1]) > 1) {
-                $aCarac = str_split($this->getOModel()->aArray1[1]);
+            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                 if ($aCarac[0] == $sChar) {
-                    $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->aArray1[0]), trim($this->getOModel()->aArray1[0])]); //Preenche array com as palavras chaves para posterior salvar em csv
-                    $this->getOModel()->aArrayPalavraChave[trim($this->getOModel()->aArray1[0])] = trim($this->getOModel()->aArray1[0]); //Armazena palavras chaves para analise posterior
+                    $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))]); //Preenche array com as palavras chaves para posterior salvar em csv
+                    $this->getOModel()->setValorAArrayPalavraChave(trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))); //Armazena palavras chaves para analise posterior
                     $this->funcaoAtribuicaoVariaveis2();
                 }
             }
@@ -323,7 +323,7 @@ class ControllerExpRegulares extends Controller {
         //Armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
         foreach ($this->getOModel()->getAArrayEstTokenExpr() as $iEstado => $aVal) {
             if ($aVal[0] != "?") {
-                $this->getOModel()->aArrayExprEst[trim($aVal[0])] = [$iEstado, $aVal[1]];
+                $this->getOModel()->setValorAArrayExprEst(trim($aVal[0]), [$iEstado, $aVal[1]]);
             }
         }
 
@@ -386,19 +386,19 @@ class ControllerExpRegulares extends Controller {
      */
     public function funcaoAtribuicaoTokenTransicao($aVal, $sChar) {
         if ($aVal[0] == "?" && $this->getOModel()->bCont) {
-            $this->getOModel()->aArray1 = str_split($aVal[1]);
+            $this->getOModel()->setAArray1(str_split($aVal[1]));
             //Possibilidade dupla caracteres igual
             if (strlen($aVal[1]) == 2) {
-                if ($this->getOModel()->aArray1[1] == $sChar) {
+                if ($this->getOModel()->getValorAArray1(1) == $sChar) {
                     $this->getOModel()->iEst++;
-                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst,[$aVal[2], $this->getOModel()->aArray1[1]]);
+                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst,[$aVal[2], $this->getOModel()->getValorAArray1(1)]);
                     $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
                     $this->getOModel()->bCont = false;
                 }
             }
             //Possibilidade n caracteres iguais
-            if (count($this->getOModel()->aArray1) > 2) {
-                if ($this->getOModel()->aArray1[1] == $sChar) {
+            if (count($this->getOModel()->getAArray1()) > 2) {
+                if ($this->getOModel()->getValorAArray1(1) == $sChar) {
                     $this->getOModel()->iEst++;
                     $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, ["?", substr($aVal[1], 1), $aVal[2]]);
                     $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
@@ -424,7 +424,7 @@ class ControllerExpRegulares extends Controller {
                     foreach ($aArrayComp as $sKey1 => $sLexic) {
                         if (trim($aVal[0]) == trim($sLexic) && isset($aArrayComp[$sKey1 + 1])) {
                             $sChave = trim($aArrayComp[$sKey1 + 1]);
-                            $sExp2 = $this->getOModel()->aArrayExprEst[$sChave][1];
+                            $sExp2 = $this->getOModel()->getValorAArrayExprEst($sChave)[1];
                             if ((preg_match("/^" . $sExp2 . "$/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
                                 if ($this->getOModel()->iki == 0) {
                                     $this->getOModel()->iEst++;
@@ -452,8 +452,8 @@ class ControllerExpRegulares extends Controller {
                 $this->getOModel()->bCont = false;
             } else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
-                if (isset($this->getOModel()->aArrayPalavraChave[$aToken[0]])) {
-                    foreach ($this->getOModel()->aArrayExprEst as $sKey1 => $aLexic) {//Percorre para cada expressão composta uma vez
+                if ($this->getOModel()->issetAArrayPalavraChave($aToken[0])) {
+                    foreach ($this->getOModel()->getAArrayExprEst() as $sKey1 => $aLexic) {//Percorre para cada expressão composta uma vez
                         if (preg_match("/^" . $aLexic[1] . "$/", $sChar) == 1 &&
                                 preg_match("/^" . $aLexic[1] . "$/", $aToken[0]) == 1 &&
                                 (strpos($aLexic[1], '*') !== false || strpos($aLexic[1], '+') !== false)) {
@@ -464,8 +464,8 @@ class ControllerExpRegulares extends Controller {
                 } else {
                     //Verifica se um estado final de atribuição composta necessita emplimento do mesmo, no ex soma:{mais}{num}; onde num:[0-9]*;
                     if (isset($aToken[1][1])) { //Verifica se existe variáveis
-                        if (isset($this->getOModel()->aArrayExprEst[$aToken[1][1]][1])) {
-                            if (preg_match("/^" . $this->getOModel()->aArrayExprEst[$aToken[1][1]][1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->aArrayExprEst[$aToken[1][1]][1], '*') !== false || strpos($this->getOModel()->aArrayExprEst[$aToken[1][1]][1], '+') !== false)) {
+                        if (isset($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1])) {
+                            if (preg_match("/^" . $this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '*') !== false || strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '+') !== false)) {
                                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iPos);
                                 $this->getOModel()->bCont = false;
                             }
