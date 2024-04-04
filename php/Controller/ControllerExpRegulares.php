@@ -83,11 +83,11 @@ class ControllerExpRegulares extends Controller {
         $this->getOModel()->setValorATabelaAutomato(-1, $aCabecalhoTabelaLexica);
 
         //Inicializa a variável de controle de estado
-        $this->getOModel()->iPos = 0;
+        $this->getOModel()->setIPos(0);
 
         //Estado 0 sempe inicia com uma incógnita pois não reconhece nenhum elemento apenas indica para qual estado ir para reconhecer
-        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iPos);
-        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, '?');
+        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
+        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), '?');
 
         //Busca caracteres válidos usados para analisar e criar estados de transição conforme correspondência.
         $this->getOModel()->setAArrayCaracteres($this->getOPersistencia()->retornaCaracteresValidos()[0]);
@@ -141,7 +141,7 @@ class ControllerExpRegulares extends Controller {
         //Percorre caracter por caracter para formar o estado 0 inicial de transição
         foreach ($this->getOModel()->getAArrayCaracteres() as $sChar) {
             //Variável de controle para não entrar nos demais ifs caso caracter já analisado
-            $this->getOModel()->bCont = true;
+            $this->getOModel()->setBCont(true);
             foreach ($this->getOModel()->getAArray() as $sVal) {
 
                 //Cria um array do tipo array[0]=>token; array[1]=>exp; 
@@ -176,21 +176,21 @@ class ControllerExpRegulares extends Controller {
                             }
 
                             //Opção de caracteres simples +, -, *, /
-                            if ($this->getOModel()->bCont && $this->getOModel()->getValorAArray1(1) == $sChar) {
+                            if ($this->getOModel()->getBCont() && $this->getOModel()->getValorAArray1(1) == $sChar) {
                                 $this->funcaoAtribuicaoVariaveis();
                             }
 
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
-                            if ($this->getOModel()->bCont && (preg_match("/^" . $this->getOModel()->getValorAArray1(1) . "$/", $sChar) == 1)) {
+                            if ($this->getOModel()->getBCont() && (preg_match("/^" . $this->getOModel()->getValorAArray1(1) . "$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
                             }
 
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
-                            if ($this->getOModel()->bCont && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                            if ($this->getOModel()->getBCont() && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $this->funcaoAtribuicaoVariaveis2();
                             }
                             //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
-                            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                            if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                                 if ($aCarac[0] == $sChar) {
                                     $this->funcaoAtribuicaoVariaveis2();
@@ -201,8 +201,8 @@ class ControllerExpRegulares extends Controller {
                 }
             }
             //Coloca -1 em todas as posições que não possuem transição na tabela
-            if ($this->getOModel()->bCont) {
-                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, -1);
+            if ($this->getOModel()->getBCont()) {
+                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), -1);
             }
         }
     }
@@ -247,21 +247,21 @@ class ControllerExpRegulares extends Controller {
      */
     public function funcaoAtribuicaoVariaveis() {
 
-        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
-            $this->getOModel()->iEst++;
-            $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->getAArray1());
+        if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setIEst($this->getOModel()->getIEst()+1);
+            $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
             //Parte que retira as expressões que possuem estado (Ficar só compostas)
             $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
         }
-        if (!isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
-            $this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)] = [$this->getOModel()->getValorAArray1(0), $this->getOModel()->iEst];
+        if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setValorATokenEstado($this->getOModel()->getValorAArray1(1), [$this->getOModel()->getValorAArray1(0), $this->getOModel()->getIEst()]);
         }
-        if (isset($this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)])) {
-            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->aTokenEstado[$this->getOModel()->getValorAArray1(1)][1]); //ESTADO JÁ DEFINIDO
+        if ($this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getValorATokenEstado($this->getOModel()->getValorAArray1(1))[1]); //ESTADO JÁ DEFINIDO
         } else {
-            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
         }
-        $this->getOModel()->bCont = false;
+        $this->getOModel()->setBCont(false);
     }
 
     /**
@@ -269,13 +269,13 @@ class ControllerExpRegulares extends Controller {
      * de acordo com os casamentos das expressões adiciona token com ?
      */
     public function funcaoAtribuicaoVariaveis2() {
-        $this->getOModel()->iEst++;
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, $this->getOModel()->getAArray1());
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
+        $this->getOModel()->setIEst($this->getOModel()->getIEst()+1);
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
         //Parte que retira as expressões que possuem estado (Ficar só compostas)
         $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
-        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
-        $this->getOModel()->bCont = false;
+        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+        $this->getOModel()->setBCont(false);
     }
 
     /**
@@ -297,7 +297,7 @@ class ControllerExpRegulares extends Controller {
      */
     public function analisaPalavrasChaves($sChar) {
         if ($this->verificaPalavraChave($sChar)) {
-            if ($this->getOModel()->bCont && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+            if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                 $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                 if ($aCarac[0] == $sChar) {
                     $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))]); //Preenche array com as palavras chaves para posterior salvar em csv
@@ -314,11 +314,11 @@ class ControllerExpRegulares extends Controller {
 
     public function montaEstadosTransicao() {
 
-        $this->getOModel()->iPos++;
-        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iPos);
+        $this->getOModel()->setIPos($this->getOModel()->getIPos()+1);
+        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
         ksort($this->getOModel()->getAArrayEstTokenExpr()); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados e estados de transição de tokens compostos
-        $this->getOModel()->bCont = true;
+        $this->getOModel()->setBCont(true);
 
         //Armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
         foreach ($this->getOModel()->getAArrayEstTokenExpr() as $iEstado => $aVal) {
@@ -327,22 +327,20 @@ class ControllerExpRegulares extends Controller {
             }
         }
 
-        //Adiciona os estados que são transições das palavras reservadas
-        $this->getOModel()->iEst = $this->getOModel()->iEst + $this->getOModel()->iEstRes; /////////////////////
         //Percorre todos estados que possuem transição ou formam um estado de transição e final
-        while (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->iPos) {
+        while (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->getIPos()) {
 
-            $aVal = $this->getOModel()->getValorAArrayEstTokenExpr($this->getOModel()->iPos); //Token, expressão
+            $aVal = $this->getOModel()->getValorAArrayEstTokenExpr($this->getOModel()->getIPos()); //Token, expressão
 
             $aToken = $this->verificaEstadoComposto($aVal); //Verifica se o atual estado é estado final e de transição composto por outro ex: [a-z]* ou [a-z]+
 
-            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, trim($aToken[0])); //Seta o token retornado de cada estado
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), trim($aToken[0])); //Seta o token retornado de cada estado
 
-            $this->getOModel()->iki = 0; //Contador importante para as expressões compostas
+            $this->getOModel()->setIki(0); //Contador importante para as expressões compostas
             //Percorre os caracteres colocando -1 quando não tem transição ou o estado de transição
             foreach ($this->getOModel()->getAArrayCaracteres() as $sChar) {
 
-                $this->getOModel()->bCont = true;
+                $this->getOModel()->setBCont(true);
 
                 $this->funcaoAtribuicaoTokenTransicao($aVal, $sChar); //Se for ? é por que é um estado de transição e não de aceitação
 
@@ -350,13 +348,13 @@ class ControllerExpRegulares extends Controller {
 
                 $this->funçãoAtribuicaoCuringa($sChar, $aToken); //Expressões compostas por + ou * 
                 //Coloca -1 em todas as posições que não possuem transição na tabela
-                if ($this->getOModel()->bCont) {
-                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, -1);
+                if ($this->getOModel()->getBCont()) {
+                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), -1);
                 }
             }
-            $this->getOModel()->iPos++;
-            if (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->iPos) {
-                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iPos);
+            $this->getOModel()->setIPos($this->getOModel()->getIPos()+1);
+            if (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->getIPos()) {
+                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
             }
         }
     }
@@ -385,24 +383,24 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function funcaoAtribuicaoTokenTransicao($aVal, $sChar) {
-        if ($aVal[0] == "?" && $this->getOModel()->bCont) {
+        if ($aVal[0] == "?" && $this->getOModel()->getBCont()) {
             $this->getOModel()->setAArray1(str_split($aVal[1]));
             //Possibilidade dupla caracteres igual
             if (strlen($aVal[1]) == 2) {
                 if ($this->getOModel()->getValorAArray1(1) == $sChar) {
-                    $this->getOModel()->iEst++;
-                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst,[$aVal[2], $this->getOModel()->getValorAArray1(1)]);
-                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
-                    $this->getOModel()->bCont = false;
+                    $this->getOModel()->setIEst($this->getOModel()->getIEst()+1);
+                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(),[$aVal[2], $this->getOModel()->getValorAArray1(1)]);
+                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+                    $this->getOModel()->setBCont(false);
                 }
             }
             //Possibilidade n caracteres iguais
             if (count($this->getOModel()->getAArray1()) > 2) {
                 if ($this->getOModel()->getValorAArray1(1) == $sChar) {
-                    $this->getOModel()->iEst++;
-                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, ["?", substr($aVal[1], 1), $aVal[2]]);
-                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst);
-                    $this->getOModel()->bCont = false;
+                    $this->getOModel()->setIEst($this->getOModel()->getIEst()+1);
+                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", substr($aVal[1], 1), $aVal[2]]);
+                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+                    $this->getOModel()->setBCont(false);
                 }
             }
         }
@@ -414,7 +412,7 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function funcaoAtribuicaoComposta($aVal, $sChar) {
-        if ($this->getOModel()->bCont) {
+        if ($this->getOModel()->getBCont()) {
             if (count($this->getOModel()->getAArrayTokenExpr()) > 0) {
                 foreach ($this->getOModel()->getAArrayTokenExpr() as $key => $sExprr) {
                     $sValorExp1 = str_replace("}{", ",", trim($sExprr));
@@ -426,13 +424,13 @@ class ControllerExpRegulares extends Controller {
                             $sChave = trim($aArrayComp[$sKey1 + 1]);
                             $sExp2 = $this->getOModel()->getValorAArrayExprEst($sChave)[1];
                             if ((preg_match("/^" . $sExp2 . "$/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
-                                if ($this->getOModel()->iki == 0) {
-                                    $this->getOModel()->iEst++;
-                                    $this->getOModel()->iki++;
+                                if ($this->getOModel()->getIki() == 0) {
+                                    $this->getOModel()->setIEst($this->getOModel()->getIEst()+1);
+                                    $this->getOModel()->setIki($this->getOModel()->getIki()+1);
                                 }
-                                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iEst); //$this->getOModel()->aTokenEstado[$sExp2][1];
-                                $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->iEst, [$key, $aArrayComp]);
-                                $this->getOModel()->bCont = false;
+                                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+                                $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), [$key, $aArrayComp]);
+                                $this->getOModel()->setBCont(false);
                             }
                         }
                     }
@@ -445,11 +443,11 @@ class ControllerExpRegulares extends Controller {
      * Função que verifica se necessário alguma transição para o mesmo estado caso * ou +
      */
     public function funçãoAtribuicaoCuringa($sChar, $aToken) {
-        if ($this->getOModel()->bCont) {
+        if ($this->getOModel()->getBCont()) {
             //Atribui a transição para seu próprio estado caso necessário
             if (preg_match("/^" . $aToken[1] . "$/", $sChar) == 1 && (strpos($aToken[1], '*') !== false || strpos($aToken[1], '+') !== false)) {
-                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->aTokenEstado[$aToken[1]][1]); //$this->getOModel()->iPos;///VER AQUI ALTERA O ESTADO QUE VOLTA PARA O MESMO
-                $this->getOModel()->bCont = false;
+                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getValorATokenEstado($aToken[1])[1]);
+                $this->getOModel()->setBCont(false);
             } else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
                 if ($this->getOModel()->issetAArrayPalavraChave($aToken[0])) {
@@ -457,8 +455,8 @@ class ControllerExpRegulares extends Controller {
                         if (preg_match("/^" . $aLexic[1] . "$/", $sChar) == 1 &&
                                 preg_match("/^" . $aLexic[1] . "$/", $aToken[0]) == 1 &&
                                 (strpos($aLexic[1], '*') !== false || strpos($aLexic[1], '+') !== false)) {
-                            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $aLexic[0]);
-                            $this->getOModel()->bCont = false;
+                            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $aLexic[0]);
+                            $this->getOModel()->setBCont(false);
                         }
                     }
                 } else {
@@ -466,8 +464,8 @@ class ControllerExpRegulares extends Controller {
                     if (isset($aToken[1][1])) { //Verifica se existe variáveis
                         if (isset($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1])) {
                             if (preg_match("/^" . $this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '*') !== false || strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '+') !== false)) {
-                                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->iPos, $this->getOModel()->iPos);
-                                $this->getOModel()->bCont = false;
+                                $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
+                                $this->getOModel()->setBCont(false);
                             }
                         }
                     }

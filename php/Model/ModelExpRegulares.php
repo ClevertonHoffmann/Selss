@@ -142,19 +142,50 @@ class ModelExpRegulares {
     }
 
     //Grava o estado de transição posição da chave no array inicia em -1 por causa do cabeçalho
-    public $iPos = -1;
+    private $iPos = -1;
+    
+    public function getIPos() {
+        return $this->iPos;
+    }
+
+    public function setIPos($iPos) {
+        $this->iPos = $iPos;
+    }
+        
     //Contador dos estados
-    public $iEst = 0;
-    //Contador composto caso de palavras reservadas
-    public $iEstRes = 0;
-    //Responsável por armazenar a expressão já verificada no estado 0 para não precisar repetir a análise
-    public $sExp = '';
+    private $iEst = 0;
+    
+    public function getIEst() {
+        return $this->iEst;
+    }
+
+    public function setIEst($iEst){
+        $this->iEst = $iEst;
+    }
+    
     //Usada para controle de atribuições não deixando atribuir dois estados para o mesmo caracter na tabela de transição
-    public $bCont;
+    private $bCont;
+    
+    public function getBCont() {
+        return $this->bCont;
+    }
+
+    public function setBCont($bCont) {
+        $this->bCont = $bCont;
+    }
+
     //Parte dois
     //Contador importante para as expressões compostas
-    public $iki;
+    private $iki;
     
+    public function getIki() {
+        return $this->iki;
+    }
+
+    public function setIki($iki){
+        $this->iki = $iki;
+    }
+        
     //Array responsável por armazenar as palavras chaves no formato array[palavra] = palavra; 
     private $aArrayPalavraChave = array();
 
@@ -198,5 +229,26 @@ class ModelExpRegulares {
     }
         
     //Não deixa atribuir outro estado ao mesmo token que já contém um estado
-    public $aTokenEstado = array();
+    private $aTokenEstado = array();
+    
+    public function getATokenEstado() {
+        return $this->aTokenEstado;
+    }
+    
+    public function getValorATokenEstado($iPosicao) {
+        return $this->aTokenEstado[$iPosicao];
+    }
+
+    public function setATokenEstado($aTokenEstado) {
+        $this->aTokenEstado = $aTokenEstado;
+    }
+    
+    public function setValorATokenEstado($iPosicao, $sValor) {
+        $this->aTokenEstado[$iPosicao] = $sValor;
+    }
+
+    public function issetATokenEstado($sValor) {
+        return isset($this->aTokenEstado[$sValor]);
+    }
+    
 }
