@@ -130,7 +130,7 @@ window.onload = (function () {
     campoTexto.addEventListener('keyup', function () {
         mostrarSugestoes();
     });
-    
+
 
     // Função para completar o texto do campo com a sugestão selecionada
     function completarTexto(sugestao) {

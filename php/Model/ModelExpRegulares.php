@@ -143,7 +143,7 @@ class ModelExpRegulares {
 
     //Grava o estado de transição posição da chave no array inicia em -1 por causa do cabeçalho
     private $iPos = -1;
-    
+
     public function getIPos() {
         return $this->iPos;
     }
@@ -151,21 +151,21 @@ class ModelExpRegulares {
     public function setIPos($iPos) {
         $this->iPos = $iPos;
     }
-        
+
     //Contador dos estados
     private $iEst = 0;
-    
+
     public function getIEst() {
         return $this->iEst;
     }
 
-    public function setIEst($iEst){
+    public function setIEst($iEst) {
         $this->iEst = $iEst;
     }
-    
+
     //Usada para controle de atribuições não deixando atribuir dois estados para o mesmo caracter na tabela de transição
     private $bCont;
-    
+
     public function getBCont() {
         return $this->bCont;
     }
@@ -177,15 +177,15 @@ class ModelExpRegulares {
     //Parte dois
     //Contador importante para as expressões compostas
     private $iki;
-    
+
     public function getIki() {
         return $this->iki;
     }
 
-    public function setIki($iki){
+    public function setIki($iki) {
         $this->iki = $iki;
     }
-        
+
     //Array responsável por armazenar as palavras chaves no formato array[palavra] = palavra; 
     private $aArrayPalavraChave = array();
 
@@ -211,11 +211,11 @@ class ModelExpRegulares {
 
     //Array que armazena todas as expressões simples pelo token que são diferentes dos estados de transição e seu respectivo estado
     private $aArrayExprEst = array();
-    
+
     public function getAArrayExprEst() {
         return $this->aArrayExprEst;
     }
-    
+
     public function getValorAArrayExprEst($iPosicao) {
         return $this->aArrayExprEst[$iPosicao];
     }
@@ -223,18 +223,18 @@ class ModelExpRegulares {
     public function setAArrayExprEst($aArrayExprEst) {
         $this->aArrayExprEst = $aArrayExprEst;
     }
-    
+
     public function setValorAArrayExprEst($iPosicao, $sValor) {
         $this->aArrayExprEst[$iPosicao] = $sValor;
     }
-        
+
     //Não deixa atribuir outro estado ao mesmo token que já contém um estado
     private $aTokenEstado = array();
-    
+
     public function getATokenEstado() {
         return $this->aTokenEstado;
     }
-    
+
     public function getValorATokenEstado($iPosicao) {
         return $this->aTokenEstado[$iPosicao];
     }
@@ -242,7 +242,7 @@ class ModelExpRegulares {
     public function setATokenEstado($aTokenEstado) {
         $this->aTokenEstado = $aTokenEstado;
     }
-    
+
     public function setValorATokenEstado($iPosicao, $sValor) {
         $this->aTokenEstado[$iPosicao] = $sValor;
     }
@@ -250,5 +250,24 @@ class ModelExpRegulares {
     public function issetATokenEstado($sValor) {
         return isset($this->aTokenEstado[$sValor]);
     }
-    
+
+    //Variável utilizada para salvar os estados e seus respectivas transições conforme a expressão e token
+    private $aArrayEstTransicaoExpToken = array();
+
+    public function getAArrayEstTransicaoExpToken() {
+        return $this->aArrayEstTransicaoExpToken;
+    }
+
+    public function setAArrayEstTransicaoExpToken($aArrayEstTransicaoExpToken) {
+        $this->aArrayEstTransicaoExpToken = $aArrayEstTransicaoExpToken;
+    }
+
+    /**
+     * Seta array[estado][transicao]=[expressao,token]
+     */
+    public function setValorAArrayEstTransicaoExpToken($iEstado, $iTransicao, $aValor) {
+        if (!isset($this->aArrayEstTransicaoExpToken[$iEstado][$iTransicao])) {
+            $this->aArrayEstTransicaoExpToken[$iEstado][$iTransicao] = $aValor;
+        }
+    }
 }

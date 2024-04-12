@@ -61,6 +61,17 @@ class PersistenciaExpRegulares extends Persistencia{
         
     }
     
+    /**
+     * Grava o array AArrayEstTransicaoExpToken
+     * @return type
+     */
+    public function gravaArrayEstTransicaoExpToken($aArray){
+        
+        $aCSV = $this->gravaArrayCompostoEmCSV("estTransicaoExpToken.csv", 1, $aArray);
+        return $aCSV;
+        
+    }
+    
 }
 
 ?>

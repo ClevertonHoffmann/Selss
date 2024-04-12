@@ -111,7 +111,10 @@ class ControllerExpRegulares extends Controller {
 
         //Parte que grava a tabela do automato para análise léxica
         $this->getOPersistencia()->gravaTabelaLexica($this->getOModel()->getATabelaAutomato());
-
+        
+        //Parte que grava ArrayEstTransicaoExpToken para desenho do automato
+        $this->getOPersistencia()->gravaArrayEstTransicaoExpToken($this->getOModel()->getAArrayEstTransicaoExpToken());
+        
         $sJson = '{"texto":"Sucesso!"}';
 
         return json_encode($sJson);
@@ -178,22 +181,26 @@ class ControllerExpRegulares extends Controller {
                             //Opção de caracteres simples +, -, *, /
                             if ($this->getOModel()->getBCont() && $this->getOModel()->getValorAArray1(1) == $sChar) {
                                 $this->funcaoAtribuicaoVariaveis();
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
                             }
 
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
                             if ($this->getOModel()->getBCont() && (preg_match("/^" . $this->getOModel()->getValorAArray1(1) . "$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
                             }
 
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
                             if ($this->getOModel()->getBCont() && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $this->funcaoAtribuicaoVariaveis2();
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
                             }
                             //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
                             if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                                 if ($aCarac[0] == $sChar) {
                                     $this->funcaoAtribuicaoVariaveis2();
+                                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
                                 }
                             }
                         }
@@ -232,12 +239,15 @@ class ControllerExpRegulares extends Controller {
     public function analisaExprEmBranco($sChar) {
         if ($sChar == "\\t" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
+            $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
         }
         if ($sChar == "\\n" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
+            $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
         }
         if ($sChar == "\\r" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
+            $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
         }
     }
 
@@ -303,6 +313,7 @@ class ControllerExpRegulares extends Controller {
                     $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))]); //Preenche array com as palavras chaves para posterior salvar em csv
                     $this->getOModel()->setValorAArrayPalavraChave(trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))); //Armazena palavras chaves para analise posterior
                     $this->funcaoAtribuicaoVariaveis2();
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$aCarac[0], $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
                 }
             }
         }
@@ -353,6 +364,7 @@ class ControllerExpRegulares extends Controller {
                 }
             }
             $this->getOModel()->setIPos($this->getOModel()->getIPos()+1);
+            //Seta proximo estado a tabela caso tenha mais um estado para acrescentar na tabela
             if (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->getIPos()) {
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
             }
@@ -392,6 +404,7 @@ class ControllerExpRegulares extends Controller {
                     $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(),[$aVal[2], $this->getOModel()->getValorAArray1(1)]);
                     $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
                     $this->getOModel()->setBCont(false);
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $aVal[2]]); /////AQUIIIII
                 }
             }
             //Possibilidade n caracteres iguais
@@ -401,6 +414,7 @@ class ControllerExpRegulares extends Controller {
                     $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", substr($aVal[1], 1), $aVal[2]]);
                     $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
                     $this->getOModel()->setBCont(false);
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $aVal[2]]); /////AQUIIIII
                 }
             }
         }
@@ -431,6 +445,7 @@ class ControllerExpRegulares extends Controller {
                                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
                                 $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), [$key, $aArrayComp]);
                                 $this->getOModel()->setBCont(false);
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sExp2, $key]); /////AQUIIIII
                             }
                         }
                     }
@@ -448,6 +463,7 @@ class ControllerExpRegulares extends Controller {
             if (preg_match("/^" . $aToken[1] . "$/", $sChar) == 1 && (strpos($aToken[1], '*') !== false || strpos($aToken[1], '+') !== false)) {
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getValorATokenEstado($aToken[1])[1]);
                 $this->getOModel()->setBCont(false);
+                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getValorATokenEstado($aToken[1])[1], [$aToken[1], $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
             } else {
                 //Verifica a atribuição para as palavras reservadas compostas em uma expressão curringa ex: else seguido de uma letra pertence a exp: [a-z]*
                 if ($this->getOModel()->issetAArrayPalavraChave($aToken[0])) {
@@ -457,6 +473,7 @@ class ControllerExpRegulares extends Controller {
                                 (strpos($aLexic[1], '*') !== false || strpos($aLexic[1], '+') !== false)) {
                             $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $aLexic[0]);
                             $this->getOModel()->setBCont(false);
+                            $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $aLexic[0], [$aLexic[1], $aToken[0]]); /////AQUIIIII
                         }
                     }
                 } else {
@@ -466,6 +483,7 @@ class ControllerExpRegulares extends Controller {
                             if (preg_match("/^" . $this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '*') !== false || strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '+') !== false)) {
                                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
                                 $this->getOModel()->setBCont(false);
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], $aToken[1][1]]); /////AQUIIIII
                             }
                         }
                     }

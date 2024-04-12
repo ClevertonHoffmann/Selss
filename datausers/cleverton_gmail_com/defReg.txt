@@ -1,16 +1,5 @@
-9e:9e;
 if:if;
-teste:teste;
-prog:prog;
-dp:\:;
-ac:"{"; 
-fc:"}";
-menor:<;
-ap:(;
-fp:);
-atrib:=;
-mais:++;
+else:else;
 letras:[a-z]*;
 num:[0-9]*;
 id:{num}{letras};
-soma:{mais}{num};
