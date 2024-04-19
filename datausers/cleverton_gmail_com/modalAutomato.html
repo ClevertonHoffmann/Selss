@@ -1,406 +1,102 @@
- <!DOCTYPE html>
-                        <html lang="pt-BR">
-                            <head>
-                                <meta charset="UTF-8">
-                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                <title>Desenhar e Conectar Círculos</title>
-                                <style>
-                                    #canvas { border: 1px solid #000; cursor: pointer; }
-                                </style>
-                            </head>
-                            <br>
-                            <br> <body style="text-align:center">
-                                <canvas id="canvas" width="700" height="700"></canvas> <script>
-                                    // Obtém o elemento canvas e seu contexto
-                                    var canvas = document.getElementById("canvas");
-                                    var ctx = canvas.getContext("2d");         // Define as coordenadas dos círculos e seus rótulos
-                                    var circle0 = { x: 100+0, y: 100+0, radius: 20, isDragging: false, label: "q0" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle1 = { x: 100+50, y: 100+50, radius: 20, isDragging: false, label: "q1" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle2 = { x: 100+100, y: 100+100, radius: 20, isDragging: false, label: "q2" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle3 = { x: 100+150, y: 100+150, radius: 20, isDragging: false, label: "q3" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle4 = { x: 100+200, y: 100+200, radius: 20, isDragging: false, label: "q4" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle5 = { x: 100+250, y: 100+250, radius: 20, isDragging: false, label: "q5" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle6 = { x: 100+300, y: 100+300, radius: 20, isDragging: false, label: "q6" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle7 = { x: 100+350, y: 100+350, radius: 20, isDragging: false, label: "q7" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle8 = { x: 100+400, y: 100+400, radius: 20, isDragging: false, label: "q8" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle9 = { x: 100+450, y: 100+450, radius: 20, isDragging: false, label: "q9" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle10 = { x: 100+500, y: 100+500, radius: 20, isDragging: false, label: "q10" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle11 = { x: 100+550, y: 100+550, radius: 20, isDragging: false, label: "q11" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle12 = { x: 100+600, y: 100+600, radius: 20, isDragging: false, label: "q12" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle13 = { x: 100+650, y: 100+650, radius: 20, isDragging: false, label: "q13" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle14 = { x: 100+700, y: 100+700, radius: 20, isDragging: false, label: "q14" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle15 = { x: 100+750, y: 100+750, radius: 20, isDragging: false, label: "q15" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle16 = { x: 100+800, y: 100+800, radius: 20, isDragging: false, label: "q16" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle17 = { x: 100+850, y: 100+850, radius: 20, isDragging: false, label: "q17" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle18 = { x: 100+900, y: 100+900, radius: 20, isDragging: false, label: "q18" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle19 = { x: 100+950, y: 100+950, radius: 20, isDragging: false, label: "q19" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle20 = { x: 100+1000, y: 100+1000, radius: 20, isDragging: false, label: "q20" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle21 = { x: 100+1050, y: 100+1050, radius: 20, isDragging: false, label: "q21" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle22 = { x: 100+1100, y: 100+1100, radius: 20, isDragging: false, label: "q22" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle23 = { x: 100+1150, y: 100+1150, radius: 20, isDragging: false, label: "q23" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle24 = { x: 100+1200, y: 100+1200, radius: 20, isDragging: false, label: "q24" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle25 = { x: 100+1250, y: 100+1250, radius: 20, isDragging: false, label: "q25" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle26 = { x: 100+1300, y: 100+1300, radius: 20, isDragging: false, label: "q26" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle27 = { x: 100+1350, y: 100+1350, radius: 20, isDragging: false, label: "q27" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle28 = { x: 100+1400, y: 100+1400, radius: 20, isDragging: false, label: "q28" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                               // Define as coordenadas dos círculos e seus rótulos
-                                    var circle29 = { x: 100+1450, y: 100+1450, radius: 20, isDragging: false, label: "q29" };
-            
-//                                    var circle2 = { x: 300, y: 100, radius: 20, isDragging: false, label: "q1" };
-//                                    var circle3 = { x: 500, y: 100, radius: 20, isDragging: false, label: "q2" };/////////////////////////////////////////////////////////novo
-//                                    var circle4 = { x: 500, y: 150, radius: 20, isDragging: false, label: "q3" } ///PARA DESENHAR UM NOVO CÍRCULO
-                      
-                                    // Função para desenhar os círculos
-                                    function drawCircle(circle) {
-                                    
-                                        // Desenha o círculo
-                                        ctx.beginPath();
-                                        ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
-                                        ctx.fillStyle = "rgba(0, 149, 221, 0.5)"; // Azul claro para o preenchimento
-                                        ctx.fill();
-                                        ctx.strokeStyle = "#0095DD"; // Azul para o contorno
-                                        ctx.lineWidth = 2;
-                                        ctx.stroke();
-                                        ctx.closePath();
-                                   // Desenha a flecha apontando para o estado inicial q0
-                                        if (circle.label === "q0") {
-                                            ctx.beginPath();
-                                            ctx.moveTo(circle.x - circle.radius, circle.y);
-                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y - 10);
-                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y + 10);
-                                            ctx.closePath();
-                                            ctx.fillStyle = "rgba(200, 200, 200, 0.5)"; // Cinza claro para o preenchimento
-                                            ctx.fill();
-                                            ctx.strokeStyle = "#0095DD"; // Azul para a borda
-                                            ctx.lineWidth = 2;
-                                            ctx.stroke();
-                                        }
-                                                       
-                                        // Desenha a borda dupla para o círculo do estado final
-                                        if (circle.label === "q2") {
-                                            ctx.beginPath();
-                                            ctx.arc(circle.x, circle.y, circle.radius - 4, 0, 2 * Math.PI); // Aumenta o raio para a borda dupla
-                                            ctx.strokeStyle = "#0095DD"; // Azul para a cor da primeira borda
-                                            ctx.lineWidth = 2;
-                                            ctx.stroke();
-                                            ctx.closePath();
-                                        }
+<!DOCTYPE html>
+                    <html lang="pt-BR">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Desenhar e Conectar Círculos</title>
+                            <style>
+                                #canvas { border: 1px solid #000; cursor: pointer; }
+                            </style>
+                        </head>
+                        <body style="text-align:center">
+                            <canvas id="canvas" width="3250" height="700"></canvas>
+                            <script>
+                             var canvas = document.getElementById("canvas");
+                                var ctx = canvas.getContext("2d");
+                                var circles = [];
+                                var numRows = 5; // Número de linhas
+                                var numColumns = 16; // Número de colunas
+                                var circleRadius = 20; // Raio do círculo
+                                var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
+                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+                                 // Função para verificar se o mouse está sobre um círculo
+                                function isMouseOverCircle(mouseX, mouseY, circle) {
+                                    var dx = mouseX - circle.x;
+                                    var dy = mouseY - circle.y;
+                                    return dx * dx + dy * dy < circle.radius * circle.radius;
+                                }
+                                                
+                                // Evento de clique do mouse
+                                canvas.addEventListener("mousedown", function(event) {
+                                    var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+                                    var mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
-        
-                                        // Adiciona o rótulo à linha entre circle1 e circle2
-                                        var labelX = (circle1.x + circle2.x) / 2;
-                                        var labelY = (circle1.y + circle2.y) / 2;
-                                        ctx.fillStyle = "#000";
-                                        ctx.font = "12px Arial";
-                                        ctx.textAlign = "center";
-                                        ctx.textBaseline = "middle";
-                                        ctx.fillText("Transição", labelX, labelY-10);
-                                        
-                                        // Adiciona o rótulo à linha entre circle1 e circle2
-                                        var labelX = (circle2.x + circle3.x) / 2;
-                                        var labelY = (circle2.y + circle3.y) / 2;
-                                        ctx.fillStyle = "#000";
-                                        ctx.font = "12px Arial";
-                                        ctx.textAlign = "center";
-                                        ctx.textBaseline = "middle";
-                                        ctx.fillText("Transição2", labelX, labelY-10);
-                                        
-                                        ctx.fillStyle = "#000";
-                                        ctx.font = "12px Arial";
-                                        ctx.textAlign = "center";
-                                        ctx.textBaseline = "middle";
-                                        ctx.fillText("Estado", circle1.x, circle1.y - circle1.radius + 50);
-                                        
-                                        // Desenha a linha conectando circle1 e circle1 (criando uma pétala)
-                                        ctx.beginPath();
-                                        ctx.moveTo(circle1.x, circle1.y - circle1.radius);
-                                        ctx.bezierCurveTo(circle1.x - 50, circle1.y - 70, circle1.x + 50, circle1.y - 70, circle1.x, circle1.y - circle1.radius);
-                                        ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
-                                        ctx.lineWidth = 2;
-                                        ctx.stroke();
-
-                                        // Desenha a curva fechada ligando o ponto final da curva ao ponto inicial (o centro do círculo)
-                                        //ctx.arc(circle1.x, circle1.y, circle1.radius, Math.PI * 1.75, Math.PI * 1.25, true); // Desenha um arco que fecha a curva
-                                        //ctx.stroke();
-
-                                        // Adiciona o rótulo à linha entre circle1 e ele mesmo
-                                        var labelX = circle1.x;
-                                        var labelY = circle1.y - 80;
-                                        ctx.fillStyle = "#000";
-                                        ctx.font = "12px Arial";
-                                        ctx.textAlign = "center";
-                                        ctx.textBaseline = "middle";
-                                        ctx.fillText("Loop", labelX, labelY);
-                                        
-
-                                        // Desenha o rótulo
-                                        ctx.fillStyle = "#000"; // Cor preta para o texto
-                                        ctx.font = "12px Arial";
-                                        ctx.textAlign = "center";
-                                        ctx.textBaseline = "middle";
-                                        ctx.fillText(circle.label, circle.x, circle.y);
-                                    }
-                                    // Função para redesenhar toda a tela
-                                    function redraw() {
-                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                        
-                                                 drawCircle(circle0);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle1);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle2);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle3);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle4);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle5);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle6);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle7);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle8);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle9);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle10);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle11);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle12);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle13);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle14);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle15);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle16);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle17);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle18);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle19);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle20);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle21);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle22);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle23);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle24);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle25);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle26);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle27);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle28);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                 drawCircle(circle29);                                                              ///PARA DESENHAR UM NOVO CÍRCULO
-                                                                
-                                        // Desenha a linha conectando as bordas dos círculos
-                                        ctx.beginPath();
-                                        ctx.moveTo(circle1.x + circle1.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)), circle1.y + circle1.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
-                                        ctx.lineTo(circle2.x - circle2.radius * Math.cos(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)), circle2.y - circle2.radius * Math.sin(Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x)));
-
-                                        // Adiciona a seta na ponta da linha
-                                        var arrowSize = 10; // Tamanho da seta
-                                        var angle = Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x);
-                                        var circle2EdgeX = circle2.x - circle2.radius * Math.cos(angle);
-                                        var circle2EdgeY = circle2.y - circle2.radius * Math.sin(angle);
-                                        ctx.moveTo(circle2EdgeX, circle2EdgeY);
-                                        ctx.lineTo(circle2EdgeX - arrowSize * Math.cos(angle - Math.PI / 6), circle2EdgeY - arrowSize * Math.sin(angle - Math.PI / 6));
-                                        ctx.moveTo(circle2EdgeX, circle2EdgeY);
-                                        ctx.lineTo(circle2EdgeX - arrowSize * Math.cos(angle + Math.PI / 6), circle2EdgeY - arrowSize * Math.sin(angle + Math.PI / 6));
-                                        
-                                        // Repete o mesmo processo para a linha entre circle2 e circle3
-                                        ctx.moveTo(circle2.x + circle2.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)), circle2.y + circle2.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));
-                                        ctx.lineTo(circle3.x - circle3.radius * Math.cos(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)), circle3.y - circle3.radius * Math.sin(Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x)));
-
-                                        // Adiciona a seta na ponta da linha entre circle2 e circle3
-                                        var angle2 = Math.atan2(circle3.y - circle2.y, circle3.x - circle2.x);
-                                        var circle3EdgeX = circle3.x - circle3.radius * Math.cos(angle2);
-                                        var circle3EdgeY = circle3.y - circle3.radius * Math.sin(angle2);
-                                        ctx.moveTo(circle3EdgeX, circle3EdgeY);
-                                        ctx.lineTo(circle3EdgeX - arrowSize * Math.cos(angle2 - Math.PI / 6), circle3EdgeY - arrowSize * Math.sin(angle2 - Math.PI / 6));
-                                        ctx.moveTo(circle3EdgeX, circle3EdgeY);
-                                        ctx.lineTo(circle3EdgeX - arrowSize * Math.cos(angle2 + Math.PI / 6), circle3EdgeY - arrowSize * Math.sin(angle2 + Math.PI / 6));
-                                       
-                                        ///////////////////////////////////////////////////////// fim novo
-                                        ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
-                                        ctx.lineWidth = 2;
-                                        ctx.stroke();
-                                        ctx.closePath();
-                                    }
-
-                                    // Função para verificar se o mouse está sobre um círculo
-                                    function isMouseOverCircle(mouseX, mouseY, circle) {
-                                        var dx = mouseX - circle.x;
-                                        var dy = mouseY - circle.y;
-                                        return dx * dx + dy * dy < circle.radius * circle.radius;
-                                    }
-
-                                    // Evento de clique do mouse
-                                    canvas.addEventListener("mousedown", function(event) {
-                                        var mouseX = event.clientX - canvas.getBoundingClientRect().left;
-                                        var mouseY = event.clientY - canvas.getBoundingClientRect().top;
-
-                                        if (isMouseOverCircle(mouseX, mouseY, circle1)) {
-                                            circle1.isDragging = true;
-                                        } else if (isMouseOverCircle(mouseX, mouseY, circle2)) {
-                                            circle2.isDragging = true;
-                                        }else if (isMouseOverCircle(mouseX, mouseY, circle3)) {/////////////////////////////////////////////////////////novo
-                                            circle3.isDragging = true;
+                                    circles.forEach(function(circle) {
+                                        if (isMouseOverCircle(mouseX, mouseY, circle)) {
+                                            circle.isDragging = true;
                                         }
                                     });
-
-                                    // Evento de movimento do mouse
-                                    canvas.addEventListener("mousemove", function(event) {
-                                        if (circle1.isDragging) {
-                                            circle1.x = event.clientX - canvas.getBoundingClientRect().left;
-                                            circle1.y = event.clientY - canvas.getBoundingClientRect().top;
-                                            redraw();
-                                        } else if (circle2.isDragging) {
-                                            circle2.x = event.clientX - canvas.getBoundingClientRect().left;
-                                            circle2.y = event.clientY - canvas.getBoundingClientRect().top;
-                                            redraw();
-                                        }else if (circle3.isDragging) {/////////////////////////////////////////////////////////novo
-                                            circle3.x = event.clientX - canvas.getBoundingClientRect().left;
-                                            circle3.y = event.clientY - canvas.getBoundingClientRect().top;
+                                });
+                         
+                                // Evento de movimento do mouse
+                                canvas.addEventListener("mousemove", function(event) {
+                                    circles.forEach(function(circle) {
+                                        if (circle.isDragging) {
+                                            circle.x = event.clientX - canvas.getBoundingClientRect().left;
+                                            circle.y = event.clientY - canvas.getBoundingClientRect().top;
                                             redraw();
                                         }
                                     });
+                                });
 
-                                    // Evento de soltar o botão do mouse
-                                    canvas.addEventListener("mouseup", function() {
-                                        circle1.isDragging = false;
-                                        circle2.isDragging = false;
-                                        circle3.isDragging = false;/////////////////////////////////////////////////////////novo
+                                // Evento de soltar o botão do mouse
+                                canvas.addEventListener("mouseup", function() {
+                                    circles.forEach(function(circle) {
+                                        circle.isDragging = false;
                                     });
+                                });
+                                 
+                                // Função para desenhar os círculos
+                                function drawCircle(circle) {
+                                    ctx.beginPath();
+                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+                                    ctx.fill();
+                                    ctx.strokeStyle = "#0095DD";
+                                    ctx.lineWidth = 2;
+                                    ctx.stroke();
+                                    ctx.closePath();
 
-                                    // Desenhar os círculos pela primeira vez
-                                    redraw();
-                                    
-                                </script>    </body>
-                        </html>
+                                    ctx.fillStyle = "#000";
+                                    ctx.font = "12px Arial";
+                                    ctx.textAlign = "center";
+                                    ctx.textBaseline = "middle";
+                                    ctx.fillText(circle.label, circle.x, circle.y);
+                                }
+                                 
+                                // Função para redesenhar toda a tela
+                                function redraw() {
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    circles.forEach(function(circle) {
+                                        drawCircle(circle);
+                                    });
+                                }
+                         
+                                // Adiciona o estado q0 separadamente
+                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+                         
+                                // Loop para adicionar os outros estados
+                                for (var i = 1; i < 25; i++) {
+                                    var row = (i - 1) % numRows;
+                                    var col = Math.floor((i - 1) / numRows);
+                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (row + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+                                }
+
+
+                                // Desenhar os círculos pela primeira vez
+                                redraw();
+                            </script>
+                        </body>
+                    </html>

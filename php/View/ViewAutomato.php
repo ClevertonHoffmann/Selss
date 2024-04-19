@@ -6,7 +6,7 @@ class ViewAutomato {
      * Método responsável por montar a página em html do automato
      * @return string
      */
-    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+    public function montaPaginaAutomato2($aEstadosTransicoes, $aTabelaDeTokens) {
 
         //Cabeçalho da página
         $sHtmlTela = ' <!DOCTYPE html>
@@ -22,9 +22,18 @@ class ViewAutomato {
                             <br>
                             <br>';
 
+        //    // Calcula o número total de círculos e o número de linhas
+        $numStates = count($aTabelaDeTokens);
+        $numRows = 5; // Fixa o número de linhas em 5
+        // Calcula a largura necessária para o canvas
+        $canvasWidth = 100 + ceil($numStates / $numRows) * 100; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+        if ($canvasWidth < 700) {
+            $canvasWidth = 700;
+        }
+
         //Define o canvas para desenho dos círculos
         $sHtmlTela .= ' <body style="text-align:center">
-                                <canvas id="canvas" width="700" height="700"></canvas>';
+                                <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>';
 
         //Script que renderiza a parte inicial do canvas
         $sHtmlTela .= ' <script>
@@ -179,11 +188,11 @@ class ViewAutomato {
 
         foreach ($aTabelaDeTokens as $iKey => $sVal) {
             //Função que redesenha os círculos
-            $sHtmlTela .= '             drawCircle(circle'.$iKey.');                                                              ///PARA DESENHAR UM NOVO CÍRCULO
+            $sHtmlTela .= '             drawCircle(circle' . $iKey . ');                                                              ///PARA DESENHAR UM NOVO CÍRCULO
                                     ';
         }
 
-        //Função que redesenha a tela
+        //
         $sHtmlTela .= '                            
                                         // Desenha a linha conectando as bordas dos círculos
                                         ctx.beginPath();
@@ -276,8 +285,573 @@ class ViewAutomato {
 
         return $sHtmlTela;
     }
-    
-    
+
+    /**
+     * Retorna array da quantidade de níveis/colunas e a quantidade de estados diferentes por nível
+     * @param type $aEstadosTransicoes
+     * @return int
+     */
+    public function retornaNiveisQntEst($aEstadosTransicoes) {
+
+        //Array da quantidade de níveis e a quantidade de estados diferentes por nível
+        $aArrayNiveisQntEst = array();
+        //Contador de estados diferentes por nível
+        $iQntEst = 0;
+        //Contador de niveis
+        $iQuant = 0;
+        //Controlador
+        $iK = 0;
+        //Estado maior controlador de níveis
+        $iEstCount = 0;
+        foreach ($aEstadosTransicoes as $iKey => $aVal) {
+            foreach ($aVal as $iEst => $aExp) {
+                if ($iK == 0 || $iK < $iEst) {
+                    $iK = $iEst;
+                    if($iEst>$iKey) {//&& $iK!=0
+                        $iQntEst++;
+                    }
+                }
+            }
+            if ($iEstCount == 0 || $iKey > $iEstCount - 1) {
+                $iQuant++;
+                $aArrayNiveisQntEst[$iQuant] = $iQntEst;
+                $iEstCount = $iK;
+                $iK = 0;
+                $iQntEst = 0;
+            }
+        }
+        return $aArrayNiveisQntEst;
+    }
+
+    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+
+        // Calcula o número total de círculos
+        $numStates = count($aTabelaDeTokens);
+        //Retorna os níveis de expansão do automato sendo assim o número de colunas do automato e a quantidade de estados de cada nível
+        $aNiveisQntEst = $this->retornaNiveisQntEst($aEstadosTransicoes);
+        //Numero de colunas com base nos níveis do automato
+        $numColumns = count($aNiveisQntEst);
+        // Número de linhas com base no estado 0 que é o com maior saída de transições
+        $numRows = count($aEstadosTransicoes[0]);
+        // Calcula a largura necessária para o canvas
+        $canvasWidth = 50 + $numColumns * 200; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+        if ($canvasWidth < 700) {
+            $canvasWidth = 700;
+        }
+
+        // Cabeçalho da página
+        $sHtmlTela = '<!DOCTYPE html>
+                    <html lang="pt-BR">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Desenhar e Conectar Círculos</title>
+                            <style>
+                                #canvas { border: 1px solid #000; cursor: pointer; }
+                            </style>
+                        </head>
+                        <body style="text-align:center">
+                            <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>
+                            <script>
+                    ';
+        //Inicia as variáveis
+        $sHtmlTela .= '         var canvas = document.getElementById("canvas");
+                                var ctx = canvas.getContext("2d");
+                                var circles = [];
+                                var numRows = ' . $numRows . '; // Número de linhas
+                                var numColumns = ' . $numColumns . '; // Número de colunas
+                                var circleRadius = 20; // Raio do círculo
+                                var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
+                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+                        ';
+        $sHtmlTela .= '         // Função para verificar se o mouse está sobre um círculo
+                                function isMouseOverCircle(mouseX, mouseY, circle) {
+                                    var dx = mouseX - circle.x;
+                                    var dy = mouseY - circle.y;
+                                    return dx * dx + dy * dy < circle.radius * circle.radius;
+                                }
+                        ';
+        $sHtmlTela .= '                        
+                                // Evento de clique do mouse
+                                canvas.addEventListener("mousedown", function(event) {
+                                    var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+                                    var mouseY = event.clientY - canvas.getBoundingClientRect().top;
+
+                                    circles.forEach(function(circle) {
+                                        if (isMouseOverCircle(mouseX, mouseY, circle)) {
+                                            circle.isDragging = true;
+                                        }
+                                    });
+                                });
+                        ';
+        $sHtmlTela .= ' 
+                                // Evento de movimento do mouse
+                                canvas.addEventListener("mousemove", function(event) {
+                                    circles.forEach(function(circle) {
+                                        if (circle.isDragging) {
+                                            circle.x = event.clientX - canvas.getBoundingClientRect().left;
+                                            circle.y = event.clientY - canvas.getBoundingClientRect().top;
+                                            redraw();
+                                        }
+                                    });
+                                });
+
+                                // Evento de soltar o botão do mouse
+                                canvas.addEventListener("mouseup", function() {
+                                    circles.forEach(function(circle) {
+                                        circle.isDragging = false;
+                                    });
+                                });
+                        ';
+        $sHtmlTela .= '         
+                                // Função para desenhar os círculos
+                                function drawCircle(circle) {
+                                    ctx.beginPath();
+                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+                                    ctx.fill();
+                                    ctx.strokeStyle = "#0095DD";
+                                    ctx.lineWidth = 2;
+                                    ctx.stroke();
+                                    ctx.closePath();
+
+                                    ctx.fillStyle = "#000";
+                                    ctx.font = "12px Arial";
+                                    ctx.textAlign = "center";
+                                    ctx.textBaseline = "middle";
+                                    ctx.fillText(circle.label, circle.x, circle.y);
+                                }
+                        ';
+        $sHtmlTela .= '         
+                                // Função para redesenhar toda a tela
+                                function redraw() {
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    circles.forEach(function(circle) {
+                                        drawCircle(circle);
+                                    });
+                                }
+                        ';
+        $sHtmlTela .= ' 
+                                // Adiciona o estado q0 separadamente
+                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+                        ';
+        $sHtmlTela .= ' 
+                                // Loop para adicionar os outros estados
+                                for (var i = 1; i < ' . $numStates . '; i++) {
+                                    var row = (i - 1) % numRows;
+                                    var col = Math.floor((i - 1) / numRows);
+                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (row + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+                                }
+
+
+                                // Desenhar os círculos pela primeira vez
+                                redraw();
+                            </script>
+                        </body>
+                    </html>';
+
+        return $sHtmlTela;
+    }
+
+    //    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+//        // Calcula o número total de círculos e o número de linhas
+//        $numStates = count($aTabelaDeTokens);
+//        $numColumns = min(5, ceil($numStates / 5)); // Número máximo de colunas é 5
+//        $numRows = 5; // Número fixo de linhas
+//        // Calcula a largura necessária para o canvas
+//        $canvasWidth = 100 + $numColumns * 200; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+//        if ($canvasWidth < 700) {
+//            $canvasWidth = 700;
+//        }
+//
+//        // Cabeçalho da página
+//        $sHtmlTela = '<!DOCTYPE html>
+//                    <html lang="pt-BR">
+//                        <head>
+//                            <meta charset="UTF-8">
+//                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                            <title>Desenhar e Conectar Círculos</title>
+//                            <style>
+//                                #canvas { border: 1px solid #000; cursor: pointer; }
+//                            </style>
+//                        </head>
+//                        <body style="text-align:center">
+//                            <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>
+//                            <script>
+//                                var canvas = document.getElementById("canvas");
+//                                var ctx = canvas.getContext("2d");
+//                                var circles = [];
+//                                var numRows = ' . $numRows . '; // Número de linhas
+//                                var numColumns = ' . $numColumns . '; // Número de colunas
+//                                var circleRadius = 20; // Raio do círculo
+//                                var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
+//                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+//                        ';
+//        $sHtmlTela .= '         // Função para verificar se o mouse está sobre um círculo
+//                                function isMouseOverCircle(mouseX, mouseY, circle) {
+//                                    var dx = mouseX - circle.x;
+//                                    var dy = mouseY - circle.y;
+//                                    return dx * dx + dy * dy < circle.radius * circle.radius;
+//                                }
+//                        ';
+//        $sHtmlTela .= '                        
+//                                // Evento de clique do mouse
+//                                canvas.addEventListener("mousedown", function(event) {
+//                                    var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+//                                    var mouseY = event.clientY - canvas.getBoundingClientRect().top;
+//
+//                                    circles.forEach(function(circle) {
+//                                        if (isMouseOverCircle(mouseX, mouseY, circle)) {
+//                                            circle.isDragging = true;
+//                                        }
+//                                    });
+//                                });
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Evento de movimento do mouse
+//                                canvas.addEventListener("mousemove", function(event) {
+//                                    circles.forEach(function(circle) {
+//                                        if (circle.isDragging) {
+//                                            circle.x = event.clientX - canvas.getBoundingClientRect().left;
+//                                            circle.y = event.clientY - canvas.getBoundingClientRect().top;
+//                                            redraw();
+//                                        }
+//                                    });
+//                                });
+//
+//                                // Evento de soltar o botão do mouse
+//                                canvas.addEventListener("mouseup", function() {
+//                                    circles.forEach(function(circle) {
+//                                        circle.isDragging = false;
+//                                    });
+//                                });
+//                        ';
+//        $sHtmlTela .= '         
+//                                // Função para desenhar os círculos
+//                                function drawCircle(circle) {
+//                                    ctx.beginPath();
+//                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+//                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+//                                    ctx.fill();
+//                                    ctx.strokeStyle = "#0095DD";
+//                                    ctx.lineWidth = 2;
+//                                    ctx.stroke();
+//                                    ctx.closePath();
+//
+//                                    ctx.fillStyle = "#000";
+//                                    ctx.font = "12px Arial";
+//                                    ctx.textAlign = "center";
+//                                    ctx.textBaseline = "middle";
+//                                    ctx.fillText(circle.label, circle.x, circle.y);
+//                                }
+//                        ';
+//        $sHtmlTela .= '         
+//                                // Função para redesenhar toda a tela
+//                                function redraw() {
+//                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                                    circles.forEach(function(circle) {
+//                                        drawCircle(circle);
+//                                    });
+//                                }
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Adiciona o estado q0 separadamente
+//                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Loop para adicionar os outros estados
+//                                for (var i = 1; i < ' . $numStates . '; i++) {
+//                                    var row = (i - 1) % numRows;
+//                                    var col = Math.floor((i - 1) / numRows);
+//                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
+//                                    var y = circleSpacingY * (row + 1);
+//                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+//                                }
+//
+//
+//                                // Desenhar os círculos pela primeira vez
+//                                redraw();
+//                            </script>
+//                        </body>
+//                    </html>';
+//
+//        return $sHtmlTela;
+//    }
+//    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+//
+//    // Calcula o número total de círculos e o número de linhas
+//    $numStates = count($aTabelaDeTokens);
+//    $numRows = 5; // Fixa o número de linhas em 5
+//
+//    // Calcula a largura necessária para o canvas
+//    $canvasWidth = 100 + ceil($numStates / $numRows) * 100; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+//
+//    // Cabeçalho da página
+//    $sHtmlTela = '<!DOCTYPE html>
+//                    <html lang="pt-BR">
+//                        <head>
+//                            <meta charset="UTF-8">
+//                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                            <title>Desenhar e Conectar Círculos</title>
+//                            <style>
+//                                #canvas { border: 1px solid #000; cursor: pointer; }
+//                            </style>
+//                        </head>
+//                        <body style="text-align:center">
+//                            <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>
+//                            <script>
+//                                var canvas = document.getElementById("canvas");
+//                                var ctx = canvas.getContext("2d");
+//                                var circles = [];
+//                                var numRows = ' . $numRows . '; // Número de linhas
+//                                var circleRadius = 20; // Raio do círculo
+//                                var circleSpacingX = 100; // Espaçamento horizontal entre os círculos
+//                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+//
+//                                // Loop para desenhar os círculos
+//                                for (var i = 0; i < ' . $numStates . '; i++) {
+//                                    var row = i % numRows;
+//                                    var col = Math.floor(i / numRows);
+//                                    var x = circleSpacingX * (col + 1);
+//                                    var y = circleSpacingY * (row + 1);
+//                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+//                                }
+//
+//                                // Função para desenhar os círculos
+//                                function drawCircle(circle) {
+//                                    ctx.beginPath();
+//                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+//                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+//                                    ctx.fill();
+//                                    ctx.strokeStyle = "#0095DD";
+//                                    ctx.lineWidth = 2;
+//                                    ctx.stroke();
+//                                    ctx.closePath();
+//
+//                                    ctx.fillStyle = "#000";
+//                                    ctx.font = "12px Arial";
+//                                    ctx.textAlign = "center";
+//                                    ctx.textBaseline = "middle";
+//                                    ctx.fillText(circle.label, circle.x, circle.y);
+//                                }
+//
+//                                // Função para redesenhar toda a tela
+//                                function redraw() {
+//                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                                    circles.forEach(function(circle) {
+//                                        drawCircle(circle);
+//                                    });
+//                                }
+//
+//                                // Desenhar os círculos pela primeira vez
+//                                redraw();
+//                            </script>
+//                        </body>
+//                    </html>';
+//
+//    return $sHtmlTela;
+//}
+//    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+//        // Calcula o número total de círculos e o número de linhas
+//        $numStates = count($aTabelaDeTokens);
+//        $numColumns = min(5, ceil($numStates / 5)); // Número máximo de colunas é 5
+//        $numRows = 5; // Número fixo de linhas
+//        // Calcula a largura necessária para o canvas
+//        $canvasWidth = 100 + $numColumns * 200; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+//        if ($canvasWidth < 700) {
+//            $canvasWidth = 700;
+//        }
+//
+//        // Cabeçalho da página
+//        $sHtmlTela = '<!DOCTYPE html>
+//                    <html lang="pt-BR">
+//                        <head>
+//                            <meta charset="UTF-8">
+//                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                            <title>Desenhar e Conectar Círculos</title>
+//                            <style>
+//                                #canvas { border: 1px solid #000; cursor: pointer; }
+//                            </style>
+//                        </head>
+//                        <body style="text-align:center">
+//                            <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>
+//                            <script>
+//                                var canvas = document.getElementById("canvas");
+//                                var ctx = canvas.getContext("2d");
+//                                var circles = [];
+//                                var numRows = ' . $numRows . '; // Número de linhas
+//                                var numColumns = ' . $numColumns . '; // Número de colunas
+//                                var circleRadius = 20; // Raio do círculo
+//                                var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
+//                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+//                        ';
+//        $sHtmlTela .= '         // Função para verificar se o mouse está sobre um círculo
+//                                function isMouseOverCircle(mouseX, mouseY, circle) {
+//                                    var dx = mouseX - circle.x;
+//                                    var dy = mouseY - circle.y;
+//                                    return dx * dx + dy * dy < circle.radius * circle.radius;
+//                                }
+//                        ';
+//        $sHtmlTela .= '                        
+//                                // Evento de clique do mouse
+//                                canvas.addEventListener("mousedown", function(event) {
+//                                    var mouseX = event.clientX - canvas.getBoundingClientRect().left;
+//                                    var mouseY = event.clientY - canvas.getBoundingClientRect().top;
+//
+//                                    circles.forEach(function(circle) {
+//                                        if (isMouseOverCircle(mouseX, mouseY, circle)) {
+//                                            circle.isDragging = true;
+//                                        }
+//                                    });
+//                                });
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Evento de movimento do mouse
+//                                canvas.addEventListener("mousemove", function(event) {
+//                                    circles.forEach(function(circle) {
+//                                        if (circle.isDragging) {
+//                                            circle.x = event.clientX - canvas.getBoundingClientRect().left;
+//                                            circle.y = event.clientY - canvas.getBoundingClientRect().top;
+//                                            redraw();
+//                                        }
+//                                    });
+//                                });
+//
+//                                // Evento de soltar o botão do mouse
+//                                canvas.addEventListener("mouseup", function() {
+//                                    circles.forEach(function(circle) {
+//                                        circle.isDragging = false;
+//                                    });
+//                                });
+//                        ';
+//        $sHtmlTela .= '         
+//                                // Função para desenhar os círculos
+//                                function drawCircle(circle) {
+//                                    ctx.beginPath();
+//                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+//                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+//                                    ctx.fill();
+//                                    ctx.strokeStyle = "#0095DD";
+//                                    ctx.lineWidth = 2;
+//                                    ctx.stroke();
+//                                    ctx.closePath();
+//
+//                                    ctx.fillStyle = "#000";
+//                                    ctx.font = "12px Arial";
+//                                    ctx.textAlign = "center";
+//                                    ctx.textBaseline = "middle";
+//                                    ctx.fillText(circle.label, circle.x, circle.y);
+//                                }
+//                        ';
+//        $sHtmlTela .= '         
+//                                // Função para redesenhar toda a tela
+//                                function redraw() {
+//                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                                    circles.forEach(function(circle) {
+//                                        drawCircle(circle);
+//                                    });
+//                                }
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Adiciona o estado q0 separadamente
+//                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+//                        ';
+//        $sHtmlTela .= ' 
+//                                // Loop para adicionar os outros estados
+//                                for (var i = 1; i < ' . $numStates . '; i++) {
+//                                    var row = (i - 1) % numRows;
+//                                    var col = Math.floor((i - 1) / numRows);
+//                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
+//                                    var y = circleSpacingY * (row + 1);
+//                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+//                                }
+//
+//
+//                                // Desenhar os círculos pela primeira vez
+//                                redraw();
+//                            </script>
+//                        </body>
+//                    </html>';
+//
+//        return $sHtmlTela;
+//    }
+//    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
+//
+//    // Calcula o número total de círculos e o número de linhas
+//    $numStates = count($aTabelaDeTokens);
+//    $numRows = 5; // Fixa o número de linhas em 5
+//
+//    // Calcula a largura necessária para o canvas
+//    $canvasWidth = 100 + ceil($numStates / $numRows) * 100; // Espaço para o primeiro círculo + número de colunas * espaço entre círculos
+//
+//    // Cabeçalho da página
+//    $sHtmlTela = '<!DOCTYPE html>
+//                    <html lang="pt-BR">
+//                        <head>
+//                            <meta charset="UTF-8">
+//                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//                            <title>Desenhar e Conectar Círculos</title>
+//                            <style>
+//                                #canvas { border: 1px solid #000; cursor: pointer; }
+//                            </style>
+//                        </head>
+//                        <body style="text-align:center">
+//                            <canvas id="canvas" width="' . $canvasWidth . '" height="700"></canvas>
+//                            <script>
+//                                var canvas = document.getElementById("canvas");
+//                                var ctx = canvas.getContext("2d");
+//                                var circles = [];
+//                                var numRows = ' . $numRows . '; // Número de linhas
+//                                var circleRadius = 20; // Raio do círculo
+//                                var circleSpacingX = 100; // Espaçamento horizontal entre os círculos
+//                                var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
+//
+//                                // Loop para desenhar os círculos
+//                                for (var i = 0; i < ' . $numStates . '; i++) {
+//                                    var row = i % numRows;
+//                                    var col = Math.floor(i / numRows);
+//                                    var x = circleSpacingX * (col + 1);
+//                                    var y = circleSpacingY * (row + 1);
+//                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
+//                                }
+//
+//                                // Função para desenhar os círculos
+//                                function drawCircle(circle) {
+//                                    ctx.beginPath();
+//                                    ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+//                                    ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
+//                                    ctx.fill();
+//                                    ctx.strokeStyle = "#0095DD";
+//                                    ctx.lineWidth = 2;
+//                                    ctx.stroke();
+//                                    ctx.closePath();
+//
+//                                    ctx.fillStyle = "#000";
+//                                    ctx.font = "12px Arial";
+//                                    ctx.textAlign = "center";
+//                                    ctx.textBaseline = "middle";
+//                                    ctx.fillText(circle.label, circle.x, circle.y);
+//                                }
+//
+//                                // Função para redesenhar toda a tela
+//                                function redraw() {
+//                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                                    circles.forEach(function(circle) {
+//                                        drawCircle(circle);
+//                                    });
+//                                }
+//
+//                                // Desenhar os círculos pela primeira vez
+//                                redraw();
+//                            </script>
+//                        </body>
+//                    </html>';
+//
+//    return $sHtmlTela;
+//}
+//
 //public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
 //
 //    //Cabeçalho da página
@@ -345,10 +919,6 @@ class ViewAutomato {
 //
 //    return $sHtmlTela;
 //}
-
-
-    
-    
 //    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
 //
 //    //Cabeçalho da página
@@ -437,7 +1007,6 @@ class ViewAutomato {
 //
 //    return $sHtmlTela;
 //}
-    
 //    public function montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens) {
 //
 //    //Cabeçalho da página
@@ -538,8 +1107,6 @@ class ViewAutomato {
 //
 //    return $sHtmlTela;
 //}
-
-
 
     /**
      * Método responsável por montar a página em html do automato
