@@ -307,12 +307,12 @@ class ViewAutomato {
             foreach ($aVal as $iEst => $aExp) {
                 if ($iK == 0 || $iK < $iEst) {
                     $iK = $iEst;
-                    if($iEst>$iKey) {//&& $iK!=0
+                    if ($iEst > $iKey) {
                         $iQntEst++;
                     }
                 }
             }
-            if ($iEstCount == 0 || $iKey > $iEstCount - 1) {
+            if ($iEstCount == 0 || $iKey > $iEstCount - 1 && $iQntEst != 0) {
                 $iQuant++;
                 $aArrayNiveisQntEst[$iQuant] = $iQntEst;
                 $iEstCount = $iK;
@@ -364,16 +364,17 @@ class ViewAutomato {
                                 var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
                                 var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
                         ';
-        $sHtmlTela .= '         // Função para verificar se o mouse está sobre um círculo
-                                function isMouseOverCircle(mouseX, mouseY, circle) {
+
+        // Função para verificar se o mouse está sobre um círculo
+        $sHtmlTela .= '         function isMouseOverCircle(mouseX, mouseY, circle) {
                                     var dx = mouseX - circle.x;
                                     var dy = mouseY - circle.y;
                                     return dx * dx + dy * dy < circle.radius * circle.radius;
                                 }
                         ';
-        $sHtmlTela .= '                        
-                                // Evento de clique do mouse
-                                canvas.addEventListener("mousedown", function(event) {
+
+        // Evento de clique do mouse
+        $sHtmlTela .= '         canvas.addEventListener("mousedown", function(event) {
                                     var mouseX = event.clientX - canvas.getBoundingClientRect().left;
                                     var mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
@@ -403,9 +404,9 @@ class ViewAutomato {
                                     });
                                 });
                         ';
-        $sHtmlTela .= '         
-                                // Função para desenhar os círculos
-                                function drawCircle(circle) {
+
+        // Função para desenhar os círculos
+        $sHtmlTela .= '         function drawCircle(circle) {
                                     ctx.beginPath();
                                     ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
                                     ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
@@ -420,34 +421,93 @@ class ViewAutomato {
                                     ctx.textAlign = "center";
                                     ctx.textBaseline = "middle";
                                     ctx.fillText(circle.label, circle.x, circle.y);
-                                }
+
+                       ';
+
+        //Desenha o estado inicial
+        $sHtmlTela .= '             // Desenha a flecha apontando para o estado inicial q0
+                                        if (circle.label === "q0") {
+                                            ctx.beginPath();
+                                            ctx.moveTo(circle.x - circle.radius, circle.y);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y - 10);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y + 10);
+                                            ctx.closePath();
+                                            ctx.fillStyle = "rgba(200, 200, 200, 0.5)"; // Cinza claro para o preenchimento
+                                            ctx.fill();
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                        }
+                       ';
+
+        //Desenha a borda dupla do circulo do estado final
+        $sHtmlTela .= '                                
+                                        // Desenha a borda dupla para o círculo do estado final
+                                        if (circle.label === "q2") {
+                                            ctx.beginPath();
+                                            ctx.arc(circle.x, circle.y, circle.radius - 4, 0, 2 * Math.PI); // Aumenta o raio para a borda dupla
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a cor da primeira borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                            ctx.closePath();
+                                        }
+
+        ';
+        
+        $sHtmlTela .= '                        }
                         ';
-        $sHtmlTela .= '         
-                                // Função para redesenhar toda a tela
-                                function redraw() {
+
+        // Função para redesenhar toda a tela
+        $sHtmlTela .= '         function redraw() {
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     circles.forEach(function(circle) {
                                         drawCircle(circle);
                                     });
                                 }
                         ';
-        $sHtmlTela .= ' 
-                                // Adiciona o estado q0 separadamente
-                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+
+        // Adiciona o estado q0 separadamente
+        $sHtmlTela .= '         circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
                         ';
-        $sHtmlTela .= ' 
-                                // Loop para adicionar os outros estados
-                                for (var i = 1; i < ' . $numStates . '; i++) {
-                                    var row = (i - 1) % numRows;
-                                    var col = Math.floor((i - 1) / numRows);
-                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
-                                    var y = circleSpacingY * (row + 1);
-                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
-                                }
 
+        // Loop para adicionar os outros estados
+        $iCont = 0;
+        $iEspInicial = 0;
+        foreach ($aNiveisQntEst as $iKey => $iVal) {
+            $col = (int) (($iKey - 1));
+            $iEspInicial = ($numRows-$iVal)/2;
+            for ($i = 1; $i < $iVal + 1; $i++) {
+                $row = ($i - 1);
+                $iCont++;
+                $sHtmlTela .= '     var x = circleSpacingX * (' . $col . ' + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (' . $row+$iEspInicial . ' + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + '.$iCont.' });
+                    ';
+            }
+        }
+        
+        foreach ($aEstadosTransicoes as $iKey => $aVal) {
 
-                                // Desenhar os círculos pela primeira vez
-                                redraw();
+            foreach ($aVal as $iEst => $aExp) {
+
+//                if ($iK == 0 || $iK < $iEst) {
+//                    $iK = $iEst;
+//                    if($iEst>$iKey) {
+//                        $iQntEst++;
+//                    }
+//                }
+            }
+//            if ($iEstCount == 0 || $iKey > $iEstCount - 1 && $iQntEst!=0) {
+//                $iQuant++;
+//                $aArrayNiveisQntEst[$iQuant] = $iQntEst;
+//                $iEstCount = $iK;
+//                $iK = 0;
+//                $iQntEst = 0;
+//            }
+        }
+
+        // Desenhar os círculos pela primeira vez e final do html
+        $sHtmlTela .= '         redraw();
                             </script>
                         </body>
                     </html>';

@@ -9,25 +9,22 @@
                             </style>
                         </head>
                         <body style="text-align:center">
-                            <canvas id="canvas" width="3250" height="700"></canvas>
+                            <canvas id="canvas" width="3050" height="700"></canvas>
                             <script>
                              var canvas = document.getElementById("canvas");
                                 var ctx = canvas.getContext("2d");
                                 var circles = [];
                                 var numRows = 5; // Número de linhas
-                                var numColumns = 16; // Número de colunas
+                                var numColumns = 15; // Número de colunas
                                 var circleRadius = 20; // Raio do círculo
                                 var circleSpacingX = 120; // Espaçamento horizontal entre os círculos
                                 var circleSpacingY = canvas.height / (numRows + 1); // Espaçamento vertical entre os círculos
-                                 // Função para verificar se o mouse está sobre um círculo
-                                function isMouseOverCircle(mouseX, mouseY, circle) {
+                                 function isMouseOverCircle(mouseX, mouseY, circle) {
                                     var dx = mouseX - circle.x;
                                     var dy = mouseY - circle.y;
                                     return dx * dx + dy * dy < circle.radius * circle.radius;
                                 }
-                                                
-                                // Evento de clique do mouse
-                                canvas.addEventListener("mousedown", function(event) {
+                                 canvas.addEventListener("mousedown", function(event) {
                                     var mouseX = event.clientX - canvas.getBoundingClientRect().left;
                                     var mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
@@ -55,9 +52,7 @@
                                         circle.isDragging = false;
                                     });
                                 });
-                                 
-                                // Função para desenhar os círculos
-                                function drawCircle(circle) {
+                                 function drawCircle(circle) {
                                     ctx.beginPath();
                                     ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
                                     ctx.fillStyle = "rgba(0, 149, 221, 0.5)";
@@ -72,31 +67,112 @@
                                     ctx.textAlign = "center";
                                     ctx.textBaseline = "middle";
                                     ctx.fillText(circle.label, circle.x, circle.y);
+
+                                    // Desenha a flecha apontando para o estado inicial q0
+                                        if (circle.label === "q0") {
+                                            ctx.beginPath();
+                                            ctx.moveTo(circle.x - circle.radius, circle.y);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y - 10);
+                                            ctx.lineTo(circle.x - circle.radius - 20, circle.y + 10);
+                                            ctx.closePath();
+                                            ctx.fillStyle = "rgba(200, 200, 200, 0.5)"; // Cinza claro para o preenchimento
+                                            ctx.fill();
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                        }
+                                                       
+                                        // Desenha a borda dupla para o círculo do estado final
+                                        if (circle.label === "q2") {
+                                            ctx.beginPath();
+                                            ctx.arc(circle.x, circle.y, circle.radius - 4, 0, 2 * Math.PI); // Aumenta o raio para a borda dupla
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a cor da primeira borda
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                            ctx.closePath();
+                                        }
+
                                 }
-                                 
-                                // Função para redesenhar toda a tela
-                                function redraw() {
+                                 function redraw() {
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     circles.forEach(function(circle) {
                                         drawCircle(circle);
                                     });
                                 }
-                         
-                                // Adiciona o estado q0 separadamente
-                                circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
-                         
-                                // Loop para adicionar os outros estados
-                                for (var i = 1; i < 25; i++) {
-                                    var row = (i - 1) % numRows;
-                                    var col = Math.floor((i - 1) / numRows);
-                                    var x = circleSpacingX * (col + 2); // Começa da segunda coluna
-                                    var y = circleSpacingY * (row + 1);
-                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + i });
-                                }
-
-
-                                // Desenhar os círculos pela primeira vez
-                                redraw();
+                                 circles.push({ x: circleSpacingX, y: canvas.height / 2, radius: circleRadius, label: "q0" });
+                             var x = circleSpacingX * (0 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (0 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 1 });
+                         var x = circleSpacingX * (0 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (1 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 2 });
+                         var x = circleSpacingX * (0 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 3 });
+                         var x = circleSpacingX * (0 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (3 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 4 });
+                         var x = circleSpacingX * (0 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (4 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 5 });
+                         var x = circleSpacingX * (1 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (0.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 6 });
+                         var x = circleSpacingX * (1 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (1.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 7 });
+                         var x = circleSpacingX * (1 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 8 });
+                         var x = circleSpacingX * (1 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (3.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 9 });
+                         var x = circleSpacingX * (2 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (1.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 10 });
+                         var x = circleSpacingX * (2 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 11 });
+                         var x = circleSpacingX * (3 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (1.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 12 });
+                         var x = circleSpacingX * (3 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2.5 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 13 });
+                         var x = circleSpacingX * (4 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 14 });
+                         var x = circleSpacingX * (5 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 15 });
+                         var x = circleSpacingX * (6 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 16 });
+                         var x = circleSpacingX * (7 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 17 });
+                         var x = circleSpacingX * (8 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 18 });
+                         var x = circleSpacingX * (9 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 19 });
+                         var x = circleSpacingX * (10 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 20 });
+                         var x = circleSpacingX * (11 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 21 });
+                         var x = circleSpacingX * (12 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 22 });
+                         var x = circleSpacingX * (13 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 23 });
+                         var x = circleSpacingX * (14 + 2); // Começa da segunda coluna
+                                    var y = circleSpacingY * (2 + 1);
+                                    circles.push({ x: x, y: y, radius: circleRadius, label: "q" + 24 });
+                             redraw();
                             </script>
                         </body>
                     </html>
