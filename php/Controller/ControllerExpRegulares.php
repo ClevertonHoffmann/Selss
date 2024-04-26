@@ -366,7 +366,12 @@ class ControllerExpRegulares extends Controller {
             $this->getOModel()->setIPos($this->getOModel()->getIPos()+1);
             //Seta proximo estado a tabela caso tenha mais um estado para acrescentar na tabela
             if (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->getIPos()) {
+                
+            //    $aValProx = $this->getOModel()->getValorAArrayEstTokenExpr($this->getOModel()->getIPos()); //Token, expressão
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
+            //    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), ['$', $aValProx]); /////AQUIIIII
+            
+                
             }
         }
     }
