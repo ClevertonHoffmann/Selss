@@ -27,7 +27,11 @@ class ControllerAutomato extends Controller {
         
         $aTabelaDeTokens = $this->getOPersistencia()->retornaTabelaDeTokens();
         
-        $sModal = $this->getOView()->montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens);
+        $aTransicoesProprias = array();
+        
+        $aTransicoesProprias = $this->getOPersistencia()->retornaTransicoesProprias();
+        
+        $sModal = $this->getOView()->montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens, $aTransicoesProprias);
         $this->getOPersistencia()->gravaArquivo("modalAutomato.html", $sModal);
         
         //Retorna diretório da pasta do usuário para abrir a página com o automato gráfico

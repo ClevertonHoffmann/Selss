@@ -1,6 +1,3 @@
-if:if;
-else:else;
-computadorteste:computadorteste;
-letras:[a-z]*;
-num:[0-9]*;
-id:{num}{letras};
+casa:casa;
+constru:constru;
+teste:teste;
