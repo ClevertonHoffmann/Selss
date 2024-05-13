@@ -1,3 +1,2 @@
-casa:casa;
-constru:constru;
-teste:teste;
+word:word;
+letra:[a-z];

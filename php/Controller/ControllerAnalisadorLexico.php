@@ -77,11 +77,11 @@ class ControllerAnalisadorLexico extends Controller {
                     $iK++;
                     //Aceita o token
                 } else if (!($this->aTabelaTokens[$this->q] == '?')) {
-                    if (isset($this->aPalavrasReservadas[$this->sBuild])) {
-                        $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
-                    } else {
+//                    if (isset($this->aPalavrasReservadas[$this->sBuild])) {
+//                        $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
+//                    } else {
                         $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
-                    }
+ //                   }
                     $this->qntTokens++;
                     $this->sBuild = "";
                     $this->q = 0;

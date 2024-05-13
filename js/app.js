@@ -27,7 +27,7 @@ window.onload = (function () {
      * Verifica se símbolos pertencem aos tokens válidos e separa 
      * @returns retorna erros de especificação das expressões regulares
      */
-    document.getElementById('defGram').addEventListener('keyup', analisaGramatica);
+    //document.getElementById('defGram').addEventListener('keyup', analisaGramatica);
 
     /**
      * Abre a modal para sair do sistema
@@ -279,11 +279,16 @@ function closeModal2() {
  */
 function loadAutomato() {
 
+    // Exibe a mensagem de carregamento
+    $("#mensagemCarregando").show();
+
     var dataToSend = 'teste';
 
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         //Abre a página com automato de análise léxica gráficamente conforme usuário
         window.open("http://localhost/Selss/" + JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
+        // Depois de obter o resultado, oculta a mensagem de carregamento
+        $("#mensagemCarregando").hide();
     });
 
 }
@@ -306,27 +311,27 @@ function downloadTabela(event, nome) {
 /**
  * Analisa a gramática digitada pelo usuário
  */
-function analisaGramatica() {
-    var defgram = $("#defGram").val();
-    var dataToSend = JSON.stringify({
-        "texto": defgram
-    });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        $("#saidaDefErros").val(JSON.parse(result).texto);
-    });
-}
-
-function loadFirstFollow() {
-    var defgram = $("#defGram").val();
-    var dataToSend = JSON.stringify({
-        "texto": defgram
-    });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        $("#saidaDefErros").val(JSON.parse(result).texto);
-    });
-    //Abre a modal
-    // openModalTabLex(dataToSend);
-}
+//function analisaGramatica() {
+//    var defgram = $("#defGram").val();
+//    var dataToSend = JSON.stringify({
+//        "texto": defgram
+//    });
+//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+//        $("#saidaDefErros").val(JSON.parse(result).texto);
+//    });
+//}
+//
+//function loadFirstFollow() {
+//    var defgram = $("#defGram").val();
+//    var dataToSend = JSON.stringify({
+//        "texto": defgram
+//    });
+//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+//        $("#saidaDefErros").val(JSON.parse(result).texto);
+//    });
+//    //Abre a modal
+//    // openModalTabLex(dataToSend);
+//}
 
 /**
  * Abre a modal de logout do sistema

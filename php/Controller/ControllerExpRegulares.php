@@ -315,7 +315,7 @@ class ControllerExpRegulares extends Controller {
                     $this->funcaoAtribuicaoVariaveis2();
                     $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$aCarac[0], $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
                 }
-            } 
+            }
 //            else {
 //                if ((preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
 //                    $aCarac = str_split($this->getOModel()->getValorAArray1(1));
@@ -393,6 +393,8 @@ class ControllerExpRegulares extends Controller {
             if (count($this->getOModel()->getAArrayEstTokenExpr()) >= $this->getOModel()->getIPos()) {
                 $aValProx = $this->getOModel()->getValorAArrayEstTokenExpr($this->getOModel()->getIPos()); //Token, expressão
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
+                //////VERIFICAR SE ISSO TEM LÓGICA
+                //Parte para armazenar o array para o desenho do automato
                 if (is_array($aValProx[1])) {
                     $aValue = array();
                     $aValue = $this->getOModel()->getAArrayExprEst()[trim($aValProx[1][1])];
@@ -402,7 +404,9 @@ class ControllerExpRegulares extends Controller {
                         $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
                     }
                 } else {
-                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
+                 //  $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
+                
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos()-1, $this->getOModel()->getIPos()-1, [$aVal[1], $aVal[0]]); ///AQUIIIII
                 }
             }
         }

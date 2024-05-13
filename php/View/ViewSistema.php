@@ -42,34 +42,56 @@ class ViewSistema {
                 "; 
         
         //Menu, Título, Botão sair
-        $oTela .= "    <body> 
-                        <nav class='navbar p-1' style='background:#e3f2fd; display:flex;'>
-                            <div class='dropdown p-1'>
-                                <button class='dropbtn' type='button' id='dropdownMenu1' data-bs-toggle='dropdown' style='background:cornflowerblue;'>
-                                    <span class='icon-asset material-icons ng-star-inserted' style='font-size: calc(1vw);'>menu</span>
-                                </button>
-                                <div class='dropdown-content'>
-                                    <a href='#'>Link 1</a>
-                                    <a href='#'>Link 2</a>
-                                    <a href='#'>Documentação</a>
+        $oTela .= "    <body style='background:#e3f2fd;> 
+                            <nav class='navbar p-1' style='background:#e3f2fd;'>
+                                <div class='d-flex justify-content-between'>
+                                    <div class='dropdown p-1'>
+                                        <button class='dropbtn' type='button' id='dropdownMenu1' data-bs-toggle='dropdown' style='background:cornflowerblue;'>
+                                            <span class='icon-asset material-icons ng-star-inserted' style='font-size: calc(1vw);'>menu</span>
+                                        </button>
+                                        <div class='dropdown-content'>
+                                            <a href='#'>Link 1</a>
+                                            <a href='#'>Link 2</a>
+                                            <a href='#'>Documentação</a>
+                                        </div>
+                                    </div>
+                                    <h4 class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
+                                    </h4>
+                                    <button class='btn btn-xs btn-outline-secondary me-1' id='btnSair'>Sair</button>
+                                    <div id='modalSair' class='modal' style='text-align: center;'>
+                                        <div class='modal-content-sair'>
+                                            <p><h4>Você tem certeza que deseja sair?</h4></p>
+                                            <button class='btsairLogout' id='btnSairLogout'>Sim, Sair</button>
+                                            <button class='btcancelarLogout' id='cancelarLogout'>Cancelar</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <h4 class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL LÉXICO, SINTÁTICO E
-                                SEMÂNTICO'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
-                            </h4>
-                            <button class='btn btn-sm btn-outline-secondary me-2' id='btnSair'>Sair</button>
-                            <div id='modalSair' class='modal' style='text-align: center;'>
-                                <div class='modal-content-sair'>
-                                    <p><h4>Você tem certeza que deseja sair?</h4></p>
-                                    <button class='btsairLogout' id='btnSairLogout'>Sim, Sair</button>
-                                    <button class='btcancelarLogout' id='cancelarLogout'>Cancelar</button>
+                            </nav>
+                        <!-- <nav class='navbar p-1' style='background:#e3f2fd;'> -->";
+        
+        //Quadro 0: Instruções básicas para uso
+        $oTela .= "    <div class='d-flex'>
+                            <div class='flex-grow-1'>
+                                <div style='width: calc(27vw); height: calc(90vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+                                    <nav class='navbar p-1' data-toggle='tooltip' data-placement='right' title='Instruções iniciais para uso do sistema!'>
+                                        <div style='width: calc(27vw); height: calc(89vh); background-color: rgba(0,0,255,0.1);'>
+                                            <div class='div p-1 text-center'>
+                                                <h6 class='justify' style='border:1px solid black; font-size:calc(1vw); '>
+                                                    INSTRUÇÕES DE USO
+                                                </h6>
+                                            </div>
+                                            <div class='div text-justify'>
+                                                <textarea readonly id='instUso' name='instUso' style='width: calc(26vw); height: calc(80vh);'></textarea> 
+                                            </div>
+                                        </div>
+                                    </nav>
                                 </div>
-                            </div>
-                        </nav>";
+                            </div>";
+        
         
         //Quadro 1: Tabela de análise léxica, autômato, definições Regulares
-        $oTela .= "     <nav class='navbar p-1' style='background:#e3f2fd;'>
-                            <div style='width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+        $oTela .= "     <div class='flex-grow-1'>
+                            <div style='display: inline-block; width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <nav class='navbar p-1'>
                                     <form class='container-fluid justify-content-start p-0'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadTabLexica()'
@@ -96,43 +118,43 @@ class ViewSistema {
                             </div>";
         
         //Quadro 2: First e Follows, Itens, Tabela Sintática
-        $oTela .= "     <div style='width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
-                                <nav class='navbar p-1' data-toggle='tooltip' data-placement='right' title='Em desenvolvimento!'>
-                                    <form class='container-fluid justify-content-start p-0'>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
-                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>FIRST E
-                                            FOLLOWS</button>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
-                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>ITENS</button>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
-                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>TABELA
-                                            SINTÁTICA</button>
-                                    </form>
-                                    <div style='width: calc(27vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
-                                        <div class='div p-1 text-center'>
-                                            <h6 class='justify' style='border:1px solid black; font-size:calc(1vw); '>
-                                                GRAMÁTICA
-                                            </h6>
-                                        </div>
-                                        <div class='div text-justify'>
-                                            <textarea readonly disabled id='defGram' name='defGram' style='width: calc(26vw); height: calc(50vh);' placeholder=\"Escreva as definições da gramática\">" . $defGram . "</textarea> 
-                                        </div>
-                                    </div>
-                                </nav>
-                            </div>";
+//        $oTela .= "     <div style='width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+//                                <nav class='navbar p-1' data-toggle='tooltip' data-placement='right' title='Em desenvolvimento!'>
+//                                    <form class='container-fluid justify-content-start p-0'>
+//                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
+//                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>FIRST E
+//                                            FOLLOWS</button>
+//                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
+//                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>ITENS</button>
+//                                        <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
+//                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>TABELA
+//                                            SINTÁTICA</button>
+//                                    </form>
+//                                    <div style='width: calc(27vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
+//                                        <div class='div p-1 text-center'>
+//                                            <h6 class='justify' style='border:1px solid black; font-size:calc(1vw); '>
+//                                                GRAMÁTICA
+//                                            </h6>
+//                                        </div>
+//                                        <div class='div text-justify'>
+//                                            <textarea readonly disabled id='defGram' name='defGram' style='width: calc(26vw); height: calc(50vh);' placeholder=\"Escreva as definições da gramática\">" . $defGram . "</textarea> 
+//                                        </div>
+//                                    </div>
+//                                </nav>
+//                            </div>";
         
         //Quadro 3: Análise léxica, sintática e semântica
-        $oTela .= "     <div style='width: calc(42vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+        $oTela .= "     <div style='display: inline-block; width: calc(42vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <nav class='navbar p-1'>
                                     <form class='container-fluid justify-content-start p-0'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' data-toggle='tooltip' data-placement='right' title='Realiza análise léxica e gera os tokens'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' onclick='analiseLexica()'>LÉXICO</button>
-                                        <span class='d-inline-block' tabindex='0' data-toggle='tooltip' title='Em desenvolvimento!'>
+<!---                                        <span class='d-inline-block' tabindex='0' data-toggle='tooltip' title='Em desenvolvimento!'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>SINTÁTICO</button>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>SEMÂNTICO</button>
-                                        </span>
+                                        </span> -->
                                         <button class='btn btn-sm btn-secondary' style='width: calc(vw); height: calc(vh); font-size:calc(1vw)'
                                                 type='button' data-toggle='tooltip' data-placement='right' title='Documentação'>?</button>
                                     </form>
@@ -148,21 +170,23 @@ class ViewSistema {
                                     </div>
                                 </nav>
                             </div>
-                        </nav>";
+                       <!-- </nav> -->";
         
         //Quadro 4: Console de erros e informações das definições regulares e gramáticas
         $oTela .= "     <nav class='navbar p-1' style='background:#e3f2fd'>
-                            <div style='width: calc(100vw); height: calc(20vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+                            <div style='width: calc(68vw); height: calc(20vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <div class='div p-1 text-center'>
                                     <h6 class='container-fluid justify-content-start' style='border:1px solid black; font-size:calc(1vw);'>
                                         CONSOLE DE ERROS E INFORMAÇÕES DAS DEFINIÇÕES REGULARES E GRAMÁTICAS
                                     </h6>
                                 </div>
                                 <div class='div p-1 text-justify'>
-                                    <textarea id=\"saidaDefErros\" name=\"saidaDefErros\" style='resize:none; overflow:auto; width: calc(98vw); height: calc(12vh); background-color: #fcfaff;'></textarea>
+                                    <textarea id=\"saidaDefErros\" name=\"saidaDefErros\" style='resize:none; overflow:auto; width: calc(68vw); height: calc(12vh); background-color: #fcfaff;'></textarea>
                                 </div>
                             </div>
-                        </nav>";
+                        </nav>
+                    </div>
+                </div>";
         
         //Modal Tabela Análise Léxica
         $oTela .= "     <div id='myModal' class='modal'>
