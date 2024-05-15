@@ -1,2 +1,1 @@
-word:word;
-letra:[a-z];
+template:template;

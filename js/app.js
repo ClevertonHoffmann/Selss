@@ -195,6 +195,11 @@ function loadTabLexica() {
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
+    
+    // Ativa os botões
+    document.getElementById("btdesenhaautomato").disabled = false;
+    document.getElementById("btexecutaanaliselex").disabled = false;
+    
     //Abre a modal
     openModalTabLex(dataToSend);
 }

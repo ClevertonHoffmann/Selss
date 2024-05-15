@@ -11,8 +11,9 @@ class ViewSistema {
         $pasta = $_SESSION["pasta"];
         $defReg = $this->retornaTexto($pasta . "//defReg.txt"); //Definições regulares do usuário no sistema
         $codigoParaAnalise = $this->retornaTexto($pasta . "//codigoParaAnalise.txt"); //Definições regulares do usuário no sistema
-        $defGram = $this->retornaTexto($pasta . "//defGram.txt"); //Definições gramatica do usuário no sistema
-
+    //    $defGram = $this->retornaTexto($pasta . "//defGram.txt"); //Definições gramatica do usuário no sistema
+        $insUso = $this->retornaTexto("data//instrucoesdeuso.txt"); //Instruções de uso do sistema
+        
         //Cabeçalho
         $oTela = "<!DOCTYPE html>
                 <html lang='pt'>    
@@ -42,9 +43,8 @@ class ViewSistema {
                 "; 
         
         //Menu, Título, Botão sair
-        $oTela .= "    <body style='background:#e3f2fd;> 
-                            <nav class='navbar p-1' style='background:#e3f2fd;'>
-                                <div class='d-flex justify-content-between'>
+        $oTela .= "    <body style='background:#e3f2fd;'> 
+                                <div class='d-flex justify-content-between' style='margin-right: 5px;'>
                                     <div class='dropdown p-1'>
                                         <button class='dropbtn' type='button' id='dropdownMenu1' data-bs-toggle='dropdown' style='background:cornflowerblue;'>
                                             <span class='icon-asset material-icons ng-star-inserted' style='font-size: calc(1vw);'>menu</span>
@@ -55,9 +55,9 @@ class ViewSistema {
                                             <a href='#'>Documentação</a>
                                         </div>
                                     </div>
-                                    <h4 class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
+                                    <h4 style='margin-top: 5px;' class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
                                     </h4>
-                                    <button class='btn btn-xs btn-outline-secondary me-1' id='btnSair'>Sair</button>
+                                    <button class='btn btn-xs btn-outline-secondary me-1' style='margin-top: 5px; margin-bottom: 8px;' id='btnSair'>Sair</button>
                                     <div id='modalSair' class='modal' style='text-align: center;'>
                                         <div class='modal-content-sair'>
                                             <p><h4>Você tem certeza que deseja sair?</h4></p>
@@ -65,23 +65,21 @@ class ViewSistema {
                                             <button class='btcancelarLogout' id='cancelarLogout'>Cancelar</button>
                                         </div>
                                     </div>
-                                </div>
-                            </nav>
-                        <!-- <nav class='navbar p-1' style='background:#e3f2fd;'> -->";
+                                </div>";
         
         //Quadro 0: Instruções básicas para uso
-        $oTela .= "    <div class='d-flex'>
-                            <div class='flex-grow-1'>
-                                <div style='width: calc(27vw); height: calc(90vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+        $oTela .= "  <div class='d-flex'>
+                            <div class='flex-grow-1' style='margin-left: 5px;'>
+                                <div style='width: calc(28vw); height: calc(87vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                     <nav class='navbar p-1' data-toggle='tooltip' data-placement='right' title='Instruções iniciais para uso do sistema!'>
-                                        <div style='width: calc(27vw); height: calc(89vh); background-color: rgba(0,0,255,0.1);'>
+                                        <div style='width: calc(28vw); height: calc(85vh); background-color: rgba(0,0,255,0.1);'>
                                             <div class='div p-1 text-center'>
                                                 <h6 class='justify' style='border:1px solid black; font-size:calc(1vw); '>
                                                     INSTRUÇÕES DE USO
                                                 </h6>
                                             </div>
                                             <div class='div text-justify'>
-                                                <textarea readonly id='instUso' name='instUso' style='width: calc(26vw); height: calc(80vh);'></textarea> 
+                                                <textarea readonly id='instUso' name='instUso' style='width: calc(27vw); height: calc(79vh);'>".$insUso."</textarea> 
                                             </div>
                                         </div>
                                     </nav>
@@ -91,25 +89,25 @@ class ViewSistema {
         
         //Quadro 1: Tabela de análise léxica, autômato, definições Regulares
         $oTela .= "     <div class='flex-grow-1'>
-                            <div style='display: inline-block; width: calc(27vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+                            <div style='display: inline-block; width: calc(28vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <nav class='navbar p-1'>
                                     <form class='container-fluid justify-content-start p-0'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadTabLexica()'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
                                                 data-toggle='tooltip' data-placement='right' title='Gera a tabela do automato para análise léxica'>TABELA DE ANÁLISE
                                             LÉXICA</button>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadAutomato()'
+                                        <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadAutomato()' disabled id='btdesenhaautomato'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
-                                                data-toggle='tooltip' data-placement='right' title='Automato de análise léxica'>AUTÔMATO</button>
+                                                data-toggle='tooltip' data-placement='right' title='Automato de análise léxica'>DESENHAR AUTÔMATO</button>
                                     </form>
                                         <div class='div text-center'
-                                             style='width: calc(27vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
+                                             style='width: calc(28vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
                                             <div class='div text-center p-1'>
                                                 <h6 class='justify'
                                                     style='border:1px solid black; font-size:calc(1vw);'>DEFINIÇÕES REGULARES/TOKENS</h6>
                                             </div>
                                             <div class='div text-justify'>
-                                                <textarea id='defReg' name='defReg' style='width: calc(26vw); height: calc(50vh);' placeholder=\"Escreva as definições regulares, tokens\">" . $defReg . "</textarea>
+                                                <textarea id='defReg' name='defReg' style='width: calc(27vw); height: calc(50vh);' placeholder=\"Escreva as definições regulares, tokens\">" . $defReg . "</textarea>
                                             </div>
                                         </div>
                                     <!-- Balão de sugestão -->
@@ -144,28 +142,28 @@ class ViewSistema {
 //                            </div>";
         
         //Quadro 3: Análise léxica, sintática e semântica
-        $oTela .= "     <div style='display: inline-block; width: calc(42vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+        $oTela .= "     <div style='display: inline-block; width: calc(41vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <nav class='navbar p-1'>
                                     <form class='container-fluid justify-content-start p-0'>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' data-toggle='tooltip' data-placement='right' title='Realiza análise léxica e gera os tokens'
-                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' onclick='analiseLexica()'>LÉXICO</button>
+                                        <button class='btn btn-sm btn-outline-secondary me-1 ' data-toggle='tooltip' data-placement='right' title='Realiza análise léxica e gera os tokens' disabled id='btexecutaanaliselex'
+                                                style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' onclick='analiseLexica()'>EXECUTAR ANÁLISE LÉXICA</button>
 <!---                                        <span class='d-inline-block' tabindex='0' data-toggle='tooltip' title='Em desenvolvimento!'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>SINTÁTICO</button>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>SEMÂNTICO</button>
-                                        </span> -->
+                                        </span> 
                                         <button class='btn btn-sm btn-secondary' style='width: calc(vw); height: calc(vh); font-size:calc(1vw)'
-                                                type='button' data-toggle='tooltip' data-placement='right' title='Documentação'>?</button>
+                                                type='button' data-toggle='tooltip' data-placement='right' title='Documentação'>?</button> -->
                                     </form>
-                                    <div style='width: calc(42vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
+                                    <div style='width: calc(41vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
                                         <div class='div p-1 text-center'>
                                             <h6 class='container-fluid justify-content-start' style='border:1px solid black; font-size:calc(1vw);'>
                                                 ÁREA PARA INSERIR CÓDIGO DE TESTE PARA AS DEFINIÇÕES CRIADAS
                                             </h6>
                                         </div>
                                         <div class='div p-1 text-justify'>
-                                            <textarea id='codTest' name='codTest' style='width: calc(41vw); height: calc(49.5vh);' placeholder=\"Escreva o código a ser analisado\" >" . $codigoParaAnalise . "</textarea> 
+                                            <textarea id='codTest' name='codTest' style='width: calc(40vw); height: calc(49.5vh);' placeholder=\"Escreva o código a ser analisado\" >" . $codigoParaAnalise . "</textarea> 
                                         </div>
                                     </div>
                                 </nav>
@@ -173,15 +171,15 @@ class ViewSistema {
                        <!-- </nav> -->";
         
         //Quadro 4: Console de erros e informações das definições regulares e gramáticas
-        $oTela .= "     <nav class='navbar p-1' style='background:#e3f2fd'>
-                            <div style='width: calc(68vw); height: calc(20vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
+        $oTela .= "  <nav class='navbar' style='background:#e3f2fd'>
+                            <div style='width: calc(70vw); height: calc(21vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <div class='div p-1 text-center'>
                                     <h6 class='container-fluid justify-content-start' style='border:1px solid black; font-size:calc(1vw);'>
-                                        CONSOLE DE ERROS E INFORMAÇÕES DAS DEFINIÇÕES REGULARES E GRAMÁTICAS
+                                        CONSOLE DE ERROS E INFORMAÇÕES DAS DEFINIÇÕES REGULARES
                                     </h6>
                                 </div>
                                 <div class='div p-1 text-justify'>
-                                    <textarea id=\"saidaDefErros\" name=\"saidaDefErros\" style='resize:none; overflow:auto; width: calc(68vw); height: calc(12vh); background-color: #fcfaff;'></textarea>
+                                    <textarea id=\"saidaDefErros\" name=\"saidaDefErros\" style='resize:none; overflow:auto; width: calc(69svw); height: calc(13vh); background-color: #fcfaff;'></textarea>
                                 </div>
                             </div>
                         </nav>
