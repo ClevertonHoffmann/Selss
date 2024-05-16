@@ -91,15 +91,15 @@ window.onload = (function () {
         balaoSugestao.innerHTML = '';
 
         // Obtém o texto digitado
-        var textoDigitado = campoTexto.value.trim().toLowerCase();
+        var textoDigitado = campoTexto.value;
+        var partes = textoDigitado.split(';');
+        var ultimaParte = partes[partes.length - 1].trim().toLowerCase();
 
-        // Verifica se há texto digitado e se a última palavra está incompleta
-        var palavras = textoDigitado.split(' ');
-        var ultimaPalavra = palavras.pop();
-        if (campoTexto.selectionStart == textoDigitado.length && ultimaPalavra.length > 0) {
-            // Verifica se há sugestões para a palavra digitada
+        // Verifica se há texto digitado na última parte
+        if (ultimaParte.length > 0) {
+            // Verifica se há sugestões para a última parte digitada
             var sugestoesFiltradas = sugestoes.filter(function (sugestao) {
-                return sugestao.startsWith(ultimaPalavra);
+                return sugestao.toLowerCase().startsWith(ultimaParte);
             });
 
             // Exibe as sugestões no balão de sugestão
@@ -126,11 +126,14 @@ window.onload = (function () {
         balaoSugestao.style.display = 'none';
     }
 
-    // Evento keyup para monitorar a digitação no campo de texto
-    campoTexto.addEventListener('keyup', function () {
+// Evento input para monitorar a digitação no campo de texto
+    campoTexto.addEventListener('input', function () {
         mostrarSugestoes();
+        
+        // Destativa os botões
+        document.getElementById("btdesenhaautomato").disabled = true;
+        document.getElementById("btexecutaanaliselex").disabled = true;
     });
-
 
     // Função para completar o texto do campo com a sugestão selecionada
     function completarTexto(sugestao) {
@@ -138,22 +141,18 @@ window.onload = (function () {
         var textoAntesCursor = textoAtual.substring(0, campoTexto.selectionStart); // Texto antes do cursor
         var textoDepoisCursor = textoAtual.substring(campoTexto.selectionEnd); // Texto depois do cursor
 
-        // Encontrar a última palavra digitada no texto atual
-        var palavras = textoAntesCursor.split(' ');
-        var ultimaPalavra = palavras.pop();
-
-        // Remover a última palavra digitada e adicionar a sugestão completa
-        palavras.push(sugestao);
-        var novoTexto = palavras.join(' ');
-
-        // Adicionar o restante do texto depois do cursor
-        novoTexto += textoDepoisCursor;
+        // Encontrar a última parte digitada no texto atual
+        var partes = textoAntesCursor.split(';');
+        partes.pop(); // Remove a última parte incompleta
+        partes.push(sugestao); // Adiciona a sugestão completa
 
         // Atualizar o texto do campo
+        var novoTexto = partes.join('; ') + textoDepoisCursor;
+
         campoTexto.value = novoTexto;
 
         // Reposicionar o cursor
-        campoTexto.selectionStart = campoTexto.selectionEnd = novoTexto.length;
+        campoTexto.selectionStart = campoTexto.selectionEnd = novoTexto.length - textoDepoisCursor.length;
 
         // Ocultar o balão de sugestão
         balaoSugestao.style.display = 'none';
@@ -166,6 +165,8 @@ window.onload = (function () {
         }
     });
     /*********************************Fim da parte das sugestões********************************/
+
+
 
 });
 
@@ -195,11 +196,11 @@ function loadTabLexica() {
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
-    
+
     // Ativa os botões
     document.getElementById("btdesenhaautomato").disabled = false;
     document.getElementById("btexecutaanaliselex").disabled = false;
-    
+
     //Abre a modal
     openModalTabLex(dataToSend);
 }
