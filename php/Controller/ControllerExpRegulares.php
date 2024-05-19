@@ -26,9 +26,83 @@ class ControllerExpRegulares extends Controller {
 
         $sText2 = $this->analisador($sText);
 
+        if ($sText2 == ' ') {
+            $sText2 = $this->validaDefinicoesRegulares($sText);
+        }
+
         $sJson = '{"texto":"' . $sText2 . '"}';
 
         return json_encode($sJson);
+    }
+
+    /**
+     * Método que valida as definições regulares para seguirem os padrões do sistema 
+     * finalizando por ; , não pré-definido uma expressão simples usada por uma composta.
+     * @param type $definition
+     * @return string
+     */
+    function validaDefinicoesRegulares($definition) {
+        
+        if(strlen($definition)>300){
+            return "Atenção ultrapassou do limite maximo de 300 caracteres!";
+        }
+        
+        // Verifica se a string de definição termina com ';'
+        if (substr($definition, -1) !== ';' && $definition!='') {
+            return "A string de definição deve terminar com ';'.";
+        }
+
+        // Remove o ponto e vírgula final para evitar uma definição vazia
+        $definition = rtrim($definition, ';');
+
+        // Divide a string de definições por ';' para obter definições individuais
+        $definitions = explode(';', $definition);
+
+        // Array para armazenar as chaves definidas
+        $definedKeys = [];
+
+        // Itera sobre cada definição
+        foreach ($definitions as $def) {
+            // Remove espaços em branco
+            $def = trim($def);
+            // Pula definições vazias (por exemplo, se houver um ';' extra no final)
+            if (empty($def))
+                continue;
+
+            // Divide a definição por ':' para separar chave e valor
+            $parts = explode(':', $def, 2);
+
+            // Verifica se a divisão resultou em exatamente duas partes (chave e valor)
+            if (count($parts) != 2) {
+                return "A definição '$def' está mal formada.";
+            }
+
+            list($key, $value) = $parts;
+
+            // Remove espaços em branco ao redor das partes
+            $key = trim($key);
+            $value = trim($value);
+
+            // Verifica se a chave ou o valor estão vazios
+            if (empty($key) || empty($value)) {
+                return "A definição '$def' está mal formada.";
+            }
+
+            // Adiciona a chave à lista de chaves definidas
+            $definedKeys[] = $key;
+
+            // Verificação adicional:caso tenha { siga o padrão específico {chave1}{chave2}
+            // Encontra todas as chaves dentro de {}
+            preg_match_all('/\{([a-zA-Z]+)\}/', $value, $matches);
+
+            foreach ($matches[1] as $match) {
+                if (!in_array($match, $definedKeys)) {
+                    return "A definição de '" . $key . "' refere-se a uma chave não definida: '{$match}'.";
+                }
+            }
+        }
+
+        return " ";
     }
 
     /**
@@ -404,9 +478,9 @@ class ControllerExpRegulares extends Controller {
                         $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
                     }
                 } else {
-                 //  $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
-                
-                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos()-1, $this->getOModel()->getIPos()-1, [$aVal[1], $aVal[0]]); ///AQUIIIII
+                    //  $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$aValProx[1], $aValProx[0]]); ///AQUIIIII
+
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos() - 1, $this->getOModel()->getIPos() - 1, [$aVal[1], $aVal[0]]); ///AQUIIIII
                 }
             }
         }

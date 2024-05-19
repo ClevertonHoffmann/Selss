@@ -177,6 +177,7 @@ function analisaExpRegulares() {
         "texto": defreg
     });
     $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $("#saidaDefErros").val();
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
 }
