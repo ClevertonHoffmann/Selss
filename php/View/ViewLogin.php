@@ -19,7 +19,7 @@ class ViewLogin {
                     <body>
                         <div class="container">
                             <form class="login-form" action="index.php" method="POST">
-                                <img src="http://localhost/Selss/img/logo.png" alt="Sua Imagem" id="logo" style="width: 200px; height: 100px;" data-toggle="tooltip" data-placement="right" title="SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES">
+                                <img src="img/logo.png" alt="Sua Imagem" id="logo" style="width: 200px; height: 100px;" data-toggle="tooltip" data-placement="right" title="SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES">
                                 <br>
                                 <br>
                                 <div class="input-container">

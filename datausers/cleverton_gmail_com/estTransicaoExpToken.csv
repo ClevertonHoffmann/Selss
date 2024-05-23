@@ -1,2 +1,4 @@
-{;ac;};fc
-{;ac
+a*;exp2;[b|c]*;exp1
+a*;exp3
+-1;-1;[b|c]*;exp3;a*;exp3
+-1;-1;-1;-1;a*;exp3

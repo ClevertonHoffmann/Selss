@@ -70,7 +70,7 @@ window.onload = (function () {
     /*********************************Inicio da parte das sugestões********************************/
     // Array de sugestões
     var arquivo = new XMLHttpRequest();
-    arquivo.open("GET", "http://localhost/Selss/data/sugestoes.txt", false);
+    arquivo.open("GET", getBaseURL() + "data/sugestoes.txt", false);
     arquivo.send(null);
 
     // Processa as sugestões do arquivo
@@ -176,7 +176,7 @@ function analisaExpRegulares() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val();
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
@@ -194,7 +194,7 @@ function loadTabLexica() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerExpRegulares&metodo=geradorTabelaAutomatoFinito" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
 
@@ -214,7 +214,7 @@ function openModalTabLex(dataToSend) {
     div.innerHTML = '';
     document.getElementById("myModal").style.display = "block";
     setTimeout(function () {
-        $.getJSON("http://localhost/Selss/index.php?classe=ControllerExpRegulares&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $.getJSON(getBaseURL() + "index.php?classe=ControllerExpRegulares&metodo=mostraModalTabelaLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
             var div = document.getElementById('csvData');
             // Depois de obter o resultado, oculta a mensagem de carregamento
             $("#mensagemCarregando").hide();
@@ -244,7 +244,7 @@ function analiseLexica() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerAnalisadorLexico&metodo=analiseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerAnalisadorLexico&metodo=analiseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         $("#saidaAnalise").val(JSON.parse(result).texto);
     });
     //Abre a modal
@@ -259,7 +259,7 @@ function openModalResLex(dataToSend) {
     div.innerHTML = '';
     document.getElementById("myModal2").style.display = "block";
     setTimeout(function () {
-        $.getJSON("http://localhost/Selss/index.php?classe=ControllerAnalisadorLexico&metodo=mostraModalResultadoAnaliseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        $.getJSON(getBaseURL() + "index.php?classe=ControllerAnalisadorLexico&metodo=mostraModalResultadoAnaliseLexica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
             var div = document.getElementById('csvData2');
             // Altera o conteúdo da div
             div.innerHTML = result;
@@ -291,9 +291,9 @@ function loadAutomato() {
 
     var dataToSend = 'teste';
 
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         //Abre a página com automato de análise léxica gráficamente conforme usuário
-        window.open("http://localhost/Selss/" + JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
+        window.open(getBaseURL() +  JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
         // Depois de obter o resultado, oculta a mensagem de carregamento
         $("#mensagemCarregando").hide();
     });
@@ -306,7 +306,7 @@ function downloadTabela(event, nome) {
     var link = document.createElement('a');
 
     // Define o atributo 'href' do link com o caminho para o script download.php e o nome do arquivo
-    link.href = 'http://localhost/Selss/php/biblioteca/download.php?arquivo=' + encodeURIComponent(nome);
+    link.href = getBaseURL() + 'php/biblioteca/download.php?arquivo=' + encodeURIComponent(nome);
 
     // Define o atributo 'target' para '_blank' para abrir o link em uma nova janela/tab
     link.target = '_blank';
@@ -323,7 +323,7 @@ function downloadTabela(event, nome) {
 //    var dataToSend = JSON.stringify({
 //        "texto": defgram
 //    });
-//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+//    $.getJSON(getBaseURL() + "index.php?classe=ControllerGramatica&metodo=analisaGramatica" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
 //        $("#saidaDefErros").val(JSON.parse(result).texto);
 //    });
 //}
@@ -333,7 +333,7 @@ function downloadTabela(event, nome) {
 //    var dataToSend = JSON.stringify({
 //        "texto": defgram
 //    });
-//    $.getJSON("http://localhost/Selss/index.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+//    $.getJSON(getBaseURL() + "index.php?classe=ControllerGramatica&metodo=geradorFirstFollow" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
 //        $("#saidaDefErros").val(JSON.parse(result).texto);
 //    });
 //    //Abre a modal
@@ -362,7 +362,8 @@ function logout() {
     var dataToSend = JSON.stringify({
         "texto": "logout"
     });
-    $.getJSON("http://localhost/Selss/index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+    console.log(getBaseURL());
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
     });
     window.location.href = 'index.php';
 }
@@ -377,4 +378,9 @@ function mostrarCarregando() {
 // Função para esconder mensagem de carregamento
 function esconderCarregando() {
     document.getElementById('loading').style.display = 'none';
+}
+
+//Função importante para retornar a base da url para acesso em servidores
+function getBaseURL() {
+    return window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
 }

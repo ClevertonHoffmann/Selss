@@ -19,15 +19,15 @@ class ControllerAutomato extends Controller {
     public function gravaPaginaAutomato($sTexto){
         
         
-        $aEstadosTransicoes = array();
+//        $aEstadosTransicoes = array();
         
         $aEstadosTransicoes = $this->getOPersistencia()->retornaArrayEstadosTransicoes();
 
-        $aTabelaDeTokens = array();
+//        $aTabelaDeTokens = array();
         
         $aTabelaDeTokens = $this->getOPersistencia()->retornaTabelaDeTokens();
         
-        $aTransicoesProprias = array();
+//        $aTransicoesProprias = array();
         
         $aTransicoesProprias = $this->getOPersistencia()->retornaTransicoesProprias();
         

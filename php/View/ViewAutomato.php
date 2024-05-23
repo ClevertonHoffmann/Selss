@@ -237,6 +237,24 @@ class ViewAutomato {
                                             ctx.textBaseline = "middle";
                                             ctx.fillText("' . $aVal[$iKey][0] . '", labelXcurva' . $iKey . ', labelYcurva' . $iKey . ');
                                             ctx.closePath();
+                                            
+                                            // Adiciona a seta na ponta da curva de Bézier
+                                            var arrowSize = 10; // Tamanho da seta
+                                            var endX = circle.x; // Ponto final da curva (mesmo ponto inicial, pois é uma auto-transição)
+                                            var endY = circle.y - circle.radius;
+                                            var angle = Math.PI / 1.35; // Ângulo da seta 
+
+                                            // Desenha a seta na ponta da pétala
+                                            ctx.beginPath();
+                                            ctx.moveTo(endX, endY);
+                                            ctx.lineTo(endX - arrowSize * Math.cos(angle - Math.PI / 6), endY - arrowSize * Math.sin(angle - Math.PI / 6));
+                                            ctx.moveTo(endX, endY);
+                                            ctx.lineTo(endX - arrowSize * Math.cos(angle + Math.PI / 6), endY - arrowSize * Math.sin(angle + Math.PI / 6));
+
+                                            ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
+                                            ctx.lineWidth = 2;
+                                            ctx.stroke();
+                                            ctx.closePath();
                                         }
 
                         ';

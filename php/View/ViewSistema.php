@@ -50,12 +50,12 @@ class ViewSistema {
                                             <span class='icon-asset material-icons ng-star-inserted' style='font-size: calc(1vw);'>menu</span>
                                         </button>
                                         <div class='dropdown-content'>
-                                            <a href='#'>Link 1</a>
-                                            <a href='#'>Link 2</a>
                                             <a href='#'>Documentação</a>
+                                            <a href='#'>Excluir dados</a>
+                                            <a href='#'>Excluir usuário</a>
                                         </div>
                                     </div>
-                                    <h4 style='margin-top: 5px;' class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='http://localhost/Selss/img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
+                                    <h4 style='margin-top: 5px;' class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>
                                     </h4>
                                     <button class='btn btn-xs btn-outline-secondary me-1' style='margin-top: 5px; margin-bottom: 8px;' id='btnSair'>Sair</button>
                                     <div id='modalSair' class='modal' style='text-align: center;'>
@@ -79,7 +79,7 @@ class ViewSistema {
                                                 </h6>
                                             </div>
                                             <div class='div text-justify'>
-                                                <textarea readonly id='instUso' name='instUso' style='width: calc(27vw); height: calc(79vh);'>".$insUso."</textarea> 
+                                                <textarea readonly id='instUso' name='instUso' style='width: calc(27vw); height: calc(79vh); background:#e3f2fd;'>".$insUso."</textarea> 
                                             </div>
                                         </div>
                                     </nav>
