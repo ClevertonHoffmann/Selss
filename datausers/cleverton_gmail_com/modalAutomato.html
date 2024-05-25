@@ -145,7 +145,7 @@
                                             ctx.font = "12px Arial";
                                             ctx.textAlign = "center";
                                             ctx.textBaseline = "middle";
-                                            ctx.fillText("[b|c]*", labelX2, labelY2-10);
+                                            ctx.fillText("[b|c]", labelX2, labelY2-10);
                                             ctx.closePath();
                                         }
 
@@ -256,46 +256,6 @@
                                             ctx.textAlign = "center";
                                             ctx.textBaseline = "middle";
                                             ctx.fillText("a*", labelX3, labelY3-10);
-                                            ctx.closePath();
-                                        }
-
-                                                        
-                                       
-                                        if (circle.label === "q2") {
-                                            // Desenha a linha conectando circle e circle (criando uma pétala) quando estado que possui transição para ele mesmo
-                                            ctx.beginPath();
-                                            ctx.moveTo(circle.x, circle.y - circle.radius);
-                                            ctx.bezierCurveTo(circle.x - 50, circle.y - 70, circle.x + 50, circle.y - 70, circle.x, circle.y - circle.radius);
-                                            ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
-                                            ctx.lineWidth = 2;
-                                            ctx.stroke();
-
-                                            // Adiciona o rótulo à linha entre circle e ele mesmo
-                                            var labelXcurva2 = circle.x;
-                                            var labelYcurva2 = circle.y - 65;
-                                            ctx.fillStyle = "#000";
-                                            ctx.font = "12px Arial";
-                                            ctx.textAlign = "center";
-                                            ctx.textBaseline = "middle";
-                                            ctx.fillText("[b|c]*", labelXcurva2, labelYcurva2);
-                                            ctx.closePath();
-                                            
-                                            // Adiciona a seta na ponta da curva de Bézier
-                                            var arrowSize = 10; // Tamanho da seta
-                                            var endX = circle.x; // Ponto final da curva (mesmo ponto inicial, pois é uma auto-transição)
-                                            var endY = circle.y - circle.radius;
-                                            var angle = Math.PI / 1.35; // Ângulo da seta 
-
-                                            // Desenha a seta na ponta da pétala
-                                            ctx.beginPath();
-                                            ctx.moveTo(endX, endY);
-                                            ctx.lineTo(endX - arrowSize * Math.cos(angle - Math.PI / 6), endY - arrowSize * Math.sin(angle - Math.PI / 6));
-                                            ctx.moveTo(endX, endY);
-                                            ctx.lineTo(endX - arrowSize * Math.cos(angle + Math.PI / 6), endY - arrowSize * Math.sin(angle + Math.PI / 6));
-
-                                            ctx.strokeStyle = "#0095DD"; // Azul para a linha de conexão
-                                            ctx.lineWidth = 2;
-                                            ctx.stroke();
                                             ctx.closePath();
                                         }
 

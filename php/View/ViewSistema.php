@@ -50,7 +50,7 @@ class ViewSistema {
                                             <span class='icon-asset material-icons ng-star-inserted' style='font-size: calc(1vw);'>menu</span>
                                         </button>
                                         <div class='dropdown-content'>
-                                            <a href='#'>Documentação</a>
+                                            <a href='help/documentacao.html' target='_blank'>Documentação</a>
                                             <a href='#'>Excluir dados</a>
                                             <a href='#'>Excluir usuário</a>
                                         </div>

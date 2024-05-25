@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação do Sistema de Análise Léxica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #007BFF;
+        }
+        p, ul, ol {
+            line-height: 1.6;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .code-example {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 4px solid #007BFF;
+            overflow-x: auto;
+        }
+        .code-example pre {
+            margin: 0;
+        }
+        .toc {
+            margin-bottom: 40px;
+        }
+        .toc a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .btn-float {
+            position: fixed;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .btn-float-left {
+            left: 20px;
+            bottom: 20px;
+        }
+        .btn-float-right {
+            right: 20px;
+            bottom: 20px;
+        }
+        .btn-float-top {
+            right: 20px;
+            bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Documentação do Sistema de Análise Léxica</h1>
+        
+        <div class="toc">
+            <h2>Sumário</h2>
+            <ul>
+                <li><a href="#visao-geral">Visão Geral</a></li>
+                <li><a href="#funcionalidades">Funcionalidades</a></li>
+                <li><a href="#como-usar">Como Usar o Sistema</a></li>
+                <li><a href="#exemplo-expressao">Exemplo de Expressão Regular</a></li>
+                <li><a href="#descricao-campos">Descrição dos Campos</a></li>
+                <li><a href="#notas-adicionais">Notas Adicionais</a></li>
+            </ul>
+        </div>
+        
+        <div id="visao-geral" class="section">
+            <h2>Visão Geral</h2>
+            <p>Este sistema permite a inserção de expressões regulares para gerar uma tabela de análise léxica, visualizar o autômato correspondente e ver a análise léxica em ação.</p>
+        </div>
+        
+        <div id="funcionalidades" class="section">
+            <h2>Funcionalidades</h2>
+            <ul>
+                <li>Inserir Expressão Regular</li>
+                <li>Gerar Tabela de Análise Léxica</li>
+                <li>Mostrar Autômato</li>
+                <li>Executar Análise Léxica</li>
+            </ul>
+        </div>
+        
+        <div id="como-usar" class="section">
+            <h2>Como Usar o Sistema</h2>
+            <ol>
+                <li>No campo "Insira sua Expressão Regular", digite a expressão regular desejada.</li>
+                <li>Clique no botão "Gerar Tabela de Análise Léxica" para gerar a tabela correspondente.</li>
+                <li>Clique no botão "Mostrar Autômato" para visualizar o autômato gerado pela expressão regular.</li>
+                <li>Clique no botão "Executar Análise Léxica" para ver a análise léxica funcionando com a expressão inserida.</li>
+            </ol>
+        </div>
+        
+        <div id="exemplo-expressao" class="section">
+            <h2>Exemplo de Expressão Regular</h2>
+            <div class="code-example">
+                <pre>[a-zA-Z_][a-zA-Z0-9_]*</pre>
+            </div>
+            <p>Esta expressão regular corresponde a identificadores válidos em muitas linguagens de programação, que começam com uma letra ou sublinhado, seguidos de letras, números ou sublinhados.</p>
+        </div>
+        
+        <div id="descricao-campos" class="section">
+            <h2>Descrição dos Campos</h2>
+            <ul>
+                <li><strong>Expressão Regular:</strong> Campo para inserir a expressão regular que será utilizada na análise léxica.</li>
+                <li><strong>Gerar Tabela de Análise Léxica:</strong> Botão que gera a tabela de análise léxica a partir da expressão regular fornecida.</li>
+                <li><strong>Mostrar Autômato:</strong> Botão que exibe o autômato gerado pela expressão regular.</li>
+                <li><strong>Executar Análise Léxica:</strong> Botão que executa a análise léxica com base na expressão regular inserida.</li>
+            </ul>
+        </div>
+        
+        <div id="notas-adicionais" class="section">
+            <h2>Notas Adicionais</h2>
+            <p>Certifique-se de seguir as instruções e exemplos fornecidos nesta documentação para garantir o uso correto do sistema.</p>
+        </div>
+    </div>
+
+    <!-- Botões Flutuantes -->
+    <button class="btn-float btn-float-right" onclick="scrollToTop()">&#8593;</button>
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
