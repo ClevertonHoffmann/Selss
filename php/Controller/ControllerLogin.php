@@ -49,7 +49,7 @@ class ControllerLogin extends Controller {
             $bVal = $this->getOPersistencia()->verificaEmailPass($sEmail, $sSenha);
 
             //Ignora modo convidado
-            if (!$bVal || $sModo=="convidado") {
+            if (!$bVal || $sModo == "convidado") {
                 //Opta pelo modo sendo os possíveis casos: convidado, cadastro (isso se diferente de usuário)
                 switch ($sModo) {
                     case "convidado":
@@ -58,19 +58,19 @@ class ControllerLogin extends Controller {
                         $sPass = $sSenha;
                         $bVal = true;
                         break;
-                    case "cadastro":
-                        if(trim($sEmail)==''||$sEmail==null){
-                            $this->Mensagem('Não é possível cadastrar sem email!', 4);
-                            return false;
-                        }
-                        $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
-                        if($bVal){
-                            $this->Mensagem('Cadastro realizado com sucesso!', 1);
-                        }else{
-                            $this->Mensagem('Não é possível Cadastrar, Email já cadastrado!', 4);
-                            return false;
-                        }
-                        break;
+//                    case "cadastro":
+//                        if (trim($sEmail) == '' || $sEmail == null) {
+//                            $this->Mensagem('Não é possível cadastrar sem email!', 4);
+//                            return false;
+//                        }
+//                        $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
+//                        if ($bVal) {
+//                            $this->Mensagem('Cadastro realizado com sucesso!', 1);
+//                        } else {
+//                            $this->Mensagem('Não é possível Cadastrar, Email já cadastrado!', 4);
+//                            return false;
+//                        }
+//                        break;
                     default :
                         $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
                 }
@@ -84,7 +84,7 @@ class ControllerLogin extends Controller {
                 $pasta = '';
 
                 // Verifica se o email é válido e ignora quando for modo convidado
-                if (filter_var($sEmail, FILTER_VALIDATE_EMAIL) || $sModo=="convidado") {
+                if (filter_var($sEmail, FILTER_VALIDATE_EMAIL) || $sModo == "convidado") {
 
                     // Diretório para criar pasta de arquivos
                     $diretorio = "datausers//";
@@ -126,6 +126,51 @@ class ControllerLogin extends Controller {
             }
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Método responsável por retornar a tela de cadastro de usuário
+     * @param type $sDados
+     * @return type
+     */
+    public function mostraTelaCadastraUsuario($sDados) {
+        $sLoginHtml = $this->getOView()->retornaTelaCadastro();
+        return $sLoginHtml;
+    }
+
+    public function realizaCadastroUsuario($sDados) {
+        //Pega valor do request POST
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+            // Obtem o email do formulário
+            $sEmail = $_POST["email"];
+
+            // Obtem a senha do formulário
+            $sSenha = $_POST["senha"];
+            $sPass = password_hash($sSenha, PASSWORD_BCRYPT);
+
+            //Valor a ser recebido caso e-mail com senha válido
+            $bVal = $this->getOPersistencia()->verificaEmailPass($sEmail, $sSenha);
+
+            //Ignora modo convidado
+            if (!$bVal) {
+
+                if (trim($sEmail) == '' || $sEmail == null) {
+                    $this->Mensagem('Não é possível cadastrar sem email!', 4);
+                    return false;
+                }
+                $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
+                if ($bVal) {
+                    $this->Mensagem('Cadastro realizado com sucesso!', 1);
+                    return true;
+                } else {
+                    $this->Mensagem('Não é possível Cadastrar, Email já cadastrado!', 4);
+                    return false;
+                }
+            } else {
+                $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
+            }
         }
     }
 

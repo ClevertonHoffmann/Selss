@@ -27,6 +27,34 @@ class ControllerSistema extends Controller {
         }
     }
 
+    /*
+     * Método responsável pelo cadastro de usuário
+     */
+    public function mostraTelaCadastroUsuario($sDados) {
+
+        $oControllerLogin = new ControllerLogin();
+
+        return $oControllerLogin->mostraTelaCadastraUsuario($sDados);
+
+    }
+    
+    /*
+     * Método responsável pelo cadastro de usuário
+     */
+    public function cadastraUsuario($sDados){
+        
+        $oControllerLogin = new ControllerLogin();
+        
+        $bCadastro = $oControllerLogin->realizaCadastroUsuario($sDados);
+
+        if ($bCadastro) {
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+
     /**
      * Método responsável por realizar o logout do sistema
      */
@@ -49,7 +77,7 @@ class ControllerSistema extends Controller {
     public function removerConteudoDaPasta($caminho_da_pasta) {
         $diretorio = new RecursiveDirectoryIterator($caminho_da_pasta, FilesystemIterator::SKIP_DOTS);
         $arquivos = new RecursiveIteratorIterator($diretorio, RecursiveIteratorIterator::CHILD_FIRST);
-        $iK = 0; 
+        $iK = 0;
         foreach ($arquivos as $arquivo) {
             if ($arquivo->isDir()) {
                 rmdir($arquivo->getRealPath());
@@ -60,7 +88,7 @@ class ControllerSistema extends Controller {
             $iK++;
         }
         //Verifica se não contém arquivos remove apenas a pasta
-        if($iK==0){
+        if ($iK == 0) {
             rmdir($caminho_da_pasta);
         }
     }
