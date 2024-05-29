@@ -142,7 +142,7 @@ class ControllerExpRegulares extends Controller {
         $sTexto = $sCampos->{'texto'};
 
         //Separa a string pelo ponto e vírgula
-        $this->getOModel()->setAArray(explode(';', trim($sTexto)));
+        $this->getOModel()->setAArray(preg_split('/;\s*(?=(?:[^"]|"[^"]*")*$)/', $sTexto));
 
         //Remove a possições em branco depois do ; mais analisar se precisa 
         $key = array_search('', $this->getOModel()->getAArray());
@@ -259,7 +259,7 @@ class ControllerExpRegulares extends Controller {
                             }
 
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
-                            if ($this->getOModel()->getBCont() && (preg_match("/^" . $this->getOModel()->getValorAArray1(1) . "$/", $sChar) == 1)) {
+                            if ($this->getOModel()->getBCont() && (preg_match("/^(" . $this->getOModel()->getValorAArray1(1) . ")$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
                                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
                             }

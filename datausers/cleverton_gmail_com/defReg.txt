@@ -1,3 +1,6 @@
-exp1:[b|c];   
+exp:";";
+exp1:b|c;   
 exp2:a*;   
+letras:[a-z]*;
 exp3:{exp1}{exp2};
+exp4:{exp3}{letras};
