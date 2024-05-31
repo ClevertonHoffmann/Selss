@@ -30,9 +30,39 @@ window.onload = (function () {
     //document.getElementById('defGram').addEventListener('keyup', analisaGramatica);
 
     /**
+     * Abre a modal para excluir dados da tela
+     */
+    document.getElementById('idbtExcluirDados').addEventListener('click', openModalexcluirDadosTela);
+    
+    /**
+     * Abre a modal para excluir dados do usuário e usuário
+     */
+    document.getElementById('idbtExcluirUsuario').addEventListener('click', openModalExcluirUsuario);
+
+    /**
      * Abre a modal para sair do sistema
      */
     document.getElementById('btnSair').addEventListener('click', openModalSair);
+
+    /**
+     * Chama a função que realiza a exclusão dos dados da tela
+     */
+    document.getElementById('btnExcluirDados').addEventListener('click', excluirDados);
+
+    /**
+     * Fecha a modal de exclusão de dados da tela
+     */
+    document.getElementById('cancelarExcluirDados').addEventListener('click', closeExcluirDados);
+
+    /**
+     * Chama a função que realiza a exclusão dos dados do usuario
+     */
+    document.getElementById('btnExcluirUsuario').addEventListener('click', excluirUsuario);
+
+    /**
+     * Fecha a modal de exclusão de dados do usuário
+     */
+    document.getElementById('cancelarExcluirUsuario').addEventListener('click', closeExcluirUsuario);
 
     /**
      * Chama a função que realiza o logout do sistema
@@ -365,6 +395,67 @@ function logout() {
     console.log(getBaseURL());
     $.getJSON(getBaseURL() + "index.php?classe=ControllerSistema&metodo=realizaLogout" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
     });
+    window.location.href = 'index.php';
+}
+
+
+/**
+ * Abre a modal de exclusão dos dados da tela
+ */
+function openModalexcluirDadosTela() {
+    document.getElementById("modalExcluirDados").style.display = "block";
+}
+
+/**
+ * Fecha a modal de exclusão dos dados da tela
+ */
+function closeExcluirDados(){
+    document.getElementById("modalExcluirDados").style.display = "none";
+}
+
+/**
+ * Exclui os dados da tela
+ */
+function excluirDados(){
+    document.getElementById("defReg").value = "";
+    document.getElementById("codTest").value = "";
+    document.getElementById("modalExcluirDados").style.display = "none";
+}
+
+/**
+ * Abre a modal de exclusão de usuário
+ */
+function openModalExcluirUsuario(){
+    document.getElementById("modalExcluirUsuario").style.display = "block";
+}
+
+/**
+ * Fecha a modal de exclusão dos dados do usuario
+ */
+function closeExcluirUsuario(){
+    document.getElementById("modalExcluirUsuario").style.display = "none";
+}
+
+/**
+ * Exclui os dados do usuário
+ */
+function excluirUsuario(){
+    closeExcluirUsuario();
+    var dataToSend = JSON.stringify({
+        "texto": "excluirdados"
+    });
+    console.log(getBaseURL());
+    $.getJSON(getBaseURL() + "index.php?classe=ControllerSistema&metodo=excluirUsuario" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
+        console.log(JSON.parse(result));
+        // Verifica o retorno do JSON
+        if (result.resultado === true) {
+            // Se for true, exibe uma mensagem de sucesso
+            alert("Dados deletados com sucesso");  
+        } else {
+            // Se for false, exibe uma mensagem de falha
+            alert("Dados não deletados");
+        }
+    });  
     window.location.href = 'index.php';
 }
 

@@ -51,8 +51,22 @@ class ViewSistema {
                                         </button>
                                         <div class='dropdown-content'>
                                             <a href='help/documentacao.html' target='_blank'>Documentação</a>
-                                            <a href='#'>Excluir dados</a>
-                                            <a href='#'>Excluir usuário</a>
+                                            <a id='idbtExcluirDados' style='color: #ffa500;' href='javascript:void(0)'>Excluir dados</a>
+                                            <a id='idbtExcluirUsuario' style='color: red;' href='javascript:void(0)'>Excluir usuário</a>
+                                        </div>
+                                        <div id='modalExcluirDados' class='modal' style='text-align: center;'>
+                                            <div class='modal-content-sair'>
+                                                <p><h4>Você tem certeza que deseja limpar os campos da tela?</h4></p>
+                                                <button class='btsairLogout' id='btnExcluirDados'>Sim, Limpar</button>
+                                                <button class='btcancelarLogout' id='cancelarExcluirDados'>Cancelar</button>
+                                            </div>
+                                        </div>
+                                        <div id='modalExcluirUsuario' class='modal' style='text-align: center;'>
+                                            <div class='modal-content-sair'>
+                                                <p><h4>Atenção! <br><br> Você tem certeza que deseja excluir todos seus dados do sistema?</h4> <br> <h5>Você será redirecionado a página de login.</h5></p>
+                                                <button class='btsairLogout' id='btnExcluirUsuario'>Sim, Excluir</button>
+                                                <button class='btcancelarLogout' id='cancelarExcluirUsuario'>Cancelar</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <h4 style='margin-top: 5px;' class='mx-auto' style='font-size:calc(5px + 1vw)' data-toggle='tooltip' data-placement='right' title='SELSS - SOFTWARE EDUCACIONAL PARA APRENDIZAGEM INICIAL DE COMPILADORES'><img src='img/logo.png' alt='Sua Imagem' id='logo' style='width: 120px; height: 50px;'>

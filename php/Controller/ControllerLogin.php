@@ -153,9 +153,7 @@ class ControllerLogin extends Controller {
             //Valor a ser recebido caso e-mail com senha válido
             $bVal = $this->getOPersistencia()->verificaEmailPass($sEmail, $sSenha);
 
-            //Ignora modo convidado
             if (!$bVal) {
-
                 if (trim($sEmail) == '' || $sEmail == null) {
                     $this->Mensagem('Não é possível cadastrar sem email!', 4);
                     return false;
@@ -186,5 +184,15 @@ class ControllerLogin extends Controller {
         $nomeConvidado = "convidado" . $timestamp . "@" . $identificadorUnico;
 
         return $nomeConvidado;
+    }
+
+    public function excluirUsuario() {
+        $sEmail = $_SESSION['email'];
+        if ($sEmail != null && $sEmail != '') {
+            $bVal = $this->getOPersistencia()->excluirUsuario($sEmail);
+            return $bVal;
+        }else{
+            return false;
+        }
     }
 }

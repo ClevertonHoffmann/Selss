@@ -1,1 +1,1 @@
-bacia ;
+nomeprograma: if (a < b) then { a++ };

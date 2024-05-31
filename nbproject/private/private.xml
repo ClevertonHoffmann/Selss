@@ -2,15 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerSistema.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/index.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewLogin.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/js/login.js</file>
-            <file>file:/C:/xampp/htdocs/Selss/css/cadastro.css</file>
-            <file>file:/C:/xampp/htdocs/Selss/js/cadastro.js</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewSistema.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerLogin.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

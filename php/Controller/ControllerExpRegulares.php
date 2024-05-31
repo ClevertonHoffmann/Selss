@@ -232,6 +232,11 @@ class ControllerExpRegulares extends Controller {
                  */
                 if (trim($this->getOModel()->getValorAArray1(1)) != "") {
 
+//                                            //Opção que analisa expressões com caracteres especiais
+//                        $this->getOModel->setValorAArray1(1, str_replace(['(', ')'], ['', ''], $this->getOModel()->getValorAArray1(1)));
+//                        // && $sChar!='(' && $sChar!=')' && $sChar!='|'
+//                            
+                    
                     //Tratamento de expressões em branco
                     $this->analisaExprEmBranco($sChar);
 
@@ -257,13 +262,13 @@ class ControllerExpRegulares extends Controller {
                                 $this->funcaoAtribuicaoVariaveis();
                                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
                             }
-
+                            
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
                             if ($this->getOModel()->getBCont() && (preg_match("/^(" . $this->getOModel()->getValorAArray1(1) . ")$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
                                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
                             }
-
+                            
                             //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
                             if ($this->getOModel()->getBCont() && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                                 $this->funcaoAtribuicaoVariaveis2();
@@ -276,7 +281,7 @@ class ControllerExpRegulares extends Controller {
                                     $this->funcaoAtribuicaoVariaveis2();
                                     $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
                                 }
-                            }
+                            }                            
                         }
                     }
                 }
@@ -423,6 +428,10 @@ class ControllerExpRegulares extends Controller {
         foreach ($this->getOModel()->getAArrayEstTokenExpr() as $iEstado => $aVal) {
             if ($aVal[0] != "?") {
                 $this->getOModel()->setValorAArrayExprEst(trim($aVal[0]), [$iEstado, $aVal[1]]);
+            } else {
+                if (strpos($this->getOModel()->getValorAArray1(1), $aVal[1]) !== false) {
+                    $this->getOModel()->setValorAArrayExprEst(trim($aVal[1]), [$iEstado, $aVal[1]]);
+                }
             }
         }
 
@@ -458,7 +467,7 @@ class ControllerExpRegulares extends Controller {
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
                 //////VERIFICAR SE ISSO TEM LÓGICA
 
-                if (count($this->getOModel()->getAArrayEstTransicaoExpToken()) <= $this->getOModel()->getIPos()-1) {
+                if (count($this->getOModel()->getAArrayEstTransicaoExpToken()) <= $this->getOModel()->getIPos() - 1) {
                     $aValProx = $this->getOModel()->getValorAArrayEstTokenExpr(count($this->getOModel()->getAArrayEstTransicaoExpToken())); //Token, expressão
                 } else {
                     $aValProx = $this->getOModel()->getValorAArrayEstTokenExpr($this->getOModel()->getIPos()); //Token, expressão
@@ -558,6 +567,19 @@ class ControllerExpRegulares extends Controller {
                                 $this->getOModel()->setBCont(false);
                                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sExp2, $key]); /////AQUIIIII
                             }
+                            //Parte que analisa se contém multiplas pilhas
+//                            else {
+//                                if ((preg_match("/^[" . $sExp2 . "]$/", $sChar) == 1) && $sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r") {
+//                                    if ($this->getOModel()->getIki() == 0) {
+//                                        $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
+//                                        $this->getOModel()->setIki($this->getOModel()->getIki() + 1);
+//                                    }
+//                                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+//                                    $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), [$key, $aArrayComp]);
+//                                    $this->getOModel()->setBCont(false);
+//                                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sExp2, $key]); /////AQUIIIII
+//                                }
+//                            }
                         }
                     }
                 }

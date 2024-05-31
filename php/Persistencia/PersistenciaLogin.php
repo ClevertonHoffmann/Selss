@@ -38,9 +38,9 @@ class PersistenciaLogin extends Persistencia {
      * @return type
      */
     public function cadastraUsuario($sEmail, $sPass) {
-        
+
         $pdo = Conexao::getInstance();
-        
+
         // Verifica se o e-mail já está cadastrado
         $verificarEmailSql = "SELECT COUNT(*) FROM tbusuarios WHERE email = :email";
         $verificarEmailQuery = $pdo->prepare($verificarEmailSql);
@@ -54,7 +54,6 @@ class PersistenciaLogin extends Persistencia {
         }
 
         // Se o e-mail não estiver cadastrado, continua com a inserção
-
         //SQL usando prepared statement para prevenir SQL injection
         $inserirUsuarioSql = "INSERT INTO tbusuarios (email, senha) VALUES (:email, :senha)";
 
@@ -73,7 +72,7 @@ class PersistenciaLogin extends Persistencia {
 
     // Função para gerar um nome aleatório
     function gerarNomeAleatorio($length = 8) {
-        
+
         $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $nome = '';
 
@@ -83,5 +82,41 @@ class PersistenciaLogin extends Persistencia {
 
         return $nome;
     }
-    
+
+    /**
+     * Método responsável por realizar a exclusão do usuário no sistema
+     * @param type $sEmail
+     * @return type
+     */
+    function excluirUsuario($sEmail) {
+
+        $pdo = Conexao::getInstance();
+
+        // Verifica se o e-mail está cadastrado
+        $verificarEmailSql = "SELECT COUNT(*) FROM tbusuarios WHERE email = :email";
+        $verificarEmailQuery = $pdo->prepare($verificarEmailSql);
+        $verificarEmailQuery->bindParam(':email', $sEmail);
+        $verificarEmailQuery->execute();
+        $count = $verificarEmailQuery->fetchColumn();
+
+        // Se o e-mail não estiver cadastrado, retorna false
+        if ($count == 0) {
+            return false;
+        }
+
+        // Se o e-mail estiver cadastrado, continua com a exclusão
+        // SQL usando prepared statement para prevenir SQL injection
+        $excluirUsuarioSql = "DELETE FROM tbusuarios WHERE email = :email";
+
+        // Preparando a query
+        $excluirUsuarioQuery = $pdo->prepare($excluirUsuarioSql);
+
+        // Substituindo o parâmetro com o valor real
+        $excluirUsuarioQuery->bindParam(':email', $sEmail);
+
+        // Executando a query
+        $bResultado = $excluirUsuarioQuery->execute();
+
+        return $bResultado;
+    }
 }

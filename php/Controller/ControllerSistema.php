@@ -30,29 +30,29 @@ class ControllerSistema extends Controller {
     /*
      * Método responsável pelo cadastro de usuário
      */
+
     public function mostraTelaCadastroUsuario($sDados) {
 
         $oControllerLogin = new ControllerLogin();
 
         return $oControllerLogin->mostraTelaCadastraUsuario($sDados);
-
     }
-    
+
     /*
      * Método responsável pelo cadastro de usuário
      */
-    public function cadastraUsuario($sDados){
-        
+
+    public function cadastraUsuario($sDados) {
+
         $oControllerLogin = new ControllerLogin();
-        
+
         $bCadastro = $oControllerLogin->realizaCadastroUsuario($sDados);
 
         if ($bCadastro) {
             return true;
-        }else{
+        } else {
             return false;
         }
-        
     }
 
     /**
@@ -90,6 +90,37 @@ class ControllerSistema extends Controller {
         //Verifica se não contém arquivos remove apenas a pasta
         if ($iK == 0) {
             rmdir($caminho_da_pasta);
+        }
+    }
+
+    /**
+     * Exclui o usuário e seus respectivos dados
+     * @param type $sDados
+     * @return bool
+     */
+    public function excluirUsuario($sDados) {
+        $oControllerLogin = new ControllerLogin();
+        $bRetorno = $oControllerLogin->excluirUsuario();
+        if ($bRetorno) {
+            if (is_dir($_SESSION['diretorio'])) {
+                // Tenta remover a pasta
+                $this->removerConteudoDaPasta(realpath(($_SESSION['diretorio'])));
+            }
+            session_start();
+            session_destroy();
+            $_SESSION = array();
+
+            // Cria um array associativo com o resultado
+            $response = array("resultado" => true);
+
+            // Retorna a resposta JSON
+            return json_encode($response);
+        } else {
+            // Cria um array associativo com o resultado
+            $response = array("resultado" => false);
+
+            // Retorna a resposta JSON
+            return json_encode($response);
         }
     }
 }
