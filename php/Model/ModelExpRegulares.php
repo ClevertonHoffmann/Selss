@@ -97,6 +97,10 @@ class ModelExpRegulares {
     public function setValorAArrayEstTokenExpr($iPosicao, $sValor) {
         $this->aArrayEstTokenExpr[$iPosicao] = $sValor;
     }
+    
+    public function ordenaAArrayEstTokenExpr(){
+        ksort($this->aArrayEstTokenExpr);
+    }
 
     //Armazena inicialmente todos os tokens porém retira os que são estados simples ou palavras reservadas definidas a partir de uma expressão
     private $aArrayTokenExpr = array();

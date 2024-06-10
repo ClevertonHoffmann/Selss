@@ -1,12 +1,1 @@
-nomeprograma:nomeprograma;
-if:if;
-then:then;
-dp:"\:";
-ap:"(";
-fp:")";
-ac: "{";
-fc: "}";
-menor:"<";
-incremento:"++";
-pv:"\;";
-variaveis:[ab];
+teste:(a|b)[f-i];

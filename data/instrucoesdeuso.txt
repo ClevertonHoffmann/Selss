@@ -13,6 +13,6 @@ Ex: id:{letras}{num}; adicao:{soma}{num};
 
 - Atenção com caracteres especiais definir entre aspas:
 obs: Alguns específicos como : com quebra "\:"
-Ex. Caracteres: "{", "}", "\:", "\;"
+Ex. Caracteres: "{", "}", "\:", "\;", "\"", "\'"
 
 - Antes de clicar botão Desenhar Autômato ou Executar Analise Léxica, primeiro precisa-se clicar em Tabela de Analise Lexica;

@@ -33,7 +33,7 @@ window.onload = (function () {
      * Abre a modal para excluir dados da tela
      */
     document.getElementById('idbtExcluirDados').addEventListener('click', openModalexcluirDadosTela);
-    
+
     /**
      * Abre a modal para excluir dados do usuário e usuário
      */
@@ -159,7 +159,7 @@ window.onload = (function () {
 // Evento input para monitorar a digitação no campo de texto
     campoTexto.addEventListener('input', function () {
         mostrarSugestoes();
-        
+
         // Destativa os botões
         document.getElementById("btdesenhaautomato").disabled = true;
         document.getElementById("btexecutaanaliselex").disabled = true;
@@ -323,7 +323,7 @@ function loadAutomato() {
 
     $.getJSON(getBaseURL() + "index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
         //Abre a página com automato de análise léxica gráficamente conforme usuário
-        window.open(getBaseURL() +  JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
+        window.open(getBaseURL() + JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
         // Depois de obter o resultado, oculta a mensagem de carregamento
         $("#mensagemCarregando").hide();
     });
@@ -409,14 +409,14 @@ function openModalexcluirDadosTela() {
 /**
  * Fecha a modal de exclusão dos dados da tela
  */
-function closeExcluirDados(){
+function closeExcluirDados() {
     document.getElementById("modalExcluirDados").style.display = "none";
 }
 
 /**
  * Exclui os dados da tela
  */
-function excluirDados(){
+function excluirDados() {
     document.getElementById("defReg").value = "";
     document.getElementById("codTest").value = "";
     document.getElementById("modalExcluirDados").style.display = "none";
@@ -425,21 +425,21 @@ function excluirDados(){
 /**
  * Abre a modal de exclusão de usuário
  */
-function openModalExcluirUsuario(){
+function openModalExcluirUsuario() {
     document.getElementById("modalExcluirUsuario").style.display = "block";
 }
 
 /**
  * Fecha a modal de exclusão dos dados do usuario
  */
-function closeExcluirUsuario(){
+function closeExcluirUsuario() {
     document.getElementById("modalExcluirUsuario").style.display = "none";
 }
 
 /**
  * Exclui os dados do usuário
  */
-function excluirUsuario(){
+function excluirUsuario() {
     closeExcluirUsuario();
     var dataToSend = JSON.stringify({
         "texto": "excluirdados"
@@ -450,12 +450,12 @@ function excluirUsuario(){
         // Verifica o retorno do JSON
         if (result.resultado === true) {
             // Se for true, exibe uma mensagem de sucesso
-            alert("Dados deletados com sucesso");  
+            alert("Dados deletados com sucesso");
         } else {
             // Se for false, exibe uma mensagem de falha
             alert("Dados não deletados");
         }
-    });  
+    });
     window.location.href = 'index.php';
 }
 

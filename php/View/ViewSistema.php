@@ -193,7 +193,7 @@ class ViewSistema {
                                     </h6>
                                 </div>
                                 <div class='div p-1 text-justify'>
-                                    <textarea id=\"saidaDefErros\" name=\"saidaDefErros\" style='resize:none; overflow:auto; width: calc(69svw); height: calc(13vh); background-color: #fcfaff;'></textarea>
+                                    <textarea id='saidaDefErros' name='saidaDefErros' style='resize:none; overflow:auto; width: calc(69svw); height: calc(13vh); background-color: #fcfaff;'></textarea>
                                 </div>
                             </div>
                         </nav>

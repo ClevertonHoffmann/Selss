@@ -132,18 +132,20 @@ class ControllerExpRegulares extends Controller {
      * @return type
      */
     public function geradorTabelaAutomatoFinito($sDados) {
+
         /*
          * @Observações iniciais
          * São caracteres especiais : e ; pois são usados no controle inicial de separação dos tokens
          */
+
+        $sResultado = 'Sucesso!';
 
         //Recebe o json das expressões regulares e transforma em texto.
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
 
         //Separa a string pelo ponto e vírgula
-        $this->getOModel()->setAArray(preg_split('/;\s*(?=(?:[^"]|"[^"]*")*$)/', $sTexto));
-
+        $this->getOModel()->setAArray($this->separaTextoPV($sTexto));
         //Remove a possições em branco depois do ; mais analisar se precisa 
         $key = array_search('', $this->getOModel()->getAArray());
         if ($key !== false) {
@@ -189,7 +191,7 @@ class ControllerExpRegulares extends Controller {
         //Parte que grava ArrayEstTransicaoExpToken para desenho do automato
         $this->getOPersistencia()->gravaArrayEstTransicaoExpToken($this->getOModel()->getAArrayEstTransicaoExpToken());
 
-        $sJson = '{"texto":"Sucesso!"}';
+        $sJson = '{"texto":"' . $sResultado . '"}';
 
         return json_encode($sJson);
     }
@@ -232,11 +234,6 @@ class ControllerExpRegulares extends Controller {
                  */
                 if (trim($this->getOModel()->getValorAArray1(1)) != "") {
 
-//                                            //Opção que analisa expressões com caracteres especiais
-//                        $this->getOModel->setValorAArray1(1, str_replace(['(', ')'], ['', ''], $this->getOModel()->getValorAArray1(1)));
-//                        // && $sChar!='(' && $sChar!=')' && $sChar!='|'
-//                            
-                    
                     //Tratamento de expressões em branco
                     $this->analisaExprEmBranco($sChar);
 
@@ -252,36 +249,50 @@ class ControllerExpRegulares extends Controller {
                         }
                         if ($sChar != "\\t" && $sChar != "\\n" && $sChar != "\\r" && $sChar != "{" || $bEscapaCol) {
 
-                            //Substitui textos encontrados com " por exemplo "{" por { (sem aspas)
-                            if (strpos($this->getOModel()->getValorAArray1(1), '"') !== false) {
-                                $this->getOModel()->setValorAArray1(1, str_replace('"', '', $this->getOModel()->getValorAArray1(1)));
-                            }
+                            // Verifica e substitui aspas duplas externas
+                            $valor = $this->getOModel()->getValorAArray1(1);
 
-                            //Opção de caracteres simples +, -, *, /
-                            if ($this->getOModel()->getBCont() && $this->getOModel()->getValorAArray1(1) == $sChar) {
-                                $this->funcaoAtribuicaoVariaveis();
-                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
+                            //Identifica os caractéres simples e combinados, reconhendo eles como eles são não usando como operadores
+                            if (strlen($valor) >= 2 && $valor[0] === '"' && $valor[strlen($valor) - 1] === '"') {
+                                // Remove as aspas duplas apenas se estiverem no início e no final da string
+                                $valor = substr($valor, 1, -1);
+                                $this->getOModel()->setValorAArray1(1, $valor);
+
+                                //Opção de caracteres simples +, -, *, /
+                                if ($this->getOModel()->getBCont() && $this->getOModel()->getValorAArray1(1) == $sChar) {
+                                    $this->funcaoAtribuicaoVariaveis();
+                                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
+                                }
+
+                                //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
+                                if ($this->getOModel()->getBCont() && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                                    $this->funcaoAtribuicaoVariaveis2();
+                                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
+                                }
+                                //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
+                                if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
+                                    $aCarac = str_split($this->getOModel()->getValorAArray1(1));
+                                    if ($aCarac[0] == $sChar) {
+                                        $this->funcaoAtribuicaoVariaveis2();
+                                        $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
+                                    }
+                                }
                             }
-                            
                             //Opção que analisa se a expressão regular do tipo [a-b] ou [a-z]* é reconhecida pelo preg_match
                             if ($this->getOModel()->getBCont() && (preg_match("/^(" . $this->getOModel()->getValorAArray1(1) . ")$/", $sChar) == 1)) {
                                 $this->funcaoAtribuicaoVariaveis();
                                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
-                            }
-                            
-                            //Opção que verfica duplicidade na definição de uma expressão regular do tipo ++, --, ||, &&
-                            if ($this->getOModel()->getBCont() && substr_count($this->getOModel()->getValorAArray1(1), $sChar) == strlen($this->getOModel()->getValorAArray1(1)) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
-                                $this->funcaoAtribuicaoVariaveis2();
-                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
-                            }
-                            //Opção quando existe caracteres diferentes que definem um token tipo <=, >=
-                            if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
-                                $aCarac = str_split($this->getOModel()->getValorAArray1(1));
-                                if ($aCarac[0] == $sChar) {
-                                    $this->funcaoAtribuicaoVariaveis2();
-                                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$sChar, $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
+                            } else {
+                                // Define os caracteres especiais que você quer ignorar e analisa expressões compostas por operadores
+                                $caracteresEspeciais = ['\\', '^', '$', '.', '|', '?', '*', '+', '(', ')', '[', ']', '{', '}'];
+                                if (!$this->contemCaracterEspecial($sChar, $caracteresEspeciais)) {
+                                    $aExp = $this->extrairSubexpressoes($this->getOModel()->getValorAArray1(1));
+                                    if ($this->getOModel()->getBCont() && preg_match("/^(" . $aExp[0] . ")$/", $sChar)) {
+                                        $this->funcaoAtribuicaoVariaveis3($aExp[1]);
+                                        $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$aExp[0], $aExp[0]]); /////AQUIIIII
+                                    }
                                 }
-                            }                            
+                            }
                         }
                     }
                 }
@@ -291,6 +302,53 @@ class ControllerExpRegulares extends Controller {
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), -1);
             }
         }
+    }
+
+    /**
+     * Extrai a primeira subexpressão de uma expressão regular que reconhece os primeiros caracteres possíveis.
+     * 
+     * @param string $padrao A expressão regular original.
+     * @return string A primeira subexpressão reconhecida pela expressão regular.
+     */
+    function extrairSubexpressoes($padrao) {
+        // Define o padrão para extrair a primeira subexpressão significativa da expressão regular
+        $padraoExtracao = '/^\(([^)]+)\)|^([^|()]+)/';
+
+        // Variável para armazenar a subexpressão inicial
+        $subexpressaoInicial = '';
+
+        // Extrai a primeira subexpressão da expressão regular
+        while (preg_match($padraoExtracao, $padrao, $matches)) {
+            if (!empty($matches[1])) {
+                // Se encontrou uma expressão entre parênteses
+                $subexpressaoInicial .= $matches[1];
+                $padrao = substr($padrao, strlen($matches[1]) + 2); // Remove a subexpressão capturada e os parênteses
+            } else {
+                // Caso contrário, captura caracteres até o próximo pipe (|) ou fim da string
+                $subexpressaoInicial .= $matches[2];
+                $padrao = substr($padrao, strlen($matches[2]));
+            }
+
+            // Se o próximo caractere é um pipe (|), adiciona e continua
+            if (isset($padrao[0]) && $padrao[0] == '|') {
+                $subexpressaoInicial .= '|';
+                $padrao = substr($padrao, 1);
+            } else {
+                break;
+            }
+        }
+
+        return [$subexpressaoInicial, $padrao];
+    }
+
+    // Função para verificar se $sChar contém caracteres especiais
+    public function contemCaracterEspecial($sChar, $caracteresEspeciais) {
+        foreach ($caracteresEspeciais as $char) {
+            if (strpos($sChar, $char) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -359,11 +417,33 @@ class ControllerExpRegulares extends Controller {
      */
     public function funcaoAtribuicaoVariaveis2() {
         $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
         $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
         //Parte que retira as expressões que possuem estado (Ficar só compostas)
         $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+        $this->getOModel()->setBCont(false);
+    }
+
+    /**
+     * Função responsável pela atribuição de valores as variáveis 
+     * de acordo com os casamentos das expressões adiciona token com ? 
+     * específico para expressões compostas por operadores e caracteres especiais ex: |, ^
+     */
+    public function funcaoAtribuicaoVariaveis3($sExp) {
+        if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
+        }
+        if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setValorATokenEstado($this->getOModel()->getValorAArray1(1), [$this->getOModel()->getValorAArray1(0), $this->getOModel()->getIEst()]);
+        }
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $sExp, $this->getOModel()->getValorAArray1(0), true]); //Adiciona o token
+        //Parte que retira as expressões que possuem estado (Ficar só compostas)
+        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
+        if ($this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getValorATokenEstado($this->getOModel()->getValorAArray1(1))[1]); //ESTADO JÁ DEFINIDO
+        } else {
+            $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+        }
         $this->getOModel()->setBCont(false);
     }
 
@@ -420,7 +500,7 @@ class ControllerExpRegulares extends Controller {
 
         $this->getOModel()->setIPos($this->getOModel()->getIPos() + 1);
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
-        ksort($this->getOModel()->getAArrayEstTokenExpr()); //Ordena o array conforme os estados do menor para o maior
+        $this->getOModel()->ordenaAArrayEstTokenExpr(); //Ordena o array conforme os estados do menor para o maior
         //Monta o índice de tokens retornados e estados de transição de tokens compostos
         $this->getOModel()->setBCont(true);
 
@@ -515,7 +595,7 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function funcaoAtribuicaoTokenTransicao($aVal, $sChar) {
-        if ($aVal[0] == "?" && $this->getOModel()->getBCont()) {
+        if ($aVal[0] == "?" && $this->getOModel()->getBCont() && !isset($aVal[3])) {
             $this->getOModel()->setAArray1(str_split($aVal[1]));
             //Possibilidade dupla caracteres igual
             if (strlen($aVal[1]) == 2) {
@@ -535,6 +615,26 @@ class ControllerExpRegulares extends Controller {
                     $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
                     $this->getOModel()->setBCont(false);
                     $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $aVal[2]]); /////AQUIIIII
+                }
+            }
+        } else {
+            //Parte que faz a análise da subexpressão no caso de expressões subcompostas
+            if (isset($aVal[3])) {
+                $aExp = $this->extrairSubexpressoes($aVal[1]);
+                if ($this->getOModel()->getBCont() && preg_match("/^(" . $aExp[0] . ")$/", $sChar)) {
+                    if ($this->getOModel()->getIki() == 0) {
+                        $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
+                        $this->getOModel()->setIki($this->getOModel()->getIki() + 1);
+                    }
+                    if ($aExp[1] != '' && $aExp[1] != null) {
+                        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ['?', $aExp[1], $this->getOModel()->getValorAArray1(1), true]);
+                        $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
+                    } else {
+                        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), [$aVal[2], $this->getOModel()->getValorAArray1(1)]);
+                    }
+                    $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+                    $this->getOModel()->setBCont(false);
+                    $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$aExp[0], $aVal[2]]); /////AQUIIIII
                 }
             }
         }
@@ -637,5 +737,24 @@ class ControllerExpRegulares extends Controller {
         $this->getOPersistencia()->gravaArquivo("modal.html", $sModal);
 
         return json_encode($sModal);
+    }
+
+    /**
+     * Separa a string pelo ;
+     * @param type $texto
+     * @return type
+     */
+    public function separaTextoPV($texto) {
+        // substitui os pontos-e-vírgula precedidos por uma barra invertida por um caractere especial
+        $string_temp = preg_replace('/(\\\;)/', '^', $texto);
+
+        // faz o explode na string, utilizando como delimitador o ponto-e-vírgula
+        $array_valores = explode(';', $string_temp);
+
+        // substitui o caractere especial de volta para o ponto-e-vírgula
+        foreach ($array_valores as $key => $valor) {
+            $array_valores[$key] = str_replace('^', ';', $valor);
+        }
+        return $array_valores;
     }
 }
