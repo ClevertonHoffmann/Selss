@@ -43,7 +43,7 @@ class ViewModal {
 
         $sDiretorio = $_SESSION['diretorio'];
 
-        $arquivo = $sDiretorio."//modal.html";
+        $arquivo = $sDiretorio."//modalTabelaAnaliseLexica.html";
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");

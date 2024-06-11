@@ -734,7 +734,7 @@ class ControllerExpRegulares extends Controller {
 
         $aTabela = $this->getOPersistencia()->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
         $sModal = $this->getOView()->geraModalTabelaLexica($aTabela);
-        $this->getOPersistencia()->gravaArquivo("modal.html", $sModal);
+        $this->getOPersistencia()->gravaArquivo("modalTabelaAnaliseLexica.html", $sModal);
 
         return json_encode($sModal);
     }

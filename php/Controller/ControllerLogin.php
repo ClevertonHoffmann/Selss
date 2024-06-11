@@ -58,19 +58,6 @@ class ControllerLogin extends Controller {
                         $sPass = $sSenha;
                         $bVal = true;
                         break;
-//                    case "cadastro":
-//                        if (trim($sEmail) == '' || $sEmail == null) {
-//                            $this->Mensagem('Não é possível cadastrar sem email!', 4);
-//                            return false;
-//                        }
-//                        $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
-//                        if ($bVal) {
-//                            $this->Mensagem('Cadastro realizado com sucesso!', 1);
-//                        } else {
-//                            $this->Mensagem('Não é possível Cadastrar, Email já cadastrado!', 4);
-//                            return false;
-//                        }
-//                        break;
                     default :
                         $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
                 }

@@ -5,12 +5,6 @@
  */
 
 class Persistencia {
-    
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = Conexao::getInstance();
-    }
 
     /**
      * Grava um array em um arquivo CSV

@@ -17,18 +17,11 @@ class ControllerAutomato extends Controller {
      * @return type
      */
     public function gravaPaginaAutomato($sTexto){
-        
-        
-//        $aEstadosTransicoes = array();
-        
-        $aEstadosTransicoes = $this->getOPersistencia()->retornaArrayEstadosTransicoes();
 
-//        $aTabelaDeTokens = array();
+        $aEstadosTransicoes = $this->getOPersistencia()->retornaArrayEstadosTransicoes();
         
         $aTabelaDeTokens = $this->getOPersistencia()->retornaTabelaDeTokens();
-        
-//        $aTransicoesProprias = array();
-        
+                
         $aTransicoesProprias = $this->getOPersistencia()->retornaTransicoesProprias();
         
         $sModal = $this->getOView()->montaPaginaAutomato($aEstadosTransicoes, $aTabelaDeTokens, $aTransicoesProprias);
