@@ -22,7 +22,7 @@ class ControllerExpRegulares extends Controller {
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
 
-        $this->getOPersistencia()->gravaArquivo("defReg.txt", $sText);
+        $this->getOPersistencia()->gravaArquivo("defReg", $sText);
 
         $sText2 = $this->analisador($sText);
 

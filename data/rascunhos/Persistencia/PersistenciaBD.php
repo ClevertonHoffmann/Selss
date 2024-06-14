@@ -1,6 +1,6 @@
 <?php
 
-class PersistenciaDB implements PersistenciaInterface {
+class PersistenciaBD implements PersistenciaInterface {
 
     private $pdo;
 

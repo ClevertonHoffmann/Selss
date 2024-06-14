@@ -1,6 +1,6 @@
 <?php
 
-class Persistencia {
+class PersistenciaBanco {
 
     private $pdo;
 

@@ -12,7 +12,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaTabelaLexica($aArray){
         
-        $aCSV = $this->gravaArrayEmCSV("tabelaAnaliseLexica.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayEmCSV("tabelaAnaliseLexica", 1, $aArray);
         return $aCSV;
         
     }
@@ -23,7 +23,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCabecalhoTabelaLexica() {
 
-        $aCSV = $this->retornaArrayCSV("cabecalho.csv", 0);
+        $aCSV = $this->retornaArrayCSV("cabecalho", 0);
         return $aCSV;
         
     }
@@ -34,7 +34,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCaracteresValidos() {
 
-        $aCSV = $this->retornaArrayCSV("caracteresvalidos.csv", 0);
+        $aCSV = $this->retornaArrayCSV("caracteresvalidos", 0);
         return $aCSV;
         
     }
@@ -45,7 +45,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCaracteresInvalidos() {
 
-        $aCSV = $this->retornaArrayCSV("caracteresinvalidos.csv", 0);
+        $aCSV = $this->retornaArrayCSV("caracteresinvalidos", 0);
         return $aCSV;
         
     }
@@ -56,7 +56,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaPalavrasReservadas($aArray){
         
-        $aCSV = $this->gravaArrayEmCSV("palavrasReservadas.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayEmCSV("palavrasReservadas", 1, $aArray);
         return $aCSV;
         
     }
@@ -67,7 +67,7 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaArrayEstTransicaoExpToken($aArray){
         
-        $aCSV = $this->gravaArrayCompostoEmCSV("estTransicaoExpToken.csv", 1, $aArray);
+        $aCSV = $this->gravaArrayCompostoEmCSV("estTransicaoExpToken", 1, $aArray);
         return $aCSV;
         
     }

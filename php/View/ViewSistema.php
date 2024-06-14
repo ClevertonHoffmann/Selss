@@ -6,11 +6,13 @@ class ViewSistema {
      * Retorna a tela do sistema com os campos preenchidos de acordo com o usuário
      * @return type tela
      */
-    public function retornaTelaSistema() {
+    public function retornaTelaSistema($oPersistencia) {
 
-        $pasta = $_SESSION["pasta"];
-        $defReg = $this->retornaTexto($pasta . "//defReg.txt"); //Definições regulares do usuário no sistema
-        $codigoParaAnalise = $this->retornaTexto($pasta . "//codigoParaAnalise.txt"); //Definições regulares do usuário no sistema
+    //    $pasta = $_SESSION["pasta"];
+    //    $defReg = $this->retornaTexto($pasta . "//defReg.txt"); //Definições regulares do usuário no sistema
+          $defReg = $oPersistencia->retornaTextoDoCampo('defReg');
+    //    $codigoParaAnalise = $this->retornaTexto($pasta . "//codigoParaAnalise.txt"); //Definições regulares do usuário no sistema
+          $codigoParaAnalise = $oPersistencia->retornaTextoDoCampo('codigoParaAnalise');
     //    $defGram = $this->retornaTexto($pasta . "//defGram.txt"); //Definições gramatica do usuário no sistema
         $insUso = $this->retornaTexto("data//instrucoesdeuso.txt"); //Instruções de uso do sistema
         
