@@ -12,8 +12,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaTabelaLexica($aArray){
         
-        $aCSV = $this->gravaArrayEmCSV("tabelaAnaliseLexica", 1, $aArray);
-        return $aCSV;
+        $aDados = $this->gravaArray("tabelaAnaliseLexica", 1, $aArray);
+        return $aDados;
         
     }
     
@@ -23,8 +23,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCabecalhoTabelaLexica() {
 
-        $aCSV = $this->retornaArrayCSV("cabecalho", 0);
-        return $aCSV;
+        $aDados = $this->retornaArray("cabecalho", 0);
+        return $aDados;
         
     }
 
@@ -34,8 +34,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCaracteresValidos() {
 
-        $aCSV = $this->retornaArrayCSV("caracteresvalidos", 0);
-        return $aCSV;
+        $aDados = $this->retornaArray("caracteresvalidos", 0);
+        return $aDados;
         
     }
     
@@ -45,8 +45,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function retornaCaracteresInvalidos() {
 
-        $aCSV = $this->retornaArrayCSV("caracteresinvalidos", 0);
-        return $aCSV;
+        $aDados = $this->retornaArray("caracteresinvalidos", 0);
+        return $aDados;
         
     }
     
@@ -56,8 +56,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaPalavrasReservadas($aArray){
         
-        $aCSV = $this->gravaArrayEmCSV("palavrasReservadas", 1, $aArray);
-        return $aCSV;
+        $aDados = $this->gravaArray("palavrasReservadas", 1, $aArray);
+        return $aDados;
         
     }
     
@@ -67,8 +67,8 @@ class PersistenciaExpRegulares extends Persistencia{
      */
     public function gravaArrayEstTransicaoExpToken($aArray){
         
-        $aCSV = $this->gravaArrayCompostoEmCSV("estTransicaoExpToken", 1, $aArray);
-        return $aCSV;
+        $aDados = $this->gravaArrayComposto("estTransicaoExpToken", 1, $aArray);
+        return $aDados;
         
     }
     

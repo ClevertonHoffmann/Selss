@@ -11,8 +11,8 @@ class PersistenciaAutomato extends Persistencia {
      */
     public function retornaArrayEstadosTransicoes() {
 
-        $aCSV = $this->retornaArrayCompostoCSV("estTransicaoExpToken", 1);
-        return $aCSV;
+        $aDados = $this->retornaArrayComposto("estTransicaoExpToken", 1);
+        return $aDados;
     }
 
     /**
@@ -21,11 +21,11 @@ class PersistenciaAutomato extends Persistencia {
      */
     public function retornaTabelaDeTokens() {
 
-        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica", 1);
+        $aDados = $this->retornaArray("tabelaAnaliseLexica", 1);
         $aTokens = array();
-        //array_pop($aCSV);
-        foreach ($aCSV as $aVal) {
-            if ($aCSV[0] != $aVal) {
+        //array_pop($aDados);
+        foreach ($aDados as $aVal) {
+            if ($aDados[0] != $aVal) {
                 $aTokens[trim($aVal[0])] = trim($aVal[1]);
             }
         }
@@ -38,11 +38,11 @@ class PersistenciaAutomato extends Persistencia {
      */
     public function retornaTransicoesProprias() {
 
-        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica", 1);
+        $aDados = $this->retornaArray("tabelaAnaliseLexica", 1);
         $aTrans = array();
-        array_shift($aCSV);
-        array_shift($aCSV);
-        foreach ($aCSV as $aVal) {
+        array_shift($aDados);
+        array_shift($aDados);
+        foreach ($aDados as $aVal) {
             $iEst = $aVal[0];
             $aTrans[$iEst] = false;
             array_shift($aVal);

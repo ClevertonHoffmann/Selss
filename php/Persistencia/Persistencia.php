@@ -6,13 +6,15 @@
 
 class Persistencia {
 
-    private static $tipoPersistencia = 'CSV';
+    private static $tipoPersistencia = 'BD';
     private $persistencia;
 
     public function __construct() {
         if (self::$tipoPersistencia === 'CSV') {
+            $_SESSION['tipoPersistencia'] = 'CSV';
             $this->persistencia = $this->fabricaPersistencia('PersistenciaCSV');
         } else {
+            $_SESSION['tipoPersistencia'] = 'BD';
             $this->persistencia = $this->fabricaPersistencia('PersistenciaBD');
         }
     }
@@ -32,4 +34,9 @@ class Persistencia {
             throw new BadMethodCallException("Método $method não encontrado na persistência atual.");
         }
     }
+    
+    public function getTipoPersistencia(){
+        return self::$tipoPersistencia;
+    }
+    
 }

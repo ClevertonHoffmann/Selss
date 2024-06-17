@@ -22,7 +22,7 @@ class ControllerExpRegulares extends Controller {
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
 
-        $this->getOPersistencia()->gravaArquivo("defReg", $sText);
+        $this->getOPersistencia()->gravaArquivo("defReg", $sText, '.txt');
 
         $sText2 = $this->analisador($sText);
 
@@ -469,7 +469,7 @@ class ControllerExpRegulares extends Controller {
             if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                 $aCarac = str_split($this->getOModel()->getValorAArray1(1));
                 if ($aCarac[0] == $sChar) {
-                    $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))]); //Preenche array com as palavras chaves para posterior salvar em csv
+                    $this->getOModel()->setValorAutAPalavrasReservadas([trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))]); //Preenche array com as palavras chaves para posterior salvar
                     $this->getOModel()->setValorAArrayPalavraChave(trim($this->getOModel()->getValorAArray1(0)), trim($this->getOModel()->getValorAArray1(0))); //Armazena palavras chaves para analise posterior
                     $this->funcaoAtribuicaoVariaveis2();
                     $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$aCarac[0], $this->getOModel()->getValorAArray1(1)]); /////AQUIIIII
@@ -732,9 +732,9 @@ class ControllerExpRegulares extends Controller {
      */
     public function mostraModalTabelaLexica($sDados) {
 
-        $aTabela = $this->getOPersistencia()->retornaArrayCSV("tabelaAnaliseLexica.csv", 1);
+        $aTabela = $this->getOPersistencia()->retornaArray("tabelaAnaliseLexica", 1);
         $sModal = $this->getOView()->geraModalTabelaLexica($aTabela);
-        $this->getOPersistencia()->gravaArquivo("modalTabelaAnaliseLexica.html", $sModal);
+        $this->getOPersistencia()->gravaArquivo("modalTabelaAnaliseLexica", $sModal, '.html');
 
         return json_encode($sModal);
     }

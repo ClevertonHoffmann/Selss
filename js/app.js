@@ -13,14 +13,14 @@ window.onload = (function () {
      * Responsável por chamar método para download da tabela do automato de análise léxica
      */
     document.getElementById('downloadTabelaAnaliseLexica').addEventListener('click', function (event) {
-        downloadTabela(event, 'tabelaAnaliseLexica.csv');
+        downloadTabela(event, 'tabelaAnaliseLexica');
     });
 
     /**
      * Responsável por chamar método para download da tabela do resultado da análise léxica
      */
     document.getElementById('downloadResultadoAnaliseLexica').addEventListener('click', function (event) {
-        downloadTabela(event, 'resultadoAnaliseLexica.csv');
+        downloadTabela(event, 'resultadoAnaliseLexica');
     });
 
     /**
@@ -206,8 +206,8 @@ function analisaExpRegulares() {
     var dataToSend = JSON.stringify({
         "texto": defreg
     });
+    $("#saidaDefErros").val('');
     $.getJSON(getBaseURL() + "index.php?classe=ControllerExpRegulares&metodo=analisaExpressoes" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        $("#saidaDefErros").val();
         $("#saidaDefErros").val(JSON.parse(result).texto);
     });
 }
@@ -329,7 +329,6 @@ function loadAutomato() {
     });
 
 }
-
 
 function downloadTabela(event, nome) {
     // Cria um elemento de link temporário

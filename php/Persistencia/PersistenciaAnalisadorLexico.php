@@ -8,23 +8,23 @@ class PersistenciaAnalisadorLexico extends Persistencia{
 
     public function retornaPalavrasReservadas() {
 
-        $aCSV = $this->retornaArrayCSV("palavrasReservadas", 1);
-        return $aCSV;
+        $aDados = $this->retornaArray("palavrasReservadas", 1);
+        return $aDados;
         
     }
 
     public function retornaTabelaDeTransicao() {
 
-        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica", 1);
-        $aCab = $this->retornaArrayCSV("caracteresValidos", 0);
+        $aDados = $this->retornaArray("tabelaAnaliseLexica", 1);
+        $aCab = $this->retornaArray("caracteresValidos", 0);
         
         //Apenas remove a ultima posição do array que no explode traz vazio ""
         //Cria um array no formato array[estado]=>array[caracter] = estado de transição  
         $aTabTrans = array();
         $aAux = array();
         $iK=0;
-       // array_pop($aCSV);
-        foreach ($aCSV as $aVal) {
+       // array_pop($aDados);
+        foreach ($aDados as $aVal) {
        //     array_pop($aVal);
             if($iK!=0){
                 for ($c=0; $c<count($aCab[0]); $c++){
@@ -43,11 +43,11 @@ class PersistenciaAnalisadorLexico extends Persistencia{
      */
     public function retornaTabelaDeTokens() {
 
-        $aCSV = $this->retornaArrayCSV("tabelaAnaliseLexica", 1);
+        $aDados = $this->retornaArray("tabelaAnaliseLexica", 1);
         $aTokens = array();
-        //array_pop($aCSV);
-        foreach ($aCSV as $aVal) {
-            if ($aCSV[0] != $aVal) {
+        //array_pop($aDados);
+        foreach ($aDados as $aVal) {
+            if ($aDados[0] != $aVal) {
                 $aTokens[trim($aVal[0])] = trim($aVal[1]);
             }
         }
@@ -60,8 +60,8 @@ class PersistenciaAnalisadorLexico extends Persistencia{
      */
     public function gravaResultadoAnaliseLexica($aArray){
         
-        $aCSV = $this->gravaArrayEmCSV("resultadoAnaliseLexica", 1, $aArray);
-        return $aCSV;
+        $aDados = $this->gravaArray("resultadoAnaliseLexica", 1, $aArray);
+        return $aDados;
         
     }
 

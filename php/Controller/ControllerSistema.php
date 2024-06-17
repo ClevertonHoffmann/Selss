@@ -23,7 +23,16 @@ class ControllerSistema extends Controller {
         if (!$bLogin) {
             return $oControllerLogin->mostraTelaLogin($sDados);
         } else {
-            return $this->getOView()->retornaTelaSistema($this->getOPersistencia());
+
+          $insUso = $this->getOPersistencia()->retornaTextoDoCampo("instrucoesdeuso", '.txt', 0); //Instruções de uso do sistema
+          
+          $defReg = $this->getOPersistencia()->retornaTextoDoCampo('defReg', '.txt', 1);
+          
+          $codigoParaAnalise = $this->getOPersistencia()->retornaTextoDoCampo('codigoParaAnalise' , '.txt', 1);
+    
+    //    $defGram = $this->retornaTexto($pasta . "//defGram.txt"); //Definições gramatica do usuário no sistema
+            
+            return $this->getOView()->retornaTelaSistema($insUso, $defReg, $codigoParaAnalise);
         }
     }
 

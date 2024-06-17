@@ -6,16 +6,8 @@ class ViewSistema {
      * Retorna a tela do sistema com os campos preenchidos de acordo com o usuário
      * @return type tela
      */
-    public function retornaTelaSistema($oPersistencia) {
+    public function retornaTelaSistema($insUso, $defReg, $codigoParaAnalise) {
 
-    //    $pasta = $_SESSION["pasta"];
-    //    $defReg = $this->retornaTexto($pasta . "//defReg.txt"); //Definições regulares do usuário no sistema
-          $defReg = $oPersistencia->retornaTextoDoCampo('defReg');
-    //    $codigoParaAnalise = $this->retornaTexto($pasta . "//codigoParaAnalise.txt"); //Definições regulares do usuário no sistema
-          $codigoParaAnalise = $oPersistencia->retornaTextoDoCampo('codigoParaAnalise');
-    //    $defGram = $this->retornaTexto($pasta . "//defGram.txt"); //Definições gramatica do usuário no sistema
-        $insUso = $this->retornaTexto("data//instrucoesdeuso.txt"); //Instruções de uso do sistema
-        
         //Cabeçalho
         $oTela = "<!DOCTYPE html>
                 <html lang='pt'>    
@@ -257,20 +249,5 @@ class ViewSistema {
         
         return $oTela;
         
-    }
-
-    /**
-     * Função que realiza a leitura para retornar caso já exista os arquivos pré-carregados no sistema
-     * @param type $sNome
-     * @return string
-     */
-    function retornaTexto($sNome) {
-        // Verifica se o arquivo existe
-        if (file_exists($sNome)) {
-            // Lê o conteúdo do arquivo e retorna
-            return file_get_contents($sNome);
-        } else {
-            return "";
-        }
     }
 }

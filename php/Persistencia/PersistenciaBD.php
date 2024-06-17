@@ -10,7 +10,7 @@
  * @author Cleverton
  */
 class PersistenciaBD {
-    
+
     private $pdo;
 
     public function __construct() {
@@ -18,51 +18,128 @@ class PersistenciaBD {
     }
 
     /**
-     * Grava um array em um arquivo CSV
-     * @param string $sArquivo O nome do arquivo CSV a ser criado/gravado
-     * @param type $iTipo 0 sistema 1 usuario
-     * @param array $dadosArray O array de dados a serem gravados no arquivo CSV
-     * @return bool Retorna true se a gravação for bem-sucedida, false em caso de erro
+     * Grava um array no banco de dados.
+     * @param string $sArquivo O nome do campo da tabela onde os dados serão gravados.
+     * @param int $iTipo 0 para sistema, 1 para usuário.
+     * @param array $dadosArray O array de dados a ser gravado.
+     * @return bool Retorna true se a gravação for bem-sucedida, false em caso de erro.
      */
-    public function gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray) {
+    public function gravaArray($sArquivo, $iTipo, $dadosArray) {
+        try {
+            if ($iTipo == 0) {
+                // Gravação na tabela do sistema
+                $stmt = $this->pdo->prepare("UPDATE tbdatasistema SET $sArquivo = :dados WHERE seq = 1");
+            } else {
+                // Gravação na tabela do usuário
+                $email = $_SESSION['email'];
+                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->execute();
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $nomeArquivo = '';
-        if ($iTipo == 0) {
-            $nomeArquivo = 'data/' . $sArquivo;
-        } else {
-            $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio . '//' . $sArquivo;
-        }
-
-        $handle = fopen($nomeArquivo, 'w');
-
-        if ($handle !== false) {
-            foreach ($dadosArray as $linha) {
-                fputcsv($handle, $linha, ';');
+                if ($usuario) {
+                    $seq = $usuario['seq'];
+                    $stmt = $this->pdo->prepare("UPDATE tbdadosusuarios SET $sArquivo = :dados WHERE seq = :seq");
+                    $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
+                } else {
+                    return false;
+                }
             }
-            fclose($handle);
-            return true; // Retorna true se a gravação for bem-sucedida
-        } else {
-            echo "Não foi possível criar o arquivo $nomeArquivo.";
-            return false; // Retorna false em caso de erro ao criar o arquivo
+
+            // Convertendo cada linha do array em uma string CSV
+            $csvLinhas = [];
+            foreach ($dadosArray as $linha) {
+                $csvLinhas[] = implode(';', array_map(function ($value) {
+                            return str_replace(';', '\;', str_replace('\n', '\\n', $value));
+                        }, $linha));
+            }
+
+            // Concatenando todas as linhas CSV em uma única string separada por quebras de linha
+            $dados = implode("\n", $csvLinhas);
+
+            $stmt->bindParam(':dados', $dados, PDO::PARAM_STR);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            // echo "Failed: " . $e->getMessage();
+            return false;
         }
+    }
+
+    /**
+     * Retorna o array do banco de dados.
+     * @param string $sArquivo O nome do campo da tabela onde os dados serão lidos.
+     * @param int $iTipo 0 para sistema, 1 para usuário.
+     * @return array Retorna o array de dados.
+     */
+    public function retornaArray($sArquivo, $iTipo) {
+
+        $aDados = array();
+
+        try {
+            if ($iTipo == 0) {
+                // Leitura da tabela do sistema
+                $stmt = $this->pdo->prepare("SELECT $sArquivo FROM tbdatasistema WHERE seq = 1");
+            } else {
+                // Leitura da tabela do usuário
+                $email = $_SESSION['email'];
+                $stmt = $this->pdo->prepare("SELECT du.$sArquivo FROM tbdadosusuarios du INNER JOIN tbusuarios u ON du.seq = u.seq WHERE u.email = :email");
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            }
+
+            $stmt->execute();
+            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($dados && isset($dados[$sArquivo])) {
+
+                // A string CSV armazenada no banco de dados
+                $csvString = $dados[$sArquivo];
+
+                // Quebrar a string CSV em linhas
+                $lines = explode("\n", $csvString);
+                foreach ($lines as $line) {
+                    if (!empty(trim($line))) {
+                        // Converter cada linha CSV em um array
+                        $aDados[] = array_map(function ($value) {
+                            return str_replace('\;', ';', str_replace('\\n', '\n', $value));
+                        }, explode(';', $line));
+                    }
+                }
+            }
+        } catch (PDOException $e) {
+            // echo "Failed: " . $e->getMessage();
+        }
+
+        return $aDados;
     }
 
     /**
      * Método responsável por gravar todos os elementos do array composto array[][] = [valor1, valor2]
      */
-    public function gravaArrayCompostoEmCSV($sArquivo, $iTipo, $dadosArray) {
-        $nomeArquivo = '';
-        if ($iTipo == 0) {
-            $nomeArquivo = 'data/' . $sArquivo;
-        } else {
-            $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio . '/' . $sArquivo;
-        }
+    public function gravaArrayComposto($sArquivo, $iTipo, $dadosArray) {
+        try {
+            if ($iTipo == 0) {
+                // Gravação na tabela do sistema
+                $stmt = $this->pdo->prepare("UPDATE tbdatasistema SET $sArquivo = :dados WHERE seq = 1");
+            } else {
+                // Gravação na tabela do usuário
+                $email = $_SESSION['email'];
+                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->execute();
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $handle = fopen($nomeArquivo, 'w');
+                if ($usuario) {
+                    $seq = $usuario['seq'];
+                    $stmt = $this->pdo->prepare("UPDATE tbdadosusuarios SET $sArquivo = :dados WHERE seq = :seq");
+                    $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
+                } else {
+                    return false;
+                }
+            }
 
-        if ($handle !== false) {
+            // Converte o array composto em uma string CSV
+            $csvString = '';
             foreach ($dadosArray as $linha) {
                 $linhaParaGravar = array();
 
@@ -86,110 +163,85 @@ class PersistenciaBD {
                         $linhaParaGravar[] = '';
                     }
                 }
-                fputcsv($handle, $linhaParaGravar, ';');
+                // Converte a linha em uma string CSV
+                $csvString .= implode(';', $linhaParaGravar) . "\n";
             }
-            fclose($handle);
-            return true; // Retorna true se a gravação for bem-sucedida
-        } else {
-            echo "Não foi possível criar o arquivo $nomeArquivo.";
-            return false; // Retorna false em caso de erro ao criar o arquivo
+
+            // Grava a string CSV no banco de dados
+            $stmt->bindParam(':dados', $csvString, PDO::PARAM_STR);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            // echo "Failed: " . $e->getMessage();
+            return false;
         }
     }
 
     /**
-     * Retorna o array do arquivo CSV
-     * @param type $sArquivo
-     * @param type $iTipo 0 sistema 1 usuario
-     * @return type
+     * Retorna o array composto dos dados gravados no banco de dados
+     * @param string $sArquivo Nome da coluna
+     * @param int $iTipo 0 para sistema, 1 para usuário
+     * @return array Array composto com os dados
      */
-    public function retornaArrayCSV($sArquivo, $iTipo) {
-        $nomeArquivo = '';
-        if ($iTipo == 0) {
-            $nomeArquivo = 'data/' . $sArquivo;
-        } else {
-            $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio . '//' . $sArquivo;
-        }
+    public function retornaArrayComposto($sArquivo, $iTipo) {
+        try {
+            if ($iTipo == 0) {
+                // Seleção na tabela do sistema
+                $stmt = $this->pdo->prepare("SELECT $sArquivo FROM tbdatasistema WHERE seq = 1");
+            } else {
+                // Seleção na tabela do usuário
+                $email = $_SESSION['email'];
+                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->execute();
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $aCSV = array();
-
-        if (($handle = fopen($nomeArquivo, 'r')) !== false) {
-            while (($slinha = fgets($handle)) !== false) {
-                $aCSV[] = str_getcsv($slinha, ';');
-            }
-            fclose($handle);
-        } else {
-            echo "Não foi possível abrir o arquivo $nomeArquivo.";
-        }
-
-        return $aCSV;
-    }
-
-    /**
-     * Retorna o array composto do arquivo CSV
-     * @param type $sArquivo
-     * @param type $iTipo 0 sistema 1 usuario
-     * @return type
-     */
-    public function retornaArrayCompostoCSV($sArquivo, $iTipo) {
-        $nomeArquivo = '';
-        if ($iTipo == 0) {
-            $nomeArquivo = 'data/' . $sArquivo;
-        } else {
-            $sDiretorio = $_SESSION['diretorio'];
-            $nomeArquivo = $sDiretorio . '/' . $sArquivo;
-        }
-
-        $dadosArray = array();
-
-        if (($handle = fopen($nomeArquivo, 'r')) !== false) {
-            while (($linha = fgetcsv($handle, 0, ';')) !== false) {
-                $maxChave = max(array_keys($linha));
-                $linhaArray = array();
-                $iPos = 1;
-                for ($i = 0; $i <= $maxChave; $i = $i + 2) {
-                    if ($linha[$i] != -1) {
-                        $linhaArray[$iPos] = [$linha[$i], $linha[$i + 1]]; // Adiciona o par de valores ao array da linha
-                    }
-                    $iPos++;
+                if ($usuario) {
+                    $seq = $usuario['seq'];
+                    $stmt = $this->pdo->prepare("SELECT $sArquivo FROM tbdadosusuarios WHERE seq = :seq");
+                    $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
+                } else {
+                    return false;
                 }
-                $dadosArray[] = $linhaArray; // Adiciona a linha ao array de dados
             }
-            fclose($handle);
-        } else {
-            echo "Não foi possível abrir o arquivo $nomeArquivo.";
-        }
 
-        return $dadosArray;
+            // Executa a consulta
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$resultado || !isset($resultado[$sArquivo])) {
+                return array();
+            }
+
+            // Converte a string CSV de volta para o array composto
+            $csvString = $resultado[$sArquivo];
+            $linhas = explode("\n", trim($csvString));
+            $dadosArray = array();
+
+            foreach ($linhas as $linha) {
+                $itens = explode(';', $linha);
+                $linhaArray = array();
+                for ($i = 0; $i < count($itens); $i += 2) {
+                    if ($itens[$i] != -1) {
+                        $linhaArray[($i / 2) + 1] = [$itens[$i], $itens[$i + 1]];
+                    }
+                }
+                $dadosArray[] = $linhaArray;
+            }
+
+            return $dadosArray;
+        } catch (PDOException $e) {
+            // echo "Failed: " . $e->getMessage();
+            return false;
+        }
     }
 
-    /**
-     * Função para escrever as entradas do usuário para ficar salvo para o próximo logon
-     * @param type $sArquivo
-     * @param type $sText
-     */
-//    public function gravaArquivo($sArquivo, $sText) {
-//
-//        $sDiretorio = $_SESSION['diretorio'];
-//
-//        $arquivo = $sDiretorio . "//" . $sArquivo;
-//
-//        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-//        $fp = fopen($arquivo, "w");
-//
-//        //Escreve no arquivo aberto.
-//        fwrite($fp, $sText);
-//
-//        //Fecha o arquivo.
-//        fclose($fp);
-//    }
-    
     /**
      * Função para escrever as entradas do usuário para ficar salvo para o próximo logon
      * @param type $sCampo
      * @param type $sText
      */
-    public function gravaArquivo($sCampo, $sText) {
+    public function gravaArquivo($sCampo, $sText, $sExt) {
         try {
             // Obter o email do usuário da sessão
             $email = $_SESSION['email'];
@@ -228,54 +280,70 @@ class PersistenciaBD {
 
                 return true;
             } else {
-               // echo "Usuário não encontrado.";
+                // echo "Usuário não encontrado.";
                 return false;
             }
         } catch (PDOException $e) {
-           // echo "Failed: " . $e->getMessage();
+            // echo "Failed: " . $e->getMessage();
             return false;
         }
     }
 
     /**
-     * Função para retornar as entradas do usuário no login
+     * Função que realiza a leitura para retornar caso já exista os arquivos pré-carregados no sistema
      * @param type $sCampo
+     * @param type $sExt //Usado apenas no CSV
+     * @param type $iTipo 0 sistema 1 usuario
+     * @return string
      */
-    public function retornaTextoDoCampo($sCampo) {
+    public function retornaTextoDoCampo($sCampo, $sExt, $iTipo) {
         try {
-            // Obter o email do usuário da sessão
-            $email = $_SESSION['email'];
-
-            // Consultar o seq do usuário
-            $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->execute();
-
-            // Verificar se o usuário foi encontrado
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($usuario) {
-                $seq = $usuario['seq'];
-
-                // Consultar o valor do campo especificado na tabela tbdadosusuarios
-                $stmt = $this->pdo->prepare("SELECT $sCampo FROM tbdadosusuarios WHERE seq = :seq");
-                $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
+            if ($iTipo == 0) {
+                // Seleção na tabela do sistema
+                $stmt = $this->pdo->prepare("SELECT $sCampo FROM tbdatasistema WHERE seq = 1");
                 $stmt->execute();
-                $dadosUsuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($dadosUsuario && isset($dadosUsuario[$sCampo])) {
-                    return $dadosUsuario[$sCampo];
+                if ($dados && isset($dados[$sCampo])) {
+                    return $dados[$sCampo];
                 } else {
-                   // echo "Campo ou registro não encontrado.";
+                    // echo "Campo ou registro não encontrado.";
                     return false;
                 }
             } else {
-               // echo "Usuário não encontrado.";
-                return false;
+                // Obter o email do usuário da sessão
+                $email = $_SESSION['email'];
+
+                // Consultar o seq do usuário
+                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->execute();
+
+                // Verificar se o usuário foi encontrado
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($usuario) {
+                    $seq = $usuario['seq'];
+
+                    // Consultar o valor do campo especificado na tabela tbdadosusuarios
+                    $stmt = $this->pdo->prepare("SELECT $sCampo FROM tbdadosusuarios WHERE seq = :seq");
+                    $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $dadosUsuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($dadosUsuario && isset($dadosUsuario[$sCampo])) {
+                        return $dadosUsuario[$sCampo];
+                    } else {
+                        // echo "Campo ou registro não encontrado.";
+                        return false;
+                    }
+                } else {
+                    // echo "Usuário não encontrado.";
+                    return false;
+                }
             }
         } catch (PDOException $e) {
-           // echo "Failed: " . $e->getMessage();
+            // echo "Failed: " . $e->getMessage();
             return false;
         }
     }
-    
 }

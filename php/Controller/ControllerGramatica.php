@@ -21,7 +21,7 @@ class ControllerGramatica extends Controller {
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
 
-        $this->getOPersistencia()->gravaArquivo("defGram.txt", $sText); ///TERMINAR A PARTE DA ANÁLISE
+        $this->getOPersistencia()->gravaArquivo("defGram", $sText, '.txt'); ///TERMINAR A PARTE DA ANÁLISE
 
         $sJson = '{"texto":"' . $sText . '"}';
 

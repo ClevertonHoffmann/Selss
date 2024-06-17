@@ -49,7 +49,7 @@ class ControllerAnalisadorLexico extends Controller {
         $sTexto = $sCampos->{'texto'} . " ";
         $sText = str_replace("\n", " ", $sTexto);
 
-        $this->getOPersistencia()->gravaArquivo("codigoParaAnalise.txt", trim($sText));
+        $this->getOPersistencia()->gravaArquivo("codigoParaAnalise", trim($sText), '.txt');
 
         $this->InicializaAnalisadorLexico($sText);
 
@@ -123,7 +123,7 @@ class ControllerAnalisadorLexico extends Controller {
      */
     public function mostraModalResultadoAnaliseLexica($sDados) {
 
-        $aTabela = $this->getOPersistencia()->retornaArrayCSV("resultadoAnaliseLexica.csv", 1);
+        $aTabela = $this->getOPersistencia()->retornaArray("resultadoAnaliseLexica", 1);
         $sModal = $this->getOView()->geraModalResAnaliseLexica($aTabela);
 
         return json_encode($sModal);

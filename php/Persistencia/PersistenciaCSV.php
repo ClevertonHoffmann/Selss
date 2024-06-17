@@ -12,7 +12,7 @@ class PersistenciaCSV {
      * @param array $dadosArray O array de dados a serem gravados no arquivo CSV
      * @return bool Retorna true se a gravação for bem-sucedida, false em caso de erro
      */
-    public function gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray) {
+    public function gravaArray($sArquivo, $iTipo, $dadosArray) {
 
         $nomeArquivo = '';
         if ($iTipo == 0) {
@@ -39,7 +39,7 @@ class PersistenciaCSV {
     /**
      * Método responsável por gravar todos os elementos do array composto array[][] = [valor1, valor2]
      */
-    public function gravaArrayCompostoEmCSV($sArquivo, $iTipo, $dadosArray) {
+    public function gravaArrayComposto($sArquivo, $iTipo, $dadosArray) {
         $nomeArquivo = '';
         if ($iTipo == 0) {
             $nomeArquivo = 'data/' . $sArquivo. '.csv';
@@ -90,7 +90,7 @@ class PersistenciaCSV {
      * @param type $iTipo 0 sistema 1 usuario
      * @return type
      */
-    public function retornaArrayCSV($sArquivo, $iTipo) {
+    public function retornaArray($sArquivo, $iTipo) {
         $nomeArquivo = '';
         if ($iTipo == 0) {
             $nomeArquivo = 'data/' . $sArquivo. '.csv';
@@ -119,7 +119,7 @@ class PersistenciaCSV {
      * @param type $iTipo 0 sistema 1 usuario
      * @return type
      */
-    public function retornaArrayCompostoCSV($sArquivo, $iTipo) {
+    public function retornaArrayComposto($sArquivo, $iTipo) {
         $nomeArquivo = '';
         if ($iTipo == 0) {
             $nomeArquivo = 'data/' . $sArquivo. '.csv';
@@ -155,12 +155,13 @@ class PersistenciaCSV {
      * Função para escrever as entradas do usuário para ficar salvo para o próximo logon
      * @param type $sArquivo
      * @param type $sText
+     * @param type $sExt
      */
-    public function gravaArquivo($sArquivo, $sText) {
+    public function gravaArquivo($sArquivo, $sText, $sExt) {
 
         $sDiretorio = $_SESSION['diretorio'];
 
-        $arquivo = $sDiretorio . "//" . $sArquivo. '.txt';
+        $arquivo = $sDiretorio . "//" . $sArquivo. $sExt;
 
         //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
         $fp = fopen($arquivo, "w");
@@ -175,13 +176,19 @@ class PersistenciaCSV {
     /**
      * Função que realiza a leitura para retornar caso já exista os arquivos pré-carregados no sistema
      * @param type $sNome
+     * @param type $sExt
+     * @param type $iTipo 0 sistema 1 usuario
      * @return string
      */
-    public function retornaTextoDoCampo($sNome) {
+    public function retornaTextoDoCampo($sNome, $sExt, $iTipo) {
         
-        $sDiretorio = $_SESSION['diretorio'];
-
-        $arquivo = $sDiretorio . "//" . $sNome. '.txt';
+        $arquivo = '';
+        if ($iTipo == 0) {
+            $arquivo = 'data/' . $sNome. $sExt;
+        } else {
+            $sDiretorio = $_SESSION['diretorio'];
+            $arquivo = $sDiretorio . '/' . $sNome. $sExt;
+        }
         
         // Verifica se o arquivo existe
         if (file_exists($arquivo)) {

@@ -38,19 +38,6 @@ class ViewExpRegulares{
         }
         $sHtmlModal .= '</table>';
 
-        $sDiretorio = $_SESSION['diretorio'];
-
-        $arquivo = $sDiretorio."//modalTabelaAnaliseLexica.html";
-
-        //Variável $fp armazena a conexão com o arquivo e o tipo de ação.
-        $fp = fopen($arquivo, "w");
-
-        //Escreve no arquivo aberto.
-        fwrite($fp, $sHtmlModal);
-
-        //Fecha o arquivo.
-        fclose($fp);
-
         return $sHtmlModal;
     }
     

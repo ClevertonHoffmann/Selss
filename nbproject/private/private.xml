@@ -4,10 +4,20 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/xampp/htdocs/Selss/js/app.js</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerAnalisadorLexico.php</file>
-            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewAnalisadorLexico.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewAutomato.php</file>
             <file>file:/C:/xampp/htdocs/Selss/index.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/css/app.css</file>
             <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerExpRegulares.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerAutomato.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerSistema.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/ControllerAnalisadorLexico.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Persistencia/PersistenciaSistema.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/data/instrucoesdeuso.txt</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewExpRegulares.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Persistencia/PersistenciaCSV.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/View/ViewSistema.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Controller/Controller.php</file>
+            <file>file:/C:/xampp/htdocs/Selss/php/Persistencia/Persistencia.php</file>
         </group>
     </open-files>
 </project-private>
