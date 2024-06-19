@@ -58,9 +58,7 @@ class ControllerAnalisadorLexico extends Controller {
         while ($this->iCount > 0) {
             try {
                 //Aceita o caractere e avança uma posição na entrada tanto normal como com espaços
-                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') 
-                        || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) 
-                        && isset($this->aCaracteresSeparados[$iK]) && isset($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]])) {
+                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK]) && isset($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]])) {
                     //Estado com espaços
                     if ($this->aCaracteresSeparados[$iK] == " ") {
                         //Concatena até formar um token
@@ -80,8 +78,8 @@ class ControllerAnalisadorLexico extends Controller {
 //                    if (isset($this->aPalavrasReservadas[$this->sBuild])) {
 //                        $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
 //                    } else {
-                        $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
- //                   }
+                    $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+                    //                   }
                     $this->qntTokens++;
                     $this->sBuild = "";
                     $this->q = 0;
@@ -91,7 +89,7 @@ class ControllerAnalisadorLexico extends Controller {
                         $iK++;
                         $this->iCount--;
                     } else {
-                        $this->aListadeTokensLex[] = ['?', 'Caractére '.$this->aCaracteresSeparados[$iK].' não identificado', $this->qntTokens];
+                        $this->aListadeTokensLex[] = ['?', 'Caractére ' . $this->aCaracteresSeparados[$iK] . ' não identificado', $this->qntTokens];
                         break;
                     }
                 }
@@ -128,5 +126,4 @@ class ControllerAnalisadorLexico extends Controller {
 
         return json_encode($sModal);
     }
-
 }

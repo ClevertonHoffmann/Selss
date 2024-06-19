@@ -2,6 +2,21 @@
 
 class PersistenciaLogin extends Persistencia {
 
+    private $tabelaUsuario;
+    
+    public function __construct() {
+        // Inicialize a tabela de usuários com base no modo da sessão
+        $this->setTabela();
+    }
+    
+    public function setTabela() {
+        if (isset($_SESSION['modo']) && $_SESSION['modo'] == 'convidado') {
+            $this->tabelaUsuario = 'tbusuariosconvidado';
+        } else {
+            $this->tabelaUsuario = 'tbusuarios';
+        }
+    }
+
     /**
      * Método responsável por verificar a senha do usuário digitada se já consta no banco de dados
      * @param type $sEmail
@@ -9,10 +24,12 @@ class PersistenciaLogin extends Persistencia {
      * @return bool
      */
     public function verificaEmailPass($sEmail, $sSenha) {
+        $this->setTabela();
+        
         $pdo = Conexao::getInstance();
 
         // Utilizando prepared statements para evitar injeção de SQL
-        $sql = "SELECT * FROM tbusuarios WHERE email = :email";
+        $sql = "SELECT * FROM " . $this->tabelaUsuario . " WHERE email = :email";
         $oQuery = $pdo->prepare($sql);
         $oQuery->bindParam(':email', $sEmail, PDO::PARAM_STR);
         $oQuery->execute();
@@ -42,7 +59,7 @@ class PersistenciaLogin extends Persistencia {
         $pdo = Conexao::getInstance();
 
         // Verifica se o e-mail já está cadastrado
-        $verificarEmailSql = "SELECT COUNT(*) FROM tbusuarios WHERE email = :email";
+        $verificarEmailSql = "SELECT COUNT(*) FROM " . $this->tabelaUsuario . " WHERE email = :email";
         $verificarEmailQuery = $pdo->prepare($verificarEmailSql);
         $verificarEmailQuery->bindParam(':email', $sEmail);
         $verificarEmailQuery->execute();
@@ -55,7 +72,7 @@ class PersistenciaLogin extends Persistencia {
 
         // Se o e-mail não estiver cadastrado, continua com a inserção
         //SQL usando prepared statement para prevenir SQL injection
-        $inserirUsuarioSql = "INSERT INTO tbusuarios (email, senha) VALUES (:email, :senha)";
+        $inserirUsuarioSql = "INSERT INTO " . $this->tabelaUsuario . " (email, senha) VALUES (:email, :senha)";
 
         // Preparando a query
         $inserirUsuarioQuery = $pdo->prepare($inserirUsuarioSql);
@@ -93,7 +110,7 @@ class PersistenciaLogin extends Persistencia {
         $pdo = Conexao::getInstance();
 
         // Verifica se o e-mail está cadastrado
-        $verificarEmailSql = "SELECT COUNT(*) FROM tbusuarios WHERE email = :email";
+        $verificarEmailSql = "SELECT COUNT(*) FROM " . $this->tabelaUsuario . " WHERE email = :email";
         $verificarEmailQuery = $pdo->prepare($verificarEmailSql);
         $verificarEmailQuery->bindParam(':email', $sEmail);
         $verificarEmailQuery->execute();
@@ -106,7 +123,7 @@ class PersistenciaLogin extends Persistencia {
 
         // Se o e-mail estiver cadastrado, continua com a exclusão
         // SQL usando prepared statement para prevenir SQL injection
-        $excluirUsuarioSql = "DELETE FROM tbusuarios WHERE email = :email";
+        $excluirUsuarioSql = "DELETE FROM " . $this->tabelaUsuario . " WHERE email = :email";
 
         // Preparando a query
         $excluirUsuarioQuery = $pdo->prepare($excluirUsuarioSql);

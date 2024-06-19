@@ -44,6 +44,7 @@ class ControllerLogin extends Controller {
 
             //Obtém o modo, convidado ou usuário
             $sModo = $_POST["modo"];
+            $_SESSION['modo'] = $sModo;
 
             //Valor a ser recebido caso e-mail com senha válido
             $bVal = $this->getOPersistencia()->verificaEmailPass($sEmail, $sSenha);
@@ -56,7 +57,7 @@ class ControllerLogin extends Controller {
                         $sSenha = $this->gerarNomeConvidado();
                         $sEmail = $sSenha;
                         $sPass = $sSenha;
-                        $bVal = true;
+                        $bVal = $this->getOPersistencia()->cadastraUsuario($sEmail, $sPass);
                         break;
                     default :
                         $this->Mensagem('Verifique email ou senha, ou o modo de entrada!', 4);
@@ -86,7 +87,6 @@ class ControllerLogin extends Controller {
                     $_SESSION['pass'] = $sPass;
                     $_SESSION['modo'] = $sModo;
 
-                    //    $this->oPersistencia->gravaArrayEmCSV($sArquivo, $iTipo, $dadosArray);
                     // Verifique se a pasta já existe
                     if (!file_exists($pasta)) {
                         // Crie a pasta

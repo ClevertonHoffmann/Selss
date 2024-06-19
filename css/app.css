@@ -224,4 +224,33 @@ code:before{
     border: 1px solid #ccc;
     padding: 5px;
     z-index: 9999;
-}                           
+}
+
+/* Estilos para o modal de erro */
+#erroModal {
+    align-items: center;
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 30%;
+    max-width: 80%;
+    height: auto;
+    max-height: 80%;
+    overflow: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos para o botão dentro do modal */
+#erroModal button {
+    background-color: #ff0000;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+}

@@ -12,9 +12,19 @@
 class PersistenciaBD {
 
     private $pdo;
+    private $tabelaUsuario;
+    private $tabelaDadosUsuario;
 
     public function __construct() {
         $this->pdo = Conexao::getInstance();
+        // Definindo as tabelas com base no modo
+        if (isset($_SESSION['modo']) && $_SESSION['modo'] == 'convidado') {
+            $this->tabelaUsuario = 'tbusuariosconvidado';
+            $this->tabelaDadosUsuario = 'tbdadosusuariosconvidado';
+        } else {
+            $this->tabelaUsuario = 'tbusuarios';
+            $this->tabelaDadosUsuario = 'tbdadosusuarios';
+        }
     }
 
     /**
@@ -32,14 +42,14 @@ class PersistenciaBD {
             } else {
                 // Gravação na tabela do usuário
                 $email = $_SESSION['email'];
-                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT seq FROM " . $this->tabelaUsuario . " WHERE email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($usuario) {
                     $seq = $usuario['seq'];
-                    $stmt = $this->pdo->prepare("UPDATE tbdadosusuarios SET $sArquivo = :dados WHERE seq = :seq");
+                    $stmt = $this->pdo->prepare("UPDATE " . $this->tabelaDadosUsuario . " SET $sArquivo = :dados WHERE seq = :seq");
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                 } else {
                     return false;
@@ -50,8 +60,8 @@ class PersistenciaBD {
             $csvLinhas = [];
             foreach ($dadosArray as $linha) {
                 $csvLinhas[] = implode(';', array_map(function ($value) {
-                            return str_replace(';', '\;', str_replace('\n', '\\n', $value));
-                        }, $linha));
+                            return str_replace(['\\', ';'], ['\\\\', '\\;'], $value);
+                }, $linha));
             }
 
             // Concatenando todas as linhas CSV em uma única string separada por quebras de linha
@@ -83,7 +93,7 @@ class PersistenciaBD {
             } else {
                 // Leitura da tabela do usuário
                 $email = $_SESSION['email'];
-                $stmt = $this->pdo->prepare("SELECT du.$sArquivo FROM tbdadosusuarios du INNER JOIN tbusuarios u ON du.seq = u.seq WHERE u.email = :email");
+                $stmt = $this->pdo->prepare("SELECT du.$sArquivo FROM " . $this->tabelaDadosUsuario . " du INNER JOIN " . $this->tabelaUsuario . " u ON du.seq = u.seq WHERE u.email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             }
 
@@ -99,10 +109,10 @@ class PersistenciaBD {
                 $lines = explode("\n", $csvString);
                 foreach ($lines as $line) {
                     if (!empty(trim($line))) {
-                        // Converter cada linha CSV em um array
+                        // Converter cada linha CSV em um array, ignorando \;
                         $aDados[] = array_map(function ($value) {
-                            return str_replace('\;', ';', str_replace('\\n', '\n', $value));
-                        }, explode(';', $line));
+                            return str_replace(['\\;', '\\\\'], [';', '\\'], $value);
+                        }, preg_split('/(?<!\\\);/', $line));
                     }
                 }
             }
@@ -124,21 +134,21 @@ class PersistenciaBD {
             } else {
                 // Gravação na tabela do usuário
                 $email = $_SESSION['email'];
-                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT seq FROM " . $this->tabelaUsuario . " WHERE email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($usuario) {
                     $seq = $usuario['seq'];
-                    $stmt = $this->pdo->prepare("UPDATE tbdadosusuarios SET $sArquivo = :dados WHERE seq = :seq");
+                    $stmt = $this->pdo->prepare("UPDATE " . $this->tabelaDadosUsuario . " SET $sArquivo = :dados WHERE seq = :seq");
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                 } else {
                     return false;
                 }
             }
 
-            // Converte o array composto em uma string CSV
+            // Converte o array composto em uma string CSV com caracteres especiais escapados
             $csvString = '';
             foreach ($dadosArray as $linha) {
                 $linhaParaGravar = array();
@@ -152,17 +162,23 @@ class PersistenciaBD {
                         $linha[$i] = [-1, -1]; // Adiciona um array com posições -1, -1
                     }
                 }
+
                 // Ordena o array pela chave
                 ksort($linha);
+
+                // Converte cada elemento do array em uma string CSV
                 foreach ($linha as $item) {
                     if (is_array($item)) {
                         foreach ($item as $subitem) {
+                            // Escapa os caracteres especiais
+                            $subitem = str_replace(['\\', ';'], ['\\\\', '\\;'], $subitem);
                             $linhaParaGravar[] = $subitem;
                         }
                     } else {
                         $linhaParaGravar[] = '';
                     }
                 }
+
                 // Converte a linha em uma string CSV
                 $csvString .= implode(';', $linhaParaGravar) . "\n";
             }
@@ -178,10 +194,10 @@ class PersistenciaBD {
     }
 
     /**
-     * Retorna o array composto dos dados gravados no banco de dados
-     * @param string $sArquivo Nome da coluna
-     * @param int $iTipo 0 para sistema, 1 para usuário
-     * @return array Array composto com os dados
+     * Retorna o array composto do banco de dados
+     * @param type $sArquivo
+     * @param type $iTipo 0 sistema 1 usuario
+     * @return type
      */
     public function retornaArrayComposto($sArquivo, $iTipo) {
         try {
@@ -191,14 +207,14 @@ class PersistenciaBD {
             } else {
                 // Seleção na tabela do usuário
                 $email = $_SESSION['email'];
-                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT seq FROM " . $this->tabelaUsuario . " WHERE email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($usuario) {
                     $seq = $usuario['seq'];
-                    $stmt = $this->pdo->prepare("SELECT $sArquivo FROM tbdadosusuarios WHERE seq = :seq");
+                    $stmt = $this->pdo->prepare("SELECT $sArquivo FROM " . $this->tabelaDadosUsuario . " WHERE seq = :seq");
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                 } else {
                     return false;
@@ -219,16 +235,20 @@ class PersistenciaBD {
             $dadosArray = array();
 
             foreach ($linhas as $linha) {
-                $itens = explode(';', $linha);
-                $linhaArray = array();
-                for ($i = 0; $i < count($itens); $i += 2) {
-                    if ($itens[$i] != -1) {
-                        $linhaArray[($i / 2) + 1] = [$itens[$i], $itens[$i + 1]];
+                if (!empty($linha)) {
+                    $itens = preg_split('/(?<!\\\\);/', $linha);
+                    $linhaArray = array();
+                    for ($i = 0; $i < count($itens); $i += 2) {
+                        if ($itens[$i] != -1) {
+                            // Desscapa os caracteres especiais
+                            $item1 = str_replace(['\\;', '\\\\'], [';', '\\'], $itens[$i]);
+                            $item2 = str_replace(['\\;', '\\\\'], [';', '\\'], $itens[$i + 1]);
+                            $linhaArray[($i / 2) + 1] = [$item1, $item2];
+                        }
                     }
+                    $dadosArray[] = $linhaArray;
                 }
-                $dadosArray[] = $linhaArray;
             }
-
             return $dadosArray;
         } catch (PDOException $e) {
             // echo "Failed: " . $e->getMessage();
@@ -247,7 +267,7 @@ class PersistenciaBD {
             $email = $_SESSION['email'];
 
             // Consultar o seq do usuário
-            $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+            $stmt = $this->pdo->prepare("SELECT seq FROM " . $this->tabelaUsuario . " WHERE email = :email");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
 
@@ -257,21 +277,21 @@ class PersistenciaBD {
                 $seq = $usuario['seq'];
 
                 // Verificar se já existe um registro para este usuário na tabela tbdadosusuarios
-                $stmt = $this->pdo->prepare("SELECT * FROM tbdadosusuarios WHERE seq = :seq");
+                $stmt = $this->pdo->prepare("SELECT * FROM " . $this->tabelaDadosUsuario . " WHERE seq = :seq");
                 $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                 $stmt->execute();
                 $dadosUsuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($dadosUsuario) {
                     // Atualizar o registro existente
-                    $sql = "UPDATE tbdadosusuarios SET $sCampo = :texto WHERE seq = :seq";
+                    $sql = "UPDATE " . $this->tabelaDadosUsuario . " SET $sCampo = :texto WHERE seq = :seq";
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                     $stmt->bindParam(':texto', $sText, PDO::PARAM_STR);
                     $stmt->execute();
                 } else {
                     // Inserir um novo registro
-                    $sql = "INSERT INTO tbdadosusuarios (seq, $sCampo) VALUES (:seq, :texto)";
+                    $sql = "INSERT INTO " . $this->tabelaDadosUsuario . " (seq, $sCampo) VALUES (:seq, :texto)";
                     $stmt = $this->pdo->prepare($sql);
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                     $stmt->bindParam(':texto', $sText, PDO::PARAM_STR);
@@ -315,7 +335,7 @@ class PersistenciaBD {
                 $email = $_SESSION['email'];
 
                 // Consultar o seq do usuário
-                $stmt = $this->pdo->prepare("SELECT seq FROM tbusuarios WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT seq FROM " . $this->tabelaUsuario . " WHERE email = :email");
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
                 $stmt->execute();
 
@@ -325,7 +345,7 @@ class PersistenciaBD {
                     $seq = $usuario['seq'];
 
                     // Consultar o valor do campo especificado na tabela tbdadosusuarios
-                    $stmt = $this->pdo->prepare("SELECT $sCampo FROM tbdadosusuarios WHERE seq = :seq");
+                    $stmt = $this->pdo->prepare("SELECT $sCampo FROM " . $this->tabelaDadosUsuario . " WHERE seq = :seq");
                     $stmt->bindParam(':seq', $seq, PDO::PARAM_INT);
                     $stmt->execute();
                     $dadosUsuario = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -18,13 +18,8 @@ if (isset($_GET['arquivo'])) {
         // Obtenha o nome da tabela ou arquivo a partir do parâmetro 'arquivo'
         $nomeArquivo = $_GET['arquivo'];
 
-        $sDir = $_SESSION['diretorio'];
-        $_SESSION['diretorio'] = '../../' . $_SESSION['diretorio'];
-
         // Obtenha os dados usando a persistência definida
         $dados = $persistencia->retornaArray($nomeArquivo, 1); // Ajuste o segundo parâmetro conforme necessário (0 para sistema, 1 para usuário)
-
-        $_SESSION['diretorio'] = $sDir;
 
         if (!empty($dados)) {
             // Define os cabeçalhos apropriados para forçar o download
@@ -38,24 +33,19 @@ if (isset($_GET['arquivo'])) {
             // Cria um ponteiro de arquivo temporário
             $output = fopen('php://output', 'w');
 
-            // Escreve o BOM para arquivos UTF-8, que ajuda programas como o Excel a reconhecer a codificação
-            //    fwrite($output, "\xEF\xBB\xBF");
-
             foreach ($dados as $linha) {
-                // Converte cada campo da linha para UTF-8
-                $linha = array_map(function ($campo) {
-                    return mb_convert_encoding($campo, 'UTF-8', 'auto');
-                }, $linha);
+                // Aplica a função de escape para cada campo da linha
+                $linhaEscapada = array_map('escapeSpecialChars', $linha);
 
-                // Gera a string para gravação no CSV
-                $stringCSV = implode(";", $linha);
-                $stringCSV .= "\n";
-                // Escreve a string no arquivo
-                fwrite($output, $stringCSV);
+                // Codifica cada campo para UTF-8
+                $linhaUtf8 = array_map('utf8_decode', $linhaEscapada);
+                
+                // Escreve a linha no arquivo CSV
+                fputcsv($output, $linhaUtf8, ';');
             }
 
             // Fecha o ponteiro de arquivo
-            fclose($output);
+            fclose($output);    
 
             // Encerra a execução do script
             exit;
@@ -72,7 +62,7 @@ if (isset($_GET['arquivo'])) {
         $nomeArquivo = $_GET['arquivo'];
 
         // Caminho para o arquivo no servidor
-        $caminhoArquivo = '../../' . $sDiretorio . '/' . $nomeArquivo. '.csv';
+        $caminhoArquivo = '../../' . $sDiretorio . '/' . $nomeArquivo . '.csv';
 
         // Verifique se o arquivo existe
         if (file_exists($caminhoArquivo)) {
@@ -99,4 +89,11 @@ if (isset($_GET['arquivo'])) {
     header("HTTP/1.0 400 Bad Request");
     echo "Parâmetro 'arquivo' ausente.";
 }
+
+// Função para escapar caracteres especiais
+function escapeSpecialChars($value) {
+    $value = str_replace("\n", '\\n', $value); // Escapa a quebra de linha
+    return $value;
+}
+
 ?>

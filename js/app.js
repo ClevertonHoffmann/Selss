@@ -321,11 +321,34 @@ function loadAutomato() {
 
     var dataToSend = 'teste';
 
-    $.getJSON(getBaseURL() + "index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend), function (result) {
-        //Abre a página com automato de análise léxica gráficamente conforme usuário
-        window.open(getBaseURL() + JSON.parse(result).texto + "/modalAutomato.html", "minhaJanela", "height=800,width=1000");
-        // Depois de obter o resultado, oculta a mensagem de carregamento
-        $("#mensagemCarregando").hide();
+    $.ajax({
+        url: getBaseURL() + "index.php?classe=ControllerAutomato&metodo=gravaPaginaAutomato" + "&dados=" + encodeURIComponent(dataToSend),
+        dataType: "json",
+        timeout: 60000, // Timeout de 60 segundos
+        success: function(result) {
+            // Abre uma nova janela
+            var newWindow = window.open("", "minhaJanela", "height=800,width=1000");
+
+            // Obtém o conteúdo HTML retornado pelo servidor
+            var htmlContent = result.texto;
+
+            // Escrever o conteúdo na nova janela
+            newWindow.document.open();
+            newWindow.document.write(htmlContent);
+            newWindow.document.close();
+            
+            // Ocultar a mensagem de carregamento
+            $("#mensagemCarregando").hide();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            if (textStatus === "timeout") {
+                $("#mensagemErro").text("Tempo esgotado. Por favor, tente novamente.");
+            } else {
+                $("#mensagemErro").text("Erro ao carregar a página. Por favor, tente novamente.");
+            }
+            $("#erroModal").show();
+            $("#mensagemCarregando").hide();
+        }
     });
 
 }
@@ -473,4 +496,9 @@ function esconderCarregando() {
 //Função importante para retornar a base da url para acesso em servidores
 function getBaseURL() {
     return window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/');
+}
+
+// Função para fechar o modal de erro
+function fecharModalErro() {
+    $("#erroModal").hide();
 }

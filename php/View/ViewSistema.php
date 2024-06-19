@@ -241,7 +241,12 @@ class ViewSistema {
                             </div>
                         </div>
                         
-                        <div id='mensagemCarregando' style='display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 5px; z-index: 9999;'>Carregando...Aguarde!</div>   
+                        <div id='mensagemCarregando' style='display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 5px; z-index: 9999;'>Carregando...Aguarde!</div> 
+                        <div id='erroModal' class='modal-header-wrapper' style='display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 5px; z-index: 9999;'>
+                            <div id='mensagemErro'>Erro ao carregar a página. Por favor, tente novamente.</div>
+                            <br>
+                            <button class='close-button' onclick='fecharModalErro()'>Fechar</button>
+                        </div>
                     </body>
                 </html>
                 ";
