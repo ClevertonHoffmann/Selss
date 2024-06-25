@@ -8,7 +8,7 @@ class PersistenciaExpRegulares extends Persistencia{
 
     /**
      * Grava o array da tabela do automato para análise léxica
-     * @return type
+     * @return aDados
      */
     public function gravaTabelaLexica($aArray){
         
@@ -19,7 +19,7 @@ class PersistenciaExpRegulares extends Persistencia{
     
     /**
      * Método responsável por retornar o cabeçalho da tabela do automato
-     * @return type
+     * @return aDados
      */
     public function retornaCabecalhoTabelaLexica() {
 
@@ -30,7 +30,7 @@ class PersistenciaExpRegulares extends Persistencia{
 
     /**
      * Método responsável por retornar os caractéres válidos para a análise léxica
-     * @return type
+     * @return aDados
      */
     public function retornaCaracteresValidos() {
 
@@ -41,7 +41,7 @@ class PersistenciaExpRegulares extends Persistencia{
     
     /**
      * Método responsável por retornar os caractéres válidos para a análise léxica
-     * @return type
+     * @return aDados
      */
     public function retornaCaracteresInvalidos() {
 
@@ -52,7 +52,7 @@ class PersistenciaExpRegulares extends Persistencia{
     
     /**
      * Grava o array das palavras reservadas
-     * @return type
+     * @return aDados
      */
     public function gravaPalavrasReservadas($aArray){
         
@@ -63,7 +63,7 @@ class PersistenciaExpRegulares extends Persistencia{
     
     /**
      * Grava o array AArrayEstTransicaoExpToken
-     * @return type
+     * @return aDados
      */
     public function gravaArrayEstTransicaoExpToken($aArray){
         

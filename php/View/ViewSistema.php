@@ -102,11 +102,11 @@ class ViewSistema {
                                     <form class='container-fluid justify-content-start p-0'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadTabLexica()'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
-                                                data-toggle='tooltip' data-placement='right' title='Gera a tabela do automato para análise léxica'>TABELA DE ANÁLISE
+                                                data-toggle='tooltip-bottom' data-placement='bottom' title='Gera a tabela do automato para análise léxica'>TABELA DE ANÁLISE
                                             LÉXICA</button>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' onclick='loadAutomato()' disabled id='btdesenhaautomato'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' 
-                                                data-toggle='tooltip' data-placement='right' title='Automato de análise léxica'>DESENHAR AUTÔMATO</button>
+                                                data-toggle='tooltip-bottom' data-placement='bottom' title='Automato de análise léxica'>DESENHAR AUTÔMATO</button>
                                     </form>
                                         <div class='div text-center'
                                              style='width: calc(28vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
@@ -153,7 +153,7 @@ class ViewSistema {
         $oTela .= "     <div style='display: inline-block; width: calc(41vw); height: calc(65vh); background-color: rgba(0,0,255,0.1); border:1px solid black;'>
                                 <nav class='navbar p-1'>
                                     <form class='container-fluid justify-content-start p-0'>
-                                        <button class='btn btn-sm btn-outline-secondary me-1 ' data-toggle='tooltip' data-placement='right' title='Realiza análise léxica e gera os tokens' disabled id='btexecutaanaliselex'
+                                        <button class='btn btn-sm btn-outline-secondary me-1 ' data-toggle='tooltip-bottom' data-placement='bottom' title='Realiza análise léxica e gera os tokens' disabled id='btexecutaanaliselex'
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button' onclick='analiseLexica()'>EXECUTAR ANÁLISE LÉXICA</button>
 <!---                                        <span class='d-inline-block' tabindex='0' data-toggle='tooltip' title='Em desenvolvimento!'>
                                         <button class='btn btn-sm btn-outline-secondary me-1 ' disabled
@@ -162,7 +162,7 @@ class ViewSistema {
                                                 style='width: calc(vw); height: calc(vh); font-size:calc(1vw)' type='button'>SEMÂNTICO</button>
                                         </span> 
                                         <button class='btn btn-sm btn-secondary' style='width: calc(vw); height: calc(vh); font-size:calc(1vw)'
-                                                type='button' data-toggle='tooltip' data-placement='right' title='Documentação'>?</button> -->
+                                                type='button' data-toggle='tooltip-bottom' data-placement='bottom' title='Documentação'>?</button> -->
                                     </form>
                                     <div style='width: calc(41vw); height: calc(57vh); background-color: rgba(0,0,255,0.1);'>
                                         <div class='div p-1 text-center'>

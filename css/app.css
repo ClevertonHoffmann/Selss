@@ -254,3 +254,17 @@ code:before{
     cursor: pointer;
     margin: 0 auto;
 }
+
+/* Fundo preto e texto branco para o tooltip */
+.tooltip-inner {
+    background-color: black !important;
+    color: white !important;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 4px;
+}
+
+/* Posição da seta para o tooltip inferior */
+.tooltip.bs-tooltip-bottom .arrow::before {
+    border-bottom-color: black !important;
+}

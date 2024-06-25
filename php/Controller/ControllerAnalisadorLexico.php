@@ -10,17 +10,6 @@ class ControllerAnalisadorLexico extends Controller {
         $this->carregaClasses('AnalisadorLexico');
     }
 
-    //Variáveis e instancias iniciais carregegadas no construtor
-    private array $aPalavrasReservadas;
-    private array $aTabelaDeTransicao;
-    private array $aTabelaTokens;
-    private array $aCaracteresSeparados;
-    private int $iCount;
-    private int $q;
-    private int $qntTokens;
-    private string $sBuild;
-    private array $aListadeTokensLex;
-
     /**
      * Funcão que inicializa as variáveis utilizadas na análise léxica
      * @param type $sTexto
@@ -28,15 +17,15 @@ class ControllerAnalisadorLexico extends Controller {
      */
     public function InicializaAnalisadorLexico($sTexto) {
 
-        $this->aPalavrasReservadas = $this->getOPersistencia()->retornaPalavrasReservadas();
-        $this->aTabelaDeTransicao = $this->getOPersistencia()->retornaTabelaDeTransicao();
-        $this->aTabelaTokens = $this->getOPersistencia()->retornaTabelaDeTokens();
-        $this->aCaracteresSeparados = str_split($sTexto);
-        $this->iCount = count($this->aCaracteresSeparados);
-        $this->q = 0;
-        $this->qntTokens = 0;
-        $this->sBuild = "";
-        $this->aListadeTokensLex = array();
+        $this->getOModel()->setAPalavrasReservadas($this->getOPersistencia()->retornaPalavrasReservadas());
+        $this->getOModel()->setATabelaDeTransicao($this->getOPersistencia()->retornaTabelaDeTransicao());
+        $this->getOModel()->setATabelaTokens($this->getOPersistencia()->retornaTabelaDeTokens());
+        $this->getOModel()->setACaracteresSeparados(str_split($sTexto));
+        $this->getOModel()->setICount(count($this->getOModel()->getACaracteresSeparados()));
+        $this->getOModel()->setQ(0);
+        $this->getOModel()->setQntTokens(0);
+        $this->getOModel()->setSBuild("");
+        $this->getOModel()->setAListadeTokensLex(array());
     }
 
     /*
@@ -55,47 +44,50 @@ class ControllerAnalisadorLexico extends Controller {
 
         //Inicia a análise léxica
         $iK = 0;
-        while ($this->iCount > 0) {
+        while ($this->getOModel()->getICount() > 0) {
             try {
                 //Aceita o caractere e avança uma posição na entrada tanto normal como com espaços
-                if (!((($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]]) == '-1') || (($this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"]) == '-1')) && isset($this->aCaracteresSeparados[$iK]) && isset($this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]])) {
+                if (!((($this->getOModel()->getATabelaDeTransicaoPosicaoEsp($this->getOModel()->getQ(),$this->getOModel()->getACaracteresSeparadosPosicao($iK))) == '-1') 
+                        || (($this->getOModel()->getATabelaDeTransicaoPosicaoEsp($this->getOModel()->getQ(), "'" . $this->getOModel()->getACaracteresSeparadosPosicao($iK) . "'")) == '-1')) 
+                        && $this->getOModel()->issetACaracteresSeparadosPosicao($iK) 
+                        && $this->getOModel()->issetATabelaDeTransicaoPosicaoEsp($this->getOModel()->getQ(),$this->getOModel()->getACaracteresSeparadosPosicao($iK))) {
                     //Estado com espaços
-                    if ($this->aCaracteresSeparados[$iK] == " ") {
+                    if ($this->getOModel()->getACaracteresSeparadosPosicao($iK) == " ") {
                         //Concatena até formar um token
-                        $this->sBuild .= "'" . $this->aCaracteresSeparados[$iK] . "'";
+                        $this->getOModel()->setSBuild($this->getOModel()->getSBuild(). "'" . $this->getOModel()->getACaracteresSeparadosPosicao($iK) . "'");
                         //Seta o estado presente na tabela
-                        $this->q = (int) $this->aTabelaDeTransicao[$this->q]["'" . $this->aCaracteresSeparados[$iK] . "'"];
+                        $this->getOModel()->setQ((int) $this->getOModel()->getATabelaDeTransicaoPosicaoEsp($this->getOModel()->getQ(),"'" . $this->getOModel()->getACaracteresSeparadosPosicao($iK) . "'"));
                     } else {
                         //Concatena até formar um token
-                        $this->sBuild .= $this->aCaracteresSeparados[$iK];
+                        $this->getOModel()->setSBuild($this->getOModel()->getSBuild(). $this->getOModel()->getACaracteresSeparadosPosicao($iK));
                         //Seta o estado presente na tabela
-                        $this->q = (int) $this->aTabelaDeTransicao[$this->q][$this->aCaracteresSeparados[$iK]];
+                        $this->getOModel()->setQ((int) $this->getOModel()->getATabelaDeTransicaoPosicaoEsp($this->getOModel()->getQ(),$this->getOModel()->getACaracteresSeparadosPosicao($iK)));
                     }
-                    $this->iCount--;
+                    $this->getOModel()->setICount($this->getOModel()->getICount()-1);
                     $iK++;
                     //Aceita o token
-                } else if (!($this->aTabelaTokens[$this->q] == '?')) {
-//                    if (isset($this->aPalavrasReservadas[$this->sBuild])) {
-//                        $this->aListadeTokensLex[] = [$this->sBuild, $this->sBuild, $this->qntTokens];
+                } else if (!($this->getOModel()->getATabelaTokensPosicaoEsp($this->getOModel()->getQ()) == '?')) {
+//                    if ($this->getOModel()->getAPalavrasReservadasPosicao($this->getSBuild())) {
+//                        $this->getOModel()->setAListadeTokensLexEsp([$this->getSBuild(), $this->getSBuild(), $this->getOModel()->getQntTokens()]);
 //                    } else {
-                    $this->aListadeTokensLex[] = [$this->aTabelaTokens[$this->q], $this->sBuild, $this->qntTokens];
+                    $this->getOModel()->setAListadeTokensLexEsp([$this->getOModel()->getATabelaTokensPosicaoEsp($this->getOModel()->getQ()), $this->getOModel()->getSBuild(), $this->getOModel()->getQntTokens()]);
                     //                   }
-                    $this->qntTokens++;
-                    $this->sBuild = "";
-                    $this->q = 0;
+                    $this->getOModel()->setQntTokens($this->getOModel()->getQntTokens()+1);
+                    $this->getOModel()->setSBuild("");
+                    $this->getOModel()->setQ(0);
                 } else {
                     //Deixa passar caracter em branco caso não tenha sido definido
-                    if ($this->aCaracteresSeparados[$iK] == ' ') {
+                    if ($this->getOModel()->getACaracteresSeparadosPosicao($iK) == ' ') {
                         $iK++;
-                        $this->iCount--;
+                        $this->getOModel()->setICount($this->getOModel()->getICount()-1);
                     } else {
-                        $this->aListadeTokensLex[] = ['?', 'Caractére ' . $this->aCaracteresSeparados[$iK] . ' não identificado', $this->qntTokens];
+                        $this->getOModel()->setAListadeTokensLexEsp(['?', 'Caractére ' . $this->getOModel()->getACaracteresSeparadosPosicao($iK) . ' não identificado', $this->getOModel()->getQntTokens()]);
                         break;
                     }
                 }
                 //Regeita caractere não identificado
             } catch (Exception $ex) {
-                $this->aListadeTokensLex[] = ['?', 'Caractére não identificado', $this->qntTokens];
+                $this->getOModel()->setAListadeTokensLexEsp(['?', 'Caractére não identificado', $this->getOModel()->getQntTokens()]);
                 $sJson = '{"texto":"Estado não encontrado!"}';
                 return json_encode($sJson);
             }
@@ -104,7 +96,7 @@ class ControllerAnalisadorLexico extends Controller {
         $aListaTokenLexPer[0] = ['Token', 'Lexema', 'Posição'];
         $sTeste = "Token    Lex    Pos \\n ";
         $sTextoRetorno = '{"texto":';
-        foreach ($this->aListadeTokensLex as $aLex) {
+        foreach ($this->getOModel()->getAListadeTokensLex() as $aLex) {
             $sTeste .= "" . $aLex[0] . "       " . $aLex[1] . "            " . $aLex[2] . " \\n ";
             $aListaTokenLexPer[] = [$aLex[0], $aLex[1], $aLex[2]];
         }

@@ -482,15 +482,15 @@ class ControllerExpRegulares extends Controller {
      * Função responsável pela atribuição de valores as variáveis 
      * de acordo com os casamentos das expressões adiciona token com ?
      */
-    public function funcaoAtribuicaoVariaveischaves2() {
-        $this->getOModel()->setIEst($this->getOModel()->getIEst());
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
-        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
-        //Parte que retira as expressões que possuem estado (Ficar só compostas)
-        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
-        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
-        $this->getOModel()->setBCont(false);
-    }
+//    public function funcaoAtribuicaoVariaveischaves2() {
+//        $this->getOModel()->setIEst($this->getOModel()->getIEst());
+//        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
+//        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
+//        //Parte que retira as expressões que possuem estado (Ficar só compostas)
+//        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
+//        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+//        $this->getOModel()->setBCont(false);
+//    }
 
     /*
      * Monta os estados de transição e final

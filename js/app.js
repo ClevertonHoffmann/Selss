@@ -96,6 +96,12 @@ window.onload = (function () {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
+    
+     $(function () {
+        $('[data-toggle="tooltip-bottom"]').tooltip({
+            placement: 'bottom'  // Define a posição padrão como inferior
+        });
+    });
 
     /*********************************Inicio da parte das sugestões********************************/
     // Array de sugestões
