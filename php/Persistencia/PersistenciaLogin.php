@@ -3,17 +3,30 @@
 class PersistenciaLogin extends Persistencia {
 
     private $tabelaUsuario;
-    
+    private $pdo;
+
     public function __construct() {
+        $this->pdo = Conexao::getInstance();
         // Inicialize a tabela de usuários com base no modo da sessão
         $this->setTabela();
     }
-    
+
     public function setTabela() {
+        if (!$this->verificarSessao()) {
+            return false;
+        }
         if (isset($_SESSION['modo']) && $_SESSION['modo'] == 'convidado') {
-            $this->tabelaUsuario = 'tbusuariosconvidado';
+            if ($this->tabelaExiste('tbusuariosconvidado')) {
+                $this->tabelaUsuario = 'tbusuariosconvidado';
+            } else {
+                $this->errorlog('PL Tabela de usuário convidado não existe. ERROR');
+            }
         } else {
-            $this->tabelaUsuario = 'tbusuarios';
+            if ($this->tabelaExiste('tbusuarios')) {
+                $this->tabelaUsuario = 'tbusuarios';
+            } else {
+                $this->errorlog('PL Tabela de usuário não existe. ERROR');
+            }
         }
     }
 
@@ -24,8 +37,9 @@ class PersistenciaLogin extends Persistencia {
      * @return bool
      */
     public function verificaEmailPass($sEmail, $sSenha) {
-        $this->setTabela();
         
+        $this->setTabela();
+
         $pdo = Conexao::getInstance();
 
         // Utilizando prepared statements para evitar injeção de SQL
@@ -41,9 +55,11 @@ class PersistenciaLogin extends Persistencia {
             if (password_verify($sSenha, $aUser['senha'])) {
                 return true;
             } else {
+                $this->errorlog('PL Senha incorreta para o email ERROR: ' . $sEmail);
                 return false;
             }
         } else {
+            $this->errorlog('PL Usuário não encontrado ERROR: ' . $sEmail);
             return false;
         }
     }
@@ -67,6 +83,7 @@ class PersistenciaLogin extends Persistencia {
 
         // Se o e-mail já estiver cadastrado, retorna false
         if ($count > 0) {
+            $this->errorlog('PL email já cadastrado ERROR: ' . $sEmail);
             return false;
         }
 
@@ -83,7 +100,7 @@ class PersistenciaLogin extends Persistencia {
 
         // Executando a query
         $bResultado = $inserirUsuarioQuery->execute();
-
+        $this->errorlog('PL resultado cadastra usuário: ' . $bResultado);
         return $bResultado;
     }
 
@@ -96,7 +113,7 @@ class PersistenciaLogin extends Persistencia {
         for ($i = 0; $i < $length; $i++) {
             $nome .= $caracteres[rand(0, strlen($caracteres) - 1)];
         }
-
+        $this->errorlog('PL resultado gerarNomeAleatorio: ' . $nome);
         return $nome;
     }
 
@@ -135,5 +152,45 @@ class PersistenciaLogin extends Persistencia {
         $bResultado = $excluirUsuarioQuery->execute();
 
         return $bResultado;
+    }
+
+    public function errorlog($message) {
+        // Abre o arquivo no modo de adição ('a')
+        $fp = fopen('data/errorLog.txt', "a");
+
+        // Adiciona uma nova linha ao arquivo com a data e hora atuais
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = $timestamp . ' - ' . $message . PHP_EOL;
+
+        // Escreve no arquivo aberto
+        fwrite($fp, $logEntry);
+
+        // Fecha o arquivo
+        fclose($fp);
+    }
+
+    // O método para verificar se uma tabela existe
+    public function tabelaExiste($tabela) {
+        try {
+            $result = $this->pdo->query("SELECT 1 FROM $tabela LIMIT 1");
+        } catch (PDOException $e) {
+            $this->errorlog("PL Tabela $tabela não existe. Erro: " . $e->getMessage());
+            return false;
+        }
+        return $result !== false;
+    }
+
+    // O método para verificar a sessão
+    private function verificarSessao() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['modo'])) {
+            $this->errorlog("PL Variável de sessão 'modo' não está definida.");
+            return false;
+        }
+
+        return true;
     }
 }

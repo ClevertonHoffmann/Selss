@@ -18,6 +18,8 @@ class ControllerExpRegulares extends Controller {
      */
     public function analisaExpressoes($sDados) {
 
+        $this->errorlog('CER Chegou no método: analisaExpressoes');
+        
         $sCampos = json_decode($sDados);
         $sTexto = $sCampos->{'texto'};
         $sText = trim($sTexto);
@@ -25,13 +27,17 @@ class ControllerExpRegulares extends Controller {
         $this->getOPersistencia()->gravaArquivo("defReg", $sText, '.txt');
 
         $sText2 = $this->analisador($sText);
+        $this->errorlog('CER Finalizou o método: analisador retorno = '.$sText2);
 
         if ($sText2 == ' ') {
             $sText2 = $this->validaDefinicoesRegulares($sText);
+            $this->errorlog('CER Finalizou o método: validaDefinicoesRegulares retorno = '.$sText2);
         }
 
         $sJson = '{"texto":"' . $sText2 . '"}';
 
+        $this->errorlog('CER Finalizou o método: analisaExpressoes retorno = '.$sText2);
+        
         return json_encode($sJson);
     }
 
@@ -43,6 +49,8 @@ class ControllerExpRegulares extends Controller {
      */
     function validaDefinicoesRegulares($definition) {
 
+        $this->errorlog('CER Chegou no método: validaDefinicoesRegulares');
+        
         if (strlen($definition) > 300) {
             return "Atenção ultrapassou do limite maximo de 300 caracteres!";
         }
@@ -66,8 +74,9 @@ class ControllerExpRegulares extends Controller {
             // Remove espaços em branco
             $def = trim($def);
             // Pula definições vazias (por exemplo, se houver um ';' extra no final)
-            if (empty($def))
+            if (empty($def)) {
                 continue;
+            }
 
             // Divide a definição por ':' para separar chave e valor
             $parts = explode(':', $def, 2);
@@ -111,7 +120,7 @@ class ControllerExpRegulares extends Controller {
      * @return string
      */
     public function analisador($sTexto) {
-
+        $this->errorlog('CER Chegou no método: analisador');
         $aAfd = $this->getOPersistencia()->retornaCaracteresInvalidos()[0]; //Retorna todos os caracteres inválidos
         $aChar = preg_split('//u', $sTexto, -1, PREG_SPLIT_NO_EMPTY); //Consegue lidar com caracteres especiais, caracteres multibyte.
 
@@ -133,6 +142,7 @@ class ControllerExpRegulares extends Controller {
      */
     public function geradorTabelaAutomatoFinito($sDados) {
 
+        $this->errorlog('CER Chegou no método: geradorTabelaAutomatoFinito');
         /*
          * @Observações iniciais
          * São caracteres especiais : e ; pois são usados no controle inicial de separação dos tokens
@@ -146,6 +156,8 @@ class ControllerExpRegulares extends Controller {
 
         //Separa a string pelo ponto e vírgula
         $this->getOModel()->setAArray($this->separaTextoPV($sTexto));
+        $this->errorlog('CER Finalizou o método: $this->getOModel()->setAArray($this->separaTextoPV($sTexto))');
+        
         //Remove a possições em branco depois do ; mais analisar se precisa 
         $key = array_search('', $this->getOModel()->getAArray());
         if ($key !== false) {
@@ -153,7 +165,9 @@ class ControllerExpRegulares extends Controller {
         }
 
         // Obtem o cabeçalho do array
+        $this->errorlog('CER Chegou no método: $this->getOPersistencia()->retornaCabecalhoTabelaLexica()[0]');
         $aCabecalhoTabelaLexica = $this->getOPersistencia()->retornaCabecalhoTabelaLexica()[0];
+        $this->errorlog('CER Finalizou o método: $this->getOPersistencia()->retornaCabecalhoTabelaLexica()[0]');
 
         //Cria cabeçalho da tabela
         $this->getOModel()->setValorATabelaAutomato(-1, $aCabecalhoTabelaLexica);
@@ -165,34 +179,49 @@ class ControllerExpRegulares extends Controller {
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), '?');
 
+        $this->errorlog('CER Chegou no método: setAArrayCaracteres($this->getOPersistencia()->retornaCaracteresValidos()[0])');
         //Busca caracteres válidos usados para analisar e criar estados de transição conforme correspondência.
         $this->getOModel()->setAArrayCaracteres($this->getOPersistencia()->retornaCaracteresValidos()[0]);
-
+        $this->errorlog('CER Finalizou o método: setAArrayCaracteres($this->getOPersistencia()->retornaCaracteresValidos()[0])');
+        
         /*
          * Inicio da análise: Percore caracteres possíveis e analisar se eles estão especificados
          * criando um estado de transisão para os mesmos 
          */
-
+        $this->errorlog('CER Chegou no método: retornaArrayTokenExp');
         //Cria um array do tipo Token=>Expressão Regular removendo espaços em branco
         $this->retornaArrayTokenExp();
+        $this->errorlog('CER Finalizou o método: retornaArrayTokenExp()');
 
+        $this->errorlog('CER Chegou no método: montaEstadoInicial');
         //Monta o estado inicial 0
         $this->montaEstadoInicial();
+        $this->errorlog('CER Finalizou o método: montaEstadoInicial()');
 
+        $this->errorlog('CER Chegou no método: montaEstadosTransicao');
         //Monta os demais estados
         $this->montaEstadosTransicao();
+        $this->errorlog('CER Finalizou o método: montaEstadosTransicao()');
 
+        $this->errorlog('CER Chegou no método: $this->getOPersistencia()->gravaPalavrasReservadas($this->getOModel()->getAPalavrasReservadas())');
         //Parte que salva as palavras reservadas
         $this->getOPersistencia()->gravaPalavrasReservadas($this->getOModel()->getAPalavrasReservadas());
+        $this->errorlog('CER Finalizou o método: getOPersistencia()->gravaPalavrasReservadas($this->getOModel()->getAPalavrasReservadas())');
 
+        $this->errorlog('CER Chegou no método: $this->getOPersistencia()->gravaTabelaLexica($this->getOModel()->getATabelaAutomato())');
         //Parte que grava a tabela do automato para análise léxica
         $this->getOPersistencia()->gravaTabelaLexica($this->getOModel()->getATabelaAutomato());
+        $this->errorlog('CER Finalizou o método: getOPersistencia()->gravaPalavrasReservadas($this->getOModel()->getAPalavrasReservadas())');
 
+        $this->errorlog('CER Chegou no método: getOPersistencia()->gravaTabelaLexica($this->getOModel()->getATabelaAutomato()');
         //Parte que grava ArrayEstTransicaoExpToken para desenho do automato
         $this->getOPersistencia()->gravaArrayEstTransicaoExpToken($this->getOModel()->getAArrayEstTransicaoExpToken());
+        $this->errorlog('CER Chegou no método: getOPersistencia()->gravaArrayEstTransicaoExpToken($this->getOModel()->getAArrayEstTransicaoExpToken())');
 
         $sJson = '{"texto":"' . $sResultado . '"}';
 
+        $this->errorlog('CER Finalizou o método: geradorTabelaAutomatoFinito retorno = '.$sResultado);
+        
         return json_encode($sJson);
     }
 
@@ -217,6 +246,9 @@ class ControllerExpRegulares extends Controller {
      * Monta estado inicial do automato
      */
     public function montaEstadoInicial() {
+        
+        $this->errorlog('CER Chegou no método: montaEstadoInicial');
+        
         //Percorre caracter por caracter para formar o estado 0 inicial de transição
         foreach ($this->getOModel()->getAArrayCaracteres() as $sChar) {
             //Variável de controle para não entrar nos demais ifs caso caracter já analisado
@@ -302,6 +334,7 @@ class ControllerExpRegulares extends Controller {
                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), -1);
             }
         }
+        $this->errorlog('CER Finalizou o método: montaEstadoInicial');
     }
 
     /**
@@ -311,6 +344,8 @@ class ControllerExpRegulares extends Controller {
      * @return string A primeira subexpressão reconhecida pela expressão regular.
      */
     function extrairSubexpressoes($padrao) {
+        $this->errorlog('CER Chegou no método: extrairSubexpressoes');
+        
         // Define o padrão para extrair a primeira subexpressão significativa da expressão regular
         $padraoExtracao = '/^\(([^)]+)\)|^([^|()]+)/';
 
@@ -337,17 +372,21 @@ class ControllerExpRegulares extends Controller {
                 break;
             }
         }
-
+        
+        $this->errorlog('CER Finalizou o método: extrairSubexpressoes');
         return [$subexpressaoInicial, $padrao];
     }
 
     // Função para verificar se $sChar contém caracteres especiais
     public function contemCaracterEspecial($sChar, $caracteresEspeciais) {
+        $this->errorlog('CER Chegou no método: contemCaracterEspecial($sChar, $caracteresEspeciais)');
         foreach ($caracteresEspeciais as $char) {
-            if (strpos($sChar, $char) !== false) {
+            if (strpos($sChar, (string)$char) !== false) {
+                $this->errorlog('CER Finalizou o método: contemCaracterEspecial retorno true');
                 return true;
             }
         }
+        $this->errorlog('CER Finalizou o método: contemCaracterEspecial retorno false');
         return false;
     }
 
@@ -356,6 +395,7 @@ class ControllerExpRegulares extends Controller {
      * removendo espaços em branco e escapa o caractere ":" (Dois pontos)
      */
     public function retornaArrayPosTokenExp($sVal) {
+        $this->errorlog('CER Chegou no método: retornaArrayPosTokenExp($sVal)');
         $this->getOModel()->setAArray1(array());
 
         //Função que aceita o :
@@ -368,12 +408,14 @@ class ControllerExpRegulares extends Controller {
             $this->getOModel()->setValorAArray1(0, trim($this->getOModel()->getValorAArray1(0))); //Remove espaços em branco
             $this->getOModel()->setValorAArray1(1, trim($this->getOModel()->getValorAArray1(1))); //Remove espaços em branco
         }
+        $this->errorlog('CER Finalizou o método: retornaArrayPosTokenExp($sVal)');
     }
 
     /**
      * Realiza a verificação caso exista um caracter digitado como \t, \r, ou \n
      */
     public function analisaExprEmBranco($sChar) {
+        $this->errorlog('CER Chegou no método: analisaExprEmBranco($sChar)');
         if ($sChar == "\\t" && $sChar == $this->getOModel()->getValorAArray1(1)) {
             $this->funcaoAtribuicaoVariaveis();
             $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
@@ -386,6 +428,7 @@ class ControllerExpRegulares extends Controller {
             $this->funcaoAtribuicaoVariaveis();
             $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIEst(), [$this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); /////AQUIIIII
         }
+        $this->errorlog('CER Finalizou o método: analisaExprEmBranco($sChar)');
     }
 
     /**
@@ -393,7 +436,7 @@ class ControllerExpRegulares extends Controller {
      * de acordo com os casamentos das expressões
      */
     public function funcaoAtribuicaoVariaveis() {
-
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoVariaveis()');
         if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
             $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
             $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
@@ -409,6 +452,7 @@ class ControllerExpRegulares extends Controller {
             $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
         }
         $this->getOModel()->setBCont(false);
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoVariaveis()');
     }
 
     /**
@@ -416,12 +460,14 @@ class ControllerExpRegulares extends Controller {
      * de acordo com os casamentos das expressões adiciona token com ?
      */
     public function funcaoAtribuicaoVariaveis2() {
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoVariaveis2()');
         $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
         $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
         //Parte que retira as expressões que possuem estado (Ficar só compostas)
         $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
         $this->getOModel()->setBCont(false);
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoVariaveis2()');
     }
 
     /**
@@ -430,6 +476,7 @@ class ControllerExpRegulares extends Controller {
      * específico para expressões compostas por operadores e caracteres especiais ex: |, ^
      */
     public function funcaoAtribuicaoVariaveis3($sExp) {
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoVariaveis3()');
         if (!$this->getOModel()->issetATokenEstado($this->getOModel()->getValorAArray1(1))) {
             $this->getOModel()->setIEst($this->getOModel()->getIEst() + 1);
         }
@@ -445,6 +492,7 @@ class ControllerExpRegulares extends Controller {
             $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
         }
         $this->getOModel()->setBCont(false);
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoVariaveis3()');
     }
 
     /**
@@ -453,10 +501,12 @@ class ControllerExpRegulares extends Controller {
      * @return boolean
      */
     public function verificaPalavraChave($sChar) {
+        $this->errorlog('CER Chegou no método: verificaPalavraChave($sChar)');
         $bRetorno = false;
         if ((trim($this->getOModel()->getValorAArray1(0)) == trim($this->getOModel()->getValorAArray1(1))) && preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) {
             $bRetorno = true;
         }
+        $this->errorlog('CER Finalizou o método: verificaPalavraChave($sChar)');
         return $bRetorno;
     }
 
@@ -465,6 +515,7 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function analisaPalavrasChaves($sChar) {
+        $this->errorlog('CER Chegou no método: analisaPalavrasChaves($sChar)');
         if ($this->verificaPalavraChave($sChar)) {
             if ($this->getOModel()->getBCont() && (preg_match("/[" . $this->getOModel()->getValorAArray1(1) . "]/", $sChar) == 1) && strlen($this->getOModel()->getValorAArray1(1)) > 1) {
                 $aCarac = str_split($this->getOModel()->getValorAArray1(1));
@@ -476,28 +527,31 @@ class ControllerExpRegulares extends Controller {
                 }
             }
         }
+        $this->errorlog('CER Finalizou o método: analisaPalavrasChaves($sChar)');
     }
 
     /**
      * Função responsável pela atribuição de valores as variáveis 
      * de acordo com os casamentos das expressões adiciona token com ?
      */
-//    public function funcaoAtribuicaoVariaveischaves2() {
-//        $this->getOModel()->setIEst($this->getOModel()->getIEst());
-//        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
-//        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
-//        //Parte que retira as expressões que possuem estado (Ficar só compostas)
-//        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
-//        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
-//        $this->getOModel()->setBCont(false);
-//    }
+    public function funcaoAtribuicaoVariaveischaves2() {
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoVariaveischaves2()');
+        $this->getOModel()->setIEst($this->getOModel()->getIEst());
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), $this->getOModel()->getAArray1());
+        $this->getOModel()->setValorAArrayEstTokenExpr($this->getOModel()->getIEst(), ["?", $this->getOModel()->getValorAArray1(1), $this->getOModel()->getValorAArray1(0)]); //Adiciona o token
+        //Parte que retira as expressões que possuem estado (Ficar só compostas)
+        $this->getOModel()->unsetIFissetAArrayTokenExpr($this->getOModel()->getValorAArray1(0));
+        $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIEst());
+        $this->getOModel()->setBCont(false);
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoVariaveischaves2()');
+    }
 
     /*
      * Monta os estados de transição e final
      */
 
     public function montaEstadosTransicao() {
-
+        $this->errorlog('CER Chegou no método: montaEstadosTransicao()');
         $this->getOModel()->setIPos($this->getOModel()->getIPos() + 1);
         $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
         $this->getOModel()->ordenaAArrayEstTokenExpr(); //Ordena o array conforme os estados do menor para o maior
@@ -509,7 +563,7 @@ class ControllerExpRegulares extends Controller {
             if ($aVal[0] != "?") {
                 $this->getOModel()->setValorAArrayExprEst(trim($aVal[0]), [$iEstado, $aVal[1]]);
             } else {
-                if (strpos($this->getOModel()->getValorAArray1(1), $aVal[1]) !== false) {
+                if (strpos($this->getOModel()->getValorAArray1(1), (string) $aVal[1]) !== false) {
                     $this->getOModel()->setValorAArrayExprEst(trim($aVal[1]), [$iEstado, $aVal[1]]);
                 }
             }
@@ -569,6 +623,7 @@ class ControllerExpRegulares extends Controller {
                 $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos() - 1, $this->getOModel()->getIPos() - 1, [$aVal[1], $aVal[0]]); ///AQUIIIII
             }
         }
+        $this->errorlog('CER Finalizou o método: montaEstadosTransicao()');
     }
 
     /**
@@ -577,14 +632,17 @@ class ControllerExpRegulares extends Controller {
      * @return type
      */
     public function verificaEstadoComposto($aVal) {
+        $this->errorlog('CER Chegou no método: verificaEstadoComposto($aVal)');
         if ($aVal[0] == "?") {
             foreach ($this->getOModel()->getAArrayEstTokenExpr() as $iEstado => $aValor) {
                 if (($aValor[1] != $aVal[1]) && preg_match("/^" . $aValor[1] . "$/", substr($aVal[1], 0, 1)) == 1 && (strpos($aValor[1], '*') !== false || strpos($aValor[1], '+') !== false)) {
                     return $aValor; //AQUI O TOKEN PARA REPRESENTAR INÍCIO SUBSTITUI O ?
                 }
             }
+            $this->errorlog('CER Finalizou o método: verificaEstadoComposto($aVal)');
             return $aVal;
         } else {
+            $this->errorlog('CER Finalizou o método: verificaEstadoComposto($aVal)');
             return $aVal;
         }
     }
@@ -595,6 +653,7 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function funcaoAtribuicaoTokenTransicao($aVal, $sChar) {
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoTokenTransicao($aVal, $sChar)');
         if ($aVal[0] == "?" && $this->getOModel()->getBCont() && !isset($aVal[3])) {
             $this->getOModel()->setAArray1(str_split($aVal[1]));
             //Possibilidade dupla caracteres igual
@@ -638,6 +697,7 @@ class ControllerExpRegulares extends Controller {
                 }
             }
         }
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoTokenTransicao($aVal, $sChar)');
     }
 
     /**
@@ -646,6 +706,7 @@ class ControllerExpRegulares extends Controller {
      * @param type $sChar
      */
     public function funcaoAtribuicaoComposta($aVal, $sChar) {
+        $this->errorlog('CER Chegou no método: funcaoAtribuicaoComposta($aVal, $sChar)');
         if ($this->getOModel()->getBCont()) {
             if (count($this->getOModel()->getAArrayTokenExpr()) > 0) {
                 foreach ($this->getOModel()->getAArrayTokenExpr() as $key => $sExprr) {
@@ -685,12 +746,14 @@ class ControllerExpRegulares extends Controller {
                 }
             }
         }
+        $this->errorlog('CER Finalizou o método: funcaoAtribuicaoComposta($aVal, $sChar)');
     }
 
     /**
      * Função que verifica se necessário alguma transição para o mesmo estado caso * ou +
      */
     public function funçãoAtribuicaoCuringa($sChar, $aToken) {
+        $this->errorlog('CER Chegou no método: funçãoAtribuicaoCuringa($sChar, $aToken)');
         if ($this->getOModel()->getBCont()) {
             //Atribui a transição para seu próprio estado caso necessário
             if (preg_match("/^" . $aToken[1] . "$/", $sChar) == 1 && (strpos($aToken[1], '*') !== false || strpos($aToken[1], '+') !== false)) {
@@ -711,18 +774,19 @@ class ControllerExpRegulares extends Controller {
                     }
                 } else {
                     //Verifica se um estado final de atribuição composta necessita emplimento do mesmo, no ex soma:{mais}{num}; onde num:[0-9]*;
-                    if (isset($aToken[1][1])) { //Verifica se existe variáveis
-                        if (isset($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1])) {
-                            if (preg_match("/^" . $this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '*') !== false || strpos($this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], '+') !== false)) {
+                    if (isset($aToken[0])) { //Verifica se existe variáveis//RETIRADO [1][1] acrescentado [0] //Método alterado que estava dando problema
+                        if ($this->getOModel()->issetEspAArrayExprEst($aToken[0], 1)) {
+                            if (preg_match("/^" . $this->getOModel()->getValorAArrayExprEst($aToken[0])[1] . "$/", $sChar) == 1 && (strpos($this->getOModel()->getValorAArrayExprEst($aToken[0])[1], '*') !== false || strpos($this->getOModel()->getValorAArrayExprEst($aToken[0])[1], '+') !== false)) {
                                 $this->getOModel()->setValorAutATabelaAutomato($this->getOModel()->getIPos(), $this->getOModel()->getIPos());
                                 $this->getOModel()->setBCont(false);
-                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$this->getOModel()->getValorAArrayExprEst($aToken[1][1])[1], $aToken[1][1]]); /////AQUIIIII
+                                $this->getOModel()->setValorAArrayEstTransicaoExpToken($this->getOModel()->getIPos(), $this->getOModel()->getIPos(), [$this->getOModel()->getValorAArrayExprEst($aToken[0])[1], $aToken[1]]); /////AQUIIIII
                             }
                         }
                     }
                 }
             }
         }
+        $this->errorlog('CER Finalizou o método: funçãoAtribuicaoCuringa($sChar, $aToken)');
     }
 
     /**
@@ -731,11 +795,11 @@ class ControllerExpRegulares extends Controller {
      * @return type
      */
     public function mostraModalTabelaLexica($sDados) {
-
+        $this->errorlog('CER Chegou no método: mostraModalTabelaLexica($sDados)');
         $aTabela = $this->getOPersistencia()->retornaArray("tabelaAnaliseLexica", 1);
         $sModal = $this->getOView()->geraModalTabelaLexica($aTabela);
         $this->getOPersistencia()->gravaArquivo("modalTabelaAnaliseLexica", $sModal, '.html');
-
+        $this->errorlog('CER Finalizou o método: mostraModalTabelaLexica($sDados) retorno='.$sModal);
         return json_encode($sModal);
     }
 
@@ -745,6 +809,9 @@ class ControllerExpRegulares extends Controller {
      * @return type
      */
     public function separaTextoPV($texto) {
+        
+        $this->errorlog('CER Chegou no método: separaTextoPV');
+        
         // substitui os pontos-e-vírgula precedidos por uma barra invertida por um caractere especial
         $string_temp = preg_replace('/(\\\;)/', '^', $texto);
 
@@ -756,5 +823,20 @@ class ControllerExpRegulares extends Controller {
             $array_valores[$key] = str_replace('^', ';', $valor);
         }
         return $array_valores;
+    }
+
+    public function errorlog($message) {
+        // Abre o arquivo no modo de adição ('a')
+        $fp = fopen('data/errorLog.txt', "a");
+
+        // Adiciona uma nova linha ao arquivo com a data e hora atuais
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = $timestamp . ' - ' . $message . PHP_EOL;
+
+        // Escreve no arquivo aberto
+        fwrite($fp, $logEntry);
+
+        // Fecha o arquivo
+        fclose($fp);
     }
 }

@@ -15,7 +15,9 @@ class ControllerSistema extends Controller {
      * Método responsável de mostrar a tela de sistema correspondente
      */
     public function mostraSistema($sDados) {
-
+        
+        $this->errorlog('CS Chegou no método: mostraSistema($sDados)');
+        
         $oControllerLogin = new ControllerLogin();
 
         $bLogin = $oControllerLogin->validaLogin();
@@ -42,6 +44,7 @@ class ControllerSistema extends Controller {
 
     public function mostraTelaCadastroUsuario($sDados) {
 
+        $this->errorlog('CS Chegou no método: mostraTelaCadastroUsuario($sDados)');
         $oControllerLogin = new ControllerLogin();
 
         return $oControllerLogin->mostraTelaCadastraUsuario($sDados);
@@ -53,6 +56,7 @@ class ControllerSistema extends Controller {
 
     public function cadastraUsuario($sDados) {
 
+        $this->errorlog('CS Chegou no método: cadastraUsuario($sDados)');
         $oControllerLogin = new ControllerLogin();
 
         $bCadastro = $oControllerLogin->realizaCadastroUsuario($sDados);
@@ -69,6 +73,7 @@ class ControllerSistema extends Controller {
      */
     public function realizaLogout($sDados) {
 
+        $this->errorlog('CS Chegou no método: realizaLogout($sDados)');
         if (is_dir($_SESSION['diretorio']) && $_SESSION['modo'] == 'convidado') {
             // Tenta remover a pasta
             $this->removerConteudoDaPasta(realpath(($_SESSION['diretorio'])));
@@ -131,5 +136,20 @@ class ControllerSistema extends Controller {
             // Retorna a resposta JSON
             return json_encode($response);
         }
+    }
+    
+    public function errorlog($message) {
+        // Abre o arquivo no modo de adição ('a')
+        $fp = fopen('data/errorLog.txt', "a");
+
+        // Adiciona uma nova linha ao arquivo com a data e hora atuais
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = $timestamp . ' - ' . $message . PHP_EOL;
+
+        // Escreve no arquivo aberto
+        fwrite($fp, $logEntry);
+
+        // Fecha o arquivo
+        fclose($fp);
     }
 }

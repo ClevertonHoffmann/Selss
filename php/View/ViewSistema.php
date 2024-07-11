@@ -47,6 +47,7 @@ class ViewSistema {
                                             <a href='help/documentacao.html' target='_blank'>Documentação</a>
                                             <a id='idbtExcluirDados' style='color: #ffa500;' href='javascript:void(0)'>Excluir dados</a>
                                             <a id='idbtExcluirUsuario' style='color: red;' href='javascript:void(0)'>Excluir usuário</a>
+                                            <a href='data/errorLog.txt' download>Baixar Depuração</a>
                                         </div>
                                         <div id='modalExcluirDados' class='modal' style='text-align: center;'>
                                             <div class='modal-content-sair'>

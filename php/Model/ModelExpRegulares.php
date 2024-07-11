@@ -231,6 +231,16 @@ class ModelExpRegulares {
     public function setValorAArrayExprEst($iPosicao, $sValor) {
         $this->aArrayExprEst[$iPosicao] = $sValor;
     }
+    
+    /**
+     * Verifica se existe array na subposição
+     * @param type $iPosicao1
+     * @param type $iPosicao2
+     * @return type
+     */
+    public function issetEspAArrayExprEst($iPosicao1, $iPosicao2){
+        return isset($this->aArrayExprEst[$iPosicao1][$iPosicao2]) && is_array($this->aArrayExprEst[$iPosicao1]);
+    }
 
     //Não deixa atribuir outro estado ao mesmo token que já contém um estado
     private $aTokenEstado = array();

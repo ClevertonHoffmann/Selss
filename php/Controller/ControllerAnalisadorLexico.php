@@ -67,11 +67,7 @@ class ControllerAnalisadorLexico extends Controller {
                     $iK++;
                     //Aceita o token
                 } else if (!($this->getOModel()->getATabelaTokensPosicaoEsp($this->getOModel()->getQ()) == '?')) {
-//                    if ($this->getOModel()->getAPalavrasReservadasPosicao($this->getSBuild())) {
-//                        $this->getOModel()->setAListadeTokensLexEsp([$this->getSBuild(), $this->getSBuild(), $this->getOModel()->getQntTokens()]);
-//                    } else {
                     $this->getOModel()->setAListadeTokensLexEsp([$this->getOModel()->getATabelaTokensPosicaoEsp($this->getOModel()->getQ()), $this->getOModel()->getSBuild(), $this->getOModel()->getQntTokens()]);
-                    //                   }
                     $this->getOModel()->setQntTokens($this->getOModel()->getQntTokens()+1);
                     $this->getOModel()->setSBuild("");
                     $this->getOModel()->setQ(0);
